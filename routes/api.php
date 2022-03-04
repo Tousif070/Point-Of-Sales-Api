@@ -14,6 +14,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers'], function() {
+
+    Route::get('index', 'ProductController@index');
+    Route::post('store', 'ProductController@store');
+    Route::put('update/{product_id}', 'ProductController@update');
+    Route::delete('delete/{product_id}', 'ProductController@delete');
+
+});
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
