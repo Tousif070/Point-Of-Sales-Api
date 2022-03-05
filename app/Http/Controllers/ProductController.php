@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\Models\Product;
 
 class ProductController extends Controller
@@ -16,6 +17,46 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        // THE FOLLOWING BLOCK OF CODE CAN ALSO BE USED FOR VALIDATION
+
+        // $validator = Validator::make($request->all(), [
+        //     'name' => 'required',
+        //     'color' => 'required',
+        //     'ram' => 'required | numeric',
+        //     'storage' => 'required | numeric',
+        //     'condition' => 'required'
+        // ], [
+        //     'name.required' => 'Please enter the name of the product !',
+        //     'color.required' => 'Please enter the color of the product !',
+        //     'ram.required' => 'Please enter the ram allocation of the product !',
+        //     'ram.numeric' => 'The value should be numeric !',
+        //     'storage.required' => 'Please enter the storage allocation of the product !',
+        //     'storage.numeric' => 'The value should be numeric !',
+        //     'condition.required' => 'Please enter the condition of the product !'
+        // ]);
+
+        // if($validator->fails())
+        // {
+        //     return $validator->errors();
+        // }
+
+
+        $request->validate([
+            'name' => 'required',
+            'color' => 'required',
+            'ram' => 'required | numeric',
+            'storage' => 'required | numeric',
+            'condition' => 'required'
+        ], [
+            'name.required' => 'Please enter the name of the product !',
+            'color.required' => 'Please enter the color of the product !',
+            'ram.required' => 'Please enter the ram allocation of the product !',
+            'ram.numeric' => 'The value should be numeric !',
+            'storage.required' => 'Please enter the storage allocation of the product !',
+            'storage.numeric' => 'The value should be numeric !',
+            'condition.required' => 'Please enter the condition of the product !'
+        ]);
+
         $product = new Product();
 
         $product->name = $request->name;
@@ -39,6 +80,22 @@ class ProductController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'name' => 'required',
+            'color' => 'required',
+            'ram' => 'required | numeric',
+            'storage' => 'required | numeric',
+            'condition' => 'required'
+        ], [
+            'name.required' => 'Please enter the name of the product !',
+            'color.required' => 'Please enter the color of the product !',
+            'ram.required' => 'Please enter the ram allocation of the product !',
+            'ram.numeric' => 'The value should be numeric !',
+            'storage.required' => 'Please enter the storage allocation of the product !',
+            'storage.numeric' => 'The value should be numeric !',
+            'condition.required' => 'Please enter the condition of the product !'
+        ]);
+
         $product = Product::find($id);
 
         if($product == null)
