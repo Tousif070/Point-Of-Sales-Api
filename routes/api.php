@@ -14,15 +14,23 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers'], function() {
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::group(['namespace' => 'App\Http\Controllers'], function() {
+
+    Route::post('register', 'LoginController@register');
+    Route::post('login', 'LoginController@login');
+    Route::post('logout', 'LoginController@logout')->middleware('auth:sanctum');
+
+});
+
+Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers', 'middleware' => ['auth:sanctum']], function() {
 
     Route::get('index', 'ProductController@index');
     Route::post('store', 'ProductController@store');
     Route::put('update/{product_id}', 'ProductController@update');
     Route::delete('delete/{product_id}', 'ProductController@delete');
 
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
 });

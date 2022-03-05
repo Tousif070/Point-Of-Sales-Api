@@ -75,7 +75,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return $product;
+        return response($product, 201);
     }
 
     public function update(Request $request, $id)
@@ -100,7 +100,7 @@ class ProductController extends Controller
 
         if($product == null)
         {
-            return ['message' => 'Invalid Product ID !'];
+            return response(['message' => 'Invalid Product ID !'], 401);
         }
 
         $product->name = $request->name;
@@ -115,7 +115,7 @@ class ProductController extends Controller
 
         $product->save();
 
-        return $product;
+        return response($product, 201);
     }
 
     public function delete($id)
@@ -124,7 +124,7 @@ class ProductController extends Controller
 
         if($product == null)
         {
-            return ['message' => 'Invalid Product ID !'];
+            return response(['message' => 'Invalid Product ID !'], 401);
         }
 
         $product->delete();
