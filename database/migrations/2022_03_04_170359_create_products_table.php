@@ -29,6 +29,8 @@ class CreateProductsTable extends Migration
 
             $table->string('condition');
 
+            $table->string('image');
+
             $table->timestamps();
 
             $table->softDeletes();

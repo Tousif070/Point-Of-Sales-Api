@@ -30,7 +30,7 @@ Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers', 'mid
 
     Route::get('index', 'ProductController@index');
     Route::post('store', 'ProductController@store');
-    Route::put('update/{product_id}', 'ProductController@update');
+    Route::post('update/{product_id}', 'ProductController@update');
     Route::delete('delete/{product_id}', 'ProductController@delete');
 
 });
