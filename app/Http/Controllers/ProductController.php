@@ -59,7 +59,7 @@ class ProductController extends Controller
             'condition.required' => 'Please enter the condition of the product !',
             'image.required' => 'Please upload an image !',
             'image.file' => 'Please upload a valid file !',
-            'image.mimes' => 'Only jpg/jpeg/png formats are allowed !'
+            'image.mimes' => 'Only jpg, jpeg & png formats are allowed !'
         ]);
 
         $product = new Product();
@@ -110,7 +110,7 @@ class ProductController extends Controller
             'storage.numeric' => 'The value should be numeric !',
             'condition.required' => 'Please enter the condition of the product !',
             'image.file' => 'Please upload a valid file !',
-            'image.mimes' => 'Only jpg/jpeg/png formats are allowed !'
+            'image.mimes' => 'Only jpg, jpeg & png formats are allowed !'
         ]);
 
         $product = Product::find($id);
