@@ -48,7 +48,7 @@ class ProductController extends Controller
             'ram' => 'required | numeric',
             'storage' => 'required | numeric',
             'condition' => 'required',
-            'image' => 'required | file | mimes:jpg,jpeg,png'
+            'image' => 'required | image | max:2048'
         ], [
             'name.required' => 'Please enter the name of the product !',
             'color.required' => 'Please enter the color of the product !',
@@ -58,8 +58,8 @@ class ProductController extends Controller
             'storage.numeric' => 'The value should be numeric !',
             'condition.required' => 'Please enter the condition of the product !',
             'image.required' => 'Please upload an image !',
-            'image.file' => 'Please upload a valid file !',
-            'image.mimes' => 'Only jpg, jpeg & png formats are allowed !'
+            'image.image' => 'Please upload an image file !',
+            'image.max' => 'Maximum size limit is 2 MB !'
         ]);
 
         $product = new Product();
@@ -100,7 +100,7 @@ class ProductController extends Controller
             'ram' => 'required | numeric',
             'storage' => 'required | numeric',
             'condition' => 'required',
-            'image' => 'file | mimes:jpg,jpeg,png'
+            'image' => 'image | max:2048'
         ], [
             'name.required' => 'Please enter the name of the product !',
             'color.required' => 'Please enter the color of the product !',
@@ -109,8 +109,8 @@ class ProductController extends Controller
             'storage.required' => 'Please enter the storage allocation of the product !',
             'storage.numeric' => 'The value should be numeric !',
             'condition.required' => 'Please enter the condition of the product !',
-            'image.file' => 'Please upload a valid file !',
-            'image.mimes' => 'Only jpg, jpeg & png formats are allowed !'
+            'image.image' => 'Please upload an image file !',
+            'image.max' => 'Maximum size limit is 2 MB !'
         ]);
 
         $product = Product::find($id);
