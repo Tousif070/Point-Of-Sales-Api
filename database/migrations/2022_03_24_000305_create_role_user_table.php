@@ -27,11 +27,6 @@ class CreateRoleUserTable extends Migration
 
             $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
             
-
-            $table->timestamps();
-
-            $table->softDeletes();
-
         });
     }
 
