@@ -8,36 +8,6 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required | alpha',
-            'email' => 'required | email | unique:users,email',
-            'password' => 'required | alpha_num | confirmed'
-        ], [
-            'name.required' => 'Please enter your name !',
-            'name.alpha' => 'Only alphabets are allowed !',
-            'email.required' => 'Please enter your email !',
-            'email.email' => 'Please enter a valid email !',
-            'email.unique' => 'Email already exists !',
-            'password.required' => 'Please enter a password !',
-            'password.alpha_num' => 'Only alphabets & numbers are allowed !',
-            'password.confirmed' => 'Passwords do not match !'
-        ]);
-
-        $user = new User();
-
-        $user->name = $request->name;
-
-        $user->email = $request->email;
-
-        $user->password = Hash::make($request->password);
-
-        $user->save();
-
-        return $user;
-    }
-
     public function login(Request $request)
     {
         $request->validate([

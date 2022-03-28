@@ -18,14 +18,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group(['namespace' => 'App\Http\Controllers'], function() {
-
-    Route::post('register', 'LoginController@register');
-    
-    
-
-});
-
 Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers', 'middleware' => ['auth:sanctum']], function() {
 
     Route::get('index', 'ProductController@index');
@@ -44,6 +36,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
     Route::group(['middleware' => ['auth:sanctum']], function() {
 
         Route::post('logout', 'LoginController@logout');
+
+
+        Route::group(['prefix' => 'user'], function() {
+
+            Route::get('index', 'UserController@index');
+            
+            Route::post('register', 'UserController@register');
+
+        });
 
 
         Route::group(['prefix' => 'brand'], function() {
