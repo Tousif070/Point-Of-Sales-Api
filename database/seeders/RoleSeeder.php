@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
 
             $role->name = "super_admin";
 
-            $role->description = "This user has the highest authority with all the permissions and no restrictions.";
+            $role->description = "This role has the highest authority with all the permissions and no restrictions.";
 
             $role->save();
         }
