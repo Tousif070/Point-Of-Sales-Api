@@ -21,8 +21,8 @@ use Illuminate\Support\Facades\Route;
 Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
     Route::post('register', 'LoginController@register');
-    Route::post('login', 'LoginController@login');
-    Route::post('logout', 'LoginController@logout')->middleware('auth:sanctum');
+    
+    
 
 });
 
@@ -32,5 +32,21 @@ Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers', 'mid
     Route::post('store', 'ProductController@store');
     Route::post('update/{product_id}', 'ProductController@update');
     Route::delete('delete/{product_id}', 'ProductController@delete');
+
+});
+
+
+
+Route::group(['namespace' => 'App\Http\Controllers'], function() {
+
+    Route::post('login', 'LoginController@login');
+
+    Route::group(['middleware' => ['auth:sanctum']], function() {
+
+        Route::post('logout', 'LoginController@logout');
+
+        
+
+    });
 
 });

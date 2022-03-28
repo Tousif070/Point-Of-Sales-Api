@@ -41,31 +41,31 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required | email',
+            'username' => 'required | alpha_num',
             'password' => 'required | alpha_num'
         ], [
-            'email.required' => 'Please enter your email !',
-            'email.email' => 'Please enter a valid email !',
+            'username.required' => 'Please enter your username !',
+            'username.alpha_num' => 'Only alphabets & numbers are allowed !',
             'password.required' => 'Please enter your password !',
             'password.alpha_num' => 'Only alphabets & numbers are allowed !'
         ]);
 
-        $user = User::where('email', '=', $request->email)->first();
+        $user = User::where('username', '=', $request->username)->first();
 
         if($user == null || !Hash::check($request->password, $user->password))
         {
-            return response(['message' => 'Invalid Email or Password !'], 401);
+            return response(['message' => 'Invalid Username or Password !'], 404);
         }
 
         $user_token = $user->createToken(mt_rand(1, 1000000) . "_" . $user->email);
 
-        return response(['user_token' => $user_token->plainTextToken], 201);
+        return response(['user_token' => $user_token->plainTextToken], 200);
     }
 
     public function logout()
     {
         auth()->user()->tokens()->delete();
 
-        return ['message' => 'Logged Out !'];
+        return response(['message' => 'Logged Out !'], 200);
     }
 }
