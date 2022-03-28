@@ -45,7 +45,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         Route::post('logout', 'LoginController@logout');
 
-        
+        Route::group(['prefix' => 'brand'], function() {
+
+            Route::get('index', 'BrandController@index');
+            
+            Route::post('store', 'BrandController@store');
+
+        });
 
     });
 
