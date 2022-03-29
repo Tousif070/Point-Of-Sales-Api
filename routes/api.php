@@ -56,6 +56,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
 
 
+        Route::group(['prefix' => 'permission'], function() {
+
+            Route::get('index', 'PermissionController@index');
+            
+            Route::post('store', 'PermissionController@store');
+
+        });
+
+
         Route::group(['prefix' => 'brand'], function() {
 
             Route::get('index', 'BrandController@index');
