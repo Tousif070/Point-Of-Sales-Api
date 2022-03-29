@@ -82,4 +82,13 @@ class RoleController extends Controller
     {
         //
     }
+
+    public function assignPermission(Request $request)
+    {
+        $role = Role::find($request->role_id);
+
+        $role->permissions()->sync($request->permission_ids);
+
+        return response(['message' => 'Permission Assigned !'], 200);
+    }
 }

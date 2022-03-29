@@ -116,4 +116,13 @@ class UserController extends Controller
     {
         //
     }
+
+    public function assignRole(Request $request)
+    {
+        $user = User::find($request->user_id);
+
+        $user->roles()->sync($request->role_ids);
+
+        return response(['message' => 'Role Assigned !'], 200);
+    }
 }

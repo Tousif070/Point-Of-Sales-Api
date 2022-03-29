@@ -44,6 +44,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('register', 'UserController@register');
 
+            Route::post('assign-role', 'UserController@assignRole');
+
         });
 
 
@@ -52,6 +54,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('index', 'RoleController@index');
             
             Route::post('store', 'RoleController@store');
+
+            Route::post('assign-permission', 'RoleController@assignPermission');
 
         });
 
