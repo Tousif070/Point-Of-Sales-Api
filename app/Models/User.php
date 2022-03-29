@@ -50,4 +50,25 @@ class User extends Authenticatable
     {
         return $this->belongsToMany('App\Models\Role', 'role_user', 'user_id', 'role_id');
     }
+
+    public function hasPermission($permission_name)
+    {
+        foreach($this->roles as $role)
+        {
+            if($role->name == "super_admin")
+            {
+                return true;
+            }
+
+            foreach($role->permissions as $permission)
+            {
+                if($permission->name == $permission_name)
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
 }

@@ -14,6 +14,11 @@ class BrandController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->hasPermission("brand.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $brands = Brand::all();
 
         return response(['brands' => $brands], 200);
@@ -27,6 +32,11 @@ class BrandController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth()->user()->hasPermission("brand.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $request->validate([
             'name' => 'required | string | unique:brands,name'
         ], [
