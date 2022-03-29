@@ -29,22 +29,22 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $request->validate([
-            'first_name' => 'required | alpha',
-            'last_name' => 'required | alpha',
-            'username' => 'required | alpha_num | unique:users,username',
+            'first_name' => 'required | string',
+            'last_name' => 'required | string',
+            'username' => 'required | string | unique:users,username',
             'email' => 'required | email | unique:users,email',
-            'password' => 'required | alpha_num | confirmed',
+            'password' => 'required | string | confirmed',
             'pin_number' => 'required | numeric',
             'type' => 'required | numeric'
         ], [
             'first_name.required' => 'Please enter your first name !',
-            'first_name.alpha' => 'Only alphabets are allowed !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
 
             'last_name.required' => 'Please enter your last name !',
-            'last_name.alpha' => 'Only alphabets are allowed !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed !',
 
             'username.required' => 'Please enter your username !',
-            'username.alpha_num' => 'Only alphabets & numbers are allowed !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
             'username.unique' => 'Username already exists !',
 
             'email.required' => 'Please enter your email !',
@@ -52,7 +52,7 @@ class UserController extends Controller
             'email.unique' => 'Email already exists !',
 
             'password.required' => 'Please enter a password !',
-            'password.alpha_num' => 'Only alphabets & numbers are allowed !',
+            'password.string' => 'Only alphabets, numbers & special characters are allowed !',
             'password.confirmed' => 'Passwords do not match !',
 
             'pin_number.required' => 'Please enter a pin number !',

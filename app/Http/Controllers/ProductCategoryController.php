@@ -28,11 +28,11 @@ class ProductCategoryController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required | alpha_num | unique:product_categories,name',
+            'name' => 'required | string | unique:product_categories,name',
             'type' => 'required'
         ], [
             'name.required' => 'Please enter the category name !',
-            'name.alpha_num' => 'Only alphabets & numbers are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
             'name.unique' => 'Category name already exists !',
             'type.required' => 'Please select the category type !'
         ]);

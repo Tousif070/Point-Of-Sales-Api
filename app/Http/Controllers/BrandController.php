@@ -28,10 +28,10 @@ class BrandController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required | alpha_num | unique:brands,name'
+            'name' => 'required | string | unique:brands,name'
         ], [
             'name.required' => 'Please enter the brand name !',
-            'name.alpha_num' => 'Only alphabets & numbers are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
             'name.unique' => 'Brand name already exists !'
         ]);
 

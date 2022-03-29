@@ -11,13 +11,13 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'username' => 'required | alpha_num',
-            'password' => 'required | alpha_num'
+            'username' => 'required | string',
+            'password' => 'required | string'
         ], [
             'username.required' => 'Please enter your username !',
-            'username.alpha_num' => 'Only alphabets & numbers are allowed !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
             'password.required' => 'Please enter your password !',
-            'password.alpha_num' => 'Only alphabets & numbers are allowed !'
+            'password.string' => 'Only alphabets, numbers & special characters are allowed !'
         ]);
 
         $user = User::where('username', '=', $request->username)->first();

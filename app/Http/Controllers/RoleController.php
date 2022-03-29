@@ -28,14 +28,14 @@ class RoleController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required | alpha_num | unique:roles,name',
-            'description' => 'required | alpha_num'
+            'name' => 'required | string | unique:roles,name',
+            'description' => 'required | string'
         ], [
             'name.required' => 'Please enter the name of the role !',
-            'name.alpha_num' => 'Only alphabets & numbers are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
             'name.unique' => 'Role already exists !',
             'description.required' => 'Please enter a description for this role !',
-            'description.alpha_num' => 'Only alphabets & numbers are allowed !'
+            'description.string' => 'Only alphabets, numbers & special characters are allowed !'
         ]);
 
         $role = new Role();
