@@ -14,6 +14,11 @@ class ProductCategoryController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->hasPermission("product-category.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $product_categories = ProductCategory::all();
 
         return response(['product_categories' => $product_categories], 200);
@@ -27,6 +32,11 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth()->user()->hasPermission("product-category.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $request->validate([
             'name' => 'required | string | unique:product_categories,name',
             'type' => 'required'

@@ -15,6 +15,11 @@ class UserController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->hasPermission("user.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $users = User::all();
 
         return response(['users' => $users], 200);
@@ -28,6 +33,11 @@ class UserController extends Controller
      */
     public function register(Request $request)
     {
+        if(!auth()->user()->hasPermission("user.register"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $request->validate([
             'first_name' => 'required | string',
             'last_name' => 'required | string',
@@ -119,6 +129,11 @@ class UserController extends Controller
 
     public function assignRole(Request $request)
     {
+        if(!auth()->user()->hasPermission("user.assign-role"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $user = User::find($request->user_id);
 
         $user->roles()->sync($request->role_ids);

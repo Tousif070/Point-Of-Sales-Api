@@ -64,7 +64,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('index', 'PermissionController@index');
             
-            Route::post('store', 'PermissionController@store');
+            Route::post('store', 'PermissionController@store'); // THIS ROUTE WILL NOT BE USED BY ANY CLIENT. BUT IT'S STILL KEPT JUST IN CASE
 
         });
 

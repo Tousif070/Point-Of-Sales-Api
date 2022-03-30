@@ -14,6 +14,11 @@ class RoleController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->hasPermission("role.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $roles = Role::all();
 
         return response(['roles' => $roles], 200);
@@ -27,6 +32,11 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        if(!auth()->user()->hasPermission("role.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $request->validate([
             'name' => 'required | string | unique:roles,name',
             'description' => 'required | string'
@@ -85,6 +95,11 @@ class RoleController extends Controller
 
     public function assignPermission(Request $request)
     {
+        if(!auth()->user()->hasPermission("role.assign-permission"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $role = Role::find($request->role_id);
 
         $role->permissions()->sync($request->permission_ids);

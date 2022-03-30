@@ -14,6 +14,11 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        if(!auth()->user()->hasPermission("permission.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $permissions = Permission::all();
 
         return response(['permissions' => $permissions], 200);
