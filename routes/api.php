@@ -82,7 +82,16 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('index', 'ProductCategoryController@index');
             
-            Route::post('store', 'ProductCategoryController@store');
+            Route::post('store', 'ProductCategoryController@store'); // THIS ROUTE WILL NOT BE USED BY ANY CLIENT. BUT IT'S STILL KEPT JUST IN CASE
+
+        });
+
+
+        Route::group(['prefix' => 'product'], function() {
+
+            Route::get('index', 'ProductController@index');
+            
+            Route::post('store-phone', 'ProductController@storePhone');
 
         });
 

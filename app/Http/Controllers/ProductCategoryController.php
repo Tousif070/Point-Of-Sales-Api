@@ -32,11 +32,6 @@ class ProductCategoryController extends Controller
      */
     public function store(Request $request)
     {
-        if(!auth()->user()->hasPermission("product-category.store"))
-        {
-            return response(['message' => 'Permission Denied !'], 403);
-        }
-
         $request->validate([
             'name' => 'required | string | unique:product_categories,name',
             'type' => 'required'

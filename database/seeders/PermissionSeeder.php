@@ -158,15 +158,31 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
-        $permission = Permission::where('name', '=', 'product-category.store')->first();
+
+        // PERMISSION GROUP - PRODUCT
+
+        $permission = Permission::where('name', '=', 'product.index')->first();
 
         if($permission == null)
         {
             $permission = new Permission();
 
-            $permission->name = "product-category.store";
-            $permission->description = "To store a new product category";
-            $permission->permission_group = "Product Category";
+            $permission->name = "product.index";
+            $permission->description = "To view the list of products";
+            $permission->permission_group = "Product";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'product.store-phone')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "product.store-phone";
+            $permission->description = "To store a new product (phone)";
+            $permission->permission_group = "Product";
 
             $permission->save();
         }
