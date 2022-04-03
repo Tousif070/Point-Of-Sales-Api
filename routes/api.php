@@ -18,16 +18,6 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-Route::group(['prefix' => 'product', 'namespace' => 'App\Http\Controllers', 'middleware' => ['auth:sanctum']], function() {
-
-    Route::get('index', 'ProductController@index');
-    Route::post('store', 'ProductController@store');
-    Route::post('update/{product_id}', 'ProductController@update');
-    Route::delete('delete/{product_id}', 'ProductController@delete');
-
-});
-
-
 
 Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
