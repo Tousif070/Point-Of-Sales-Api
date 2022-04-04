@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
+use DB;
+use Exception;
 
 class RoleController extends Controller
 {
@@ -100,10 +102,34 @@ class RoleController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $role = Role::find($request->role_id);
+        DB::beginTransaction();
 
-        $role->permissions()->sync($request->permission_ids);
+        try {
 
-        return response(['message' => 'Permission Assigned !'], 200);
+            $role = Role::find($request->role_id);
+
+            if($role == null)
+            {
+                return response(['message' => 'Role not found !'], 404);
+            }
+
+            $role->permissions()->sync($request->permission_ids);
+
+            DB::commit();
+
+            return response(['message' => 'Permission Assigned !'], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
+
+
 }

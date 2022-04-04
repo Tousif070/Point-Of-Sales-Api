@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use DB;
+use Exception;
 
 class UserController extends Controller
 {
@@ -134,10 +136,34 @@ class UserController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $user = User::find($request->user_id);
+        DB::beginTransaction();
 
-        $user->roles()->sync($request->role_ids);
+        try {
 
-        return response(['message' => 'Role Assigned !'], 200);
+            $user = User::find($request->user_id);
+
+            if($user == null)
+            {
+                return response(['message' => 'User not found !'], 404);
+            }
+
+            $user->roles()->sync($request->role_ids);
+
+            DB::commit();
+
+            return response(['message' => 'Role Assigned !'], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
+
+
 }
