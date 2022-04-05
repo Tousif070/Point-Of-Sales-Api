@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Storage;
+use DB;
+use Exception;
 
 class ProductController extends Controller
 {
@@ -102,40 +104,57 @@ class ProductController extends Controller
             'size.string' => 'Only alphabets, numbers & special characters are allowed !'
         ]);
 
-        $product = new Product();
+        DB::beginTransaction();
 
-        $product->name = $request->name;
+        try {
 
-        $product->brand_id = $request->brand_id;
+            $product = new Product();
 
-        $product->product_category_id = $request->product_category_id;
+            $product->name = $request->name;
 
+            $product->brand_id = $request->brand_id;
 
-        // PRODUCT IMAGE
-        $image_name = date('YmdHis') . "_" . mt_rand(1, 999999) . "." . $request->file('image')->getClientOriginalExtension();
-
-        $image_path = $request->file('image')->storeAs('public/product_images', $image_name);
-
-        $product->image = asset('public' . Storage::url($image_path));
+            $product->product_category_id = $request->product_category_id;
 
 
-        $product->color = $request->color;
+            // PRODUCT IMAGE
+            $image_name = date('YmdHis') . "_" . mt_rand(1, 999999) . "." . $request->file('image')->getClientOriginalExtension();
 
-        $product->ram = $request->ram;
+            $image_path = $request->file('image')->storeAs('public/product_images', $image_name);
 
-        $product->storage = $request->storage;
+            $product->image = asset('public' . Storage::url($image_path));
 
-        $product->condition = $request->condition;
 
-        $product->size = $request->size;
+            $product->color = $request->color;
 
-        $product->save();
+            $product->ram = $request->ram;
 
-        $product->sku = $product->id + 2000;
+            $product->storage = $request->storage;
 
-        $product->save();
+            $product->condition = $request->condition;
 
-        return response(['product' => $product], 201);
+            $product->size = $request->size;
+
+            $product->save();
+
+            $product->sku = $product->id + 2000;
+
+            $product->save();
+
+            DB::commit();
+
+            return response(['product' => $product], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**

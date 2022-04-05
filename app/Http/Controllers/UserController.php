@@ -74,25 +74,42 @@ class UserController extends Controller
             'type.numeric' => 'Type should be numeric !'
         ]);
 
-        $user = new User();
+        DB::beginTransaction();
 
-        $user->first_name = $request->first_name;
+        try {
 
-        $user->last_name = $request->last_name;
+            $user = new User();
 
-        $user->username = $request->username;
+            $user->first_name = $request->first_name;
 
-        $user->email = $request->email;
+            $user->last_name = $request->last_name;
 
-        $user->password = Hash::make($request->password);
+            $user->username = $request->username;
 
-        $user->pin_number = $request->pin_number;
+            $user->email = $request->email;
 
-        $user->type = $request->type;
+            $user->password = Hash::make($request->password);
 
-        $user->save();
+            $user->pin_number = $request->pin_number;
 
-        return response(['user' => $user], 201);
+            $user->type = $request->type;
+
+            $user->save();
+
+            DB::commit();
+
+            return response(['user' => $user], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**

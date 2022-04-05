@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use DB;
+use Exception;
 
 class BrandController extends Controller
 {
@@ -45,13 +47,30 @@ class BrandController extends Controller
             'name.unique' => 'Brand name already exists !'
         ]);
 
-        $brand = new Brand();
+        DB::beginTransaction();
 
-        $brand->name = $request->name;
+        try {
 
-        $brand->save();
+            $brand = new Brand();
 
-        return response(['brand' => $brand], 201);
+            $brand->name = $request->name;
+
+            $brand->save();
+
+            DB::commit();
+
+            return response(['brand' => $brand], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**

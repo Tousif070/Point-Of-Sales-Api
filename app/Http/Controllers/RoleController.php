@@ -50,15 +50,32 @@ class RoleController extends Controller
             'description.string' => 'Only alphabets, numbers & special characters are allowed !'
         ]);
 
-        $role = new Role();
+        DB::beginTransaction();
 
-        $role->name = $request->name;
+        try {
 
-        $role->description = $request->description;
+            $role = new Role();
 
-        $role->save();
+            $role->name = $request->name;
 
-        return response(['role' => $role], 201);
+            $role->description = $request->description;
+
+            $role->save();
+
+            DB::commit();
+
+            return response(['role' => $role], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**
