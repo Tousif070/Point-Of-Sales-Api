@@ -30,9 +30,17 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         Route::group(['prefix' => 'user'], function() {
 
-            Route::get('index', 'UserController@index');
+            Route::get('index-official', 'UserController@indexOfficial');
+
+            Route::get('index-customer', 'UserController@indexCustomer');
+
+            Route::get('index-supplier', 'UserController@indexSupplier');
             
-            Route::post('register', 'UserController@register');
+            Route::post('register-official', 'UserController@registerOfficial');
+
+            Route::post('register-customer', 'UserController@registerCustomer');
+
+            Route::post('register-supplier', 'UserController@registerSupplier');
 
             Route::post('assign-role', 'UserController@assignRole');
 

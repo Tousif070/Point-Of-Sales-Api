@@ -15,14 +15,48 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function indexOfficial()
     {
-        if(!auth()->user()->hasPermission("user.index"))
+        if(!auth()->user()->hasPermission("user.index-official"))
         {
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $users = User::all();
+        $users = User::where('type', '=', 1)->get();
+
+        return response(['users' => $users], 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexCustomer()
+    {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $users = User::where('type', '=', 2)->get();
+
+        return response(['users' => $users], 200);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexSupplier()
+    {
+        if(!auth()->user()->hasPermission("user.index-supplier"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $users = User::where('type', '=', 3)->get();
 
         return response(['users' => $users], 200);
     }
@@ -33,9 +67,9 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function register(Request $request)
+    public function registerOfficial(Request $request)
     {
-        if(!auth()->user()->hasPermission("user.register"))
+        if(!auth()->user()->hasPermission("user.register-official"))
         {
             return response(['message' => 'Permission Denied !'], 403);
         }
@@ -46,8 +80,7 @@ class UserController extends Controller
             'username' => 'required | string | unique:users,username',
             'email' => 'required | email | unique:users,email',
             'password' => 'required | string | confirmed',
-            'pin_number' => 'required | numeric',
-            'type' => 'required | numeric'
+            'pin_number' => 'required | numeric'
         ], [
             'first_name.required' => 'Please enter your first name !',
             'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
@@ -68,10 +101,7 @@ class UserController extends Controller
             'password.confirmed' => 'Passwords do not match !',
 
             'pin_number.required' => 'Please enter a pin number !',
-            'pin_number.numeric' => 'Only numbers are allowed !',
-
-            'type.required' => 'Please select the type of user !',
-            'type.numeric' => 'Type should be numeric !'
+            'pin_number.numeric' => 'Only numbers are allowed !'
         ]);
 
         DB::beginTransaction();
@@ -92,7 +122,151 @@ class UserController extends Controller
 
             $user->pin_number = $request->pin_number;
 
-            $user->type = $request->type;
+            $user->type = 1;
+
+            $user->save();
+
+            DB::commit();
+
+            return response(['user' => $user], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function registerCustomer(Request $request)
+    {
+        if(!auth()->user()->hasPermission("user.register-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'first_name' => 'required | string',
+            'last_name' => 'required | string',
+            'username' => 'required | string | unique:users,username',
+            'email' => 'required | email | unique:users,email'
+        ], [
+            'first_name.required' => 'Please enter your first name !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'last_name.required' => 'Please enter your last name !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'username.required' => 'Please enter your username !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'username.unique' => 'Username already exists !',
+
+            'email.required' => 'Please enter your email !',
+            'email.email' => 'Please enter a valid email !',
+            'email.unique' => 'Email already exists !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $user = new User();
+
+            $user->first_name = $request->first_name;
+
+            $user->last_name = $request->last_name;
+
+            $user->username = $request->username;
+
+            $user->email = $request->email;
+
+            $user->password = Hash::make("11111111");
+
+            $user->pin_number = 12345;
+
+            $user->type = 2;
+
+            $user->save();
+
+            DB::commit();
+
+            return response(['user' => $user], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function registerSupplier(Request $request)
+    {
+        if(!auth()->user()->hasPermission("user.register-supplier"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'first_name' => 'required | string',
+            'last_name' => 'required | string',
+            'username' => 'required | string | unique:users,username',
+            'email' => 'required | email | unique:users,email'
+        ], [
+            'first_name.required' => 'Please enter your first name !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'last_name.required' => 'Please enter your last name !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'username.required' => 'Please enter your username !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'username.unique' => 'Username already exists !',
+
+            'email.required' => 'Please enter your email !',
+            'email.email' => 'Please enter a valid email !',
+            'email.unique' => 'Email already exists !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $user = new User();
+
+            $user->first_name = $request->first_name;
+
+            $user->last_name = $request->last_name;
+
+            $user->username = $request->username;
+
+            $user->email = $request->email;
+
+            $user->password = Hash::make("11111111");
+
+            $user->pin_number = 12345;
+
+            $user->type = 3;
 
             $user->save();
 

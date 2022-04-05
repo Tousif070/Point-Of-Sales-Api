@@ -16,27 +16,79 @@ class PermissionSeeder extends Seeder
     {
         // PERMISSION GROUP - USER
 
-        $permission = Permission::where('name', '=', 'user.index')->first();
+        $permission = Permission::where('name', '=', 'user.index-official')->first();
 
         if($permission == null)
         {
             $permission = new Permission();
 
-            $permission->name = "user.index";
-            $permission->description = "To view the list of users";
+            $permission->name = "user.index-official";
+            $permission->description = "To view the list of user officials";
             $permission->permission_group = "User";
 
             $permission->save();
         }
 
-        $permission = Permission::where('name', '=', 'user.register')->first();
+        $permission = Permission::where('name', '=', 'user.index-customer')->first();
 
         if($permission == null)
         {
             $permission = new Permission();
 
-            $permission->name = "user.register";
-            $permission->description = "To register a new user";
+            $permission->name = "user.index-customer";
+            $permission->description = "To view the list of customers";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'user.index-supplier')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.index-supplier";
+            $permission->description = "To view the list of suppliers";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'user.register-official')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.register-official";
+            $permission->description = "To register a new user official for the company";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'user.register-customer')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.register-customer";
+            $permission->description = "To register a new customer";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'user.register-supplier')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.register-supplier";
+            $permission->description = "To register a new supplier";
             $permission->permission_group = "User";
 
             $permission->save();
