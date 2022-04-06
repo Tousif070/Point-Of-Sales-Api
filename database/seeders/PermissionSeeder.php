@@ -239,6 +239,19 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'product.store-charger')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "product.store-charger";
+            $permission->description = "To store a new product (charger)";
+            $permission->permission_group = "Product";
+
+            $permission->save();
+        }
+
 
     }
 }

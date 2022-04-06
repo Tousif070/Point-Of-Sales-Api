@@ -158,6 +158,106 @@ class ProductController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeCharger(Request $request)
+    {
+        if(!auth()->user()->hasPermission("product.store-charger"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'name' => 'required | string',
+            'brand_id' => 'required | numeric',
+            'product_category_id' => 'required | numeric',
+            'image' => 'required | image | max:2048',
+            'color' => 'required | string',
+            'condition' => 'required | string',
+            'wattage' => 'required | string',
+            'type' => 'required | string'
+        ], [
+            'name.required' => 'Please enter the name !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'brand_id.required' => 'Please select the brand !',
+            'brand_id.numeric' => 'Brand ID should be numeric !',
+
+            'product_category_id.required' => 'Please select the product category !',
+            'product_category_id.numeric' => 'Product Category ID should be numeric',
+
+            'image.required' => 'Please upload an image !',
+            'image.image' => 'Please upload an image file !',
+            'image.max' => 'Maximum size limit is 2 MB !',
+
+            'color.required' => 'Please enter the color !',
+            'color.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'condition.required' => 'Please enter the condition of the product !',
+            'condition.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'wattage.required' => 'Please enter the charging wattage !',
+            'wattage.string' => 'Only alphabets, numbers & special characters are allowed !',
+
+            'type.required' => 'Please enter the charging type !',
+            'type.string' => 'Only alphabets, numbers & special characters are allowed !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $product = new Product();
+
+            $product->name = $request->name;
+
+            $product->brand_id = $request->brand_id;
+
+            $product->product_category_id = $request->product_category_id;
+
+
+            // PRODUCT IMAGE
+            $image_name = date('YmdHis') . "_" . mt_rand(1, 999999) . "." . $request->file('image')->getClientOriginalExtension();
+
+            $image_path = $request->file('image')->storeAs('public/product_images', $image_name);
+
+            $product->image = asset('public' . Storage::url($image_path));
+
+
+            $product->color = $request->color;
+
+            $product->condition = $request->condition;
+
+            $product->wattage = $request->wattage;
+
+            $product->type = $request->type;
+
+            $product->save();
+
+            $product->sku = $product->id + 2000;
+
+            $product->save();
+
+            DB::commit();
+
+            return response(['product' => $product], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

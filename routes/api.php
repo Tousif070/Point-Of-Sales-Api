@@ -91,6 +91,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store-phone', 'ProductController@storePhone');
 
+            Route::post('store-charger', 'ProductController@storeCharger');
+
         });
 
     });

@@ -26,5 +26,19 @@ class ProductCategorySeeder extends Seeder
 
             $product_category->save();
         }
+
+
+        $product_category = ProductCategory::where('name', '=', 'Charger')->first();
+
+        if($product_category == null)
+        {
+            $product_category = new ProductCategory();
+
+            $product_category->name = "Charger";
+
+            $product_category->type = "Single";
+
+            $product_category->save();
+        }
     }
 }
