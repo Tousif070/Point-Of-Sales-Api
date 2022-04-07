@@ -253,5 +253,34 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - PURCHASE
+
+        $permission = Permission::where('name', '=', 'purchase.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase.index";
+            $permission->description = "To view the list of purchase transactions";
+            $permission->permission_group = "Purchase";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'purchase.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase.store";
+            $permission->description = "To store a new purchase transaction";
+            $permission->permission_group = "Purchase";
+
+            $permission->save();
+        }
+
+
     }
 }

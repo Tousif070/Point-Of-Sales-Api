@@ -95,6 +95,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         });
 
+
+        Route::group(['prefix' => 'purchase'], function() {
+
+            Route::get('index', 'PurchaseTransactionController@index');
+            
+            Route::post('store', 'PurchaseTransactionController@store');
+
+        });
+
     });
 
 });

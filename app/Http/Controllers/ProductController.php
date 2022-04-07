@@ -82,7 +82,7 @@ class ProductController extends Controller
             'brand_id.numeric' => 'Brand ID should be numeric !',
 
             'product_category_id.required' => 'Please select the product category !',
-            'product_category_id.numeric' => 'Product Category ID should be numeric',
+            'product_category_id.numeric' => 'Product Category ID should be numeric !',
 
             'image.required' => 'Please upload an image !',
             'image.image' => 'Please upload an image file !',
