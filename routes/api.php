@@ -104,6 +104,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         });
 
+
+        Route::group(['prefix' => 'purchase-variation'], function() {
+
+            Route::get('index', 'PurchaseVariationController@index');
+            
+            Route::post('store', 'PurchaseVariationController@store');
+
+        });
+
     });
 
 });

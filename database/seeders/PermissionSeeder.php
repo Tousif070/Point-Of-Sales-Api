@@ -282,5 +282,34 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - PURCHASE VARIATION
+
+        $permission = Permission::where('name', '=', 'purchase-variation.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase-variation.index";
+            $permission->description = "To view the list of purchase variations";
+            $permission->permission_group = "Purchase Variation";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'purchase-variation.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase-variation.store";
+            $permission->description = "To store a new purchase variation";
+            $permission->permission_group = "Purchase Variation";
+
+            $permission->save();
+        }
+
+
     }
 }
