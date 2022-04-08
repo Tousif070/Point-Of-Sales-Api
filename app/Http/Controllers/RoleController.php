@@ -44,10 +44,10 @@ class RoleController extends Controller
             'description' => 'required | string'
         ], [
             'name.required' => 'Please enter the name of the role !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'name.unique' => 'Role already exists !',
             'description.required' => 'Please enter a description for this role !',
-            'description.string' => 'Only alphabets, numbers & special characters are allowed !'
+            'description.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
         ]);
 
         DB::beginTransaction();

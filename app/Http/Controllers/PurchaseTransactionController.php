@@ -47,10 +47,10 @@ class PurchaseTransactionController extends Controller
             'supplier_id' => 'required | numeric'
         ], [
             'reference_no.required' => 'Please enter a reference !',
-            'reference_no.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'reference_no.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'purchase_status.required' => 'Please select the purchase status !',
-            'purchase_status.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'purchase_status.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'transaction_date.required' => 'Please specify the transaction date !',
             'transaction_date.date' => 'Please specify a valid date !',

@@ -37,7 +37,7 @@ class ProductCategoryController extends Controller
             'type' => 'required'
         ], [
             'name.required' => 'Please enter the category name !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'name.unique' => 'Category name already exists !',
             'type.required' => 'Please select the category type !'
         ]);

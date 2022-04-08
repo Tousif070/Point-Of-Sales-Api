@@ -55,7 +55,7 @@ class PurchaseVariationController extends Controller
             'product_id.numeric' => 'Product ID should be numeric !',
 
             'imei.required' => 'IMEI is required !',
-            'imei.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'imei.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'imei.unique' => 'Duplicate IMEI !',
 
             'quantity_purchased.required' => 'Purchase quantity is required !',

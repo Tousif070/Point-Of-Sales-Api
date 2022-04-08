@@ -43,7 +43,7 @@ class BrandController extends Controller
             'name' => 'required | string | unique:brands,name'
         ], [
             'name.required' => 'Please enter the brand name !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'name.unique' => 'Brand name already exists !'
         ]);
 

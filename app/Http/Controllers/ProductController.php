@@ -76,7 +76,7 @@ class ProductController extends Controller
             'size' => 'required | string',
         ], [
             'name.required' => 'Please enter the name !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'brand_id.required' => 'Please select the brand !',
             'brand_id.numeric' => 'Brand ID should be numeric !',
@@ -89,7 +89,7 @@ class ProductController extends Controller
             'image.max' => 'Maximum size limit is 2 MB !',
 
             'color.required' => 'Please enter the color !',
-            'color.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'color.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'ram.required' => 'Please enter the ram allocation !',
             'ram.numeric' => 'The value should be numeric !',
@@ -97,11 +97,11 @@ class ProductController extends Controller
             'storage.required' => 'Please enter the storage !',
             'storage.numeric' => 'The value should be numeric !',
 
-            'condition.required' => 'Please enter the condition of the product !',
-            'condition.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'condition.required' => 'Please select the condition of the product !',
+            'condition.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'size.required' => 'Please enter the display size !',
-            'size.string' => 'Only alphabets, numbers & special characters are allowed !'
+            'size.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
         ]);
 
         DB::beginTransaction();
@@ -181,7 +181,7 @@ class ProductController extends Controller
             'type' => 'required | string'
         ], [
             'name.required' => 'Please enter the name !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'brand_id.required' => 'Please select the brand !',
             'brand_id.numeric' => 'Brand ID should be numeric !',
@@ -194,16 +194,16 @@ class ProductController extends Controller
             'image.max' => 'Maximum size limit is 2 MB !',
 
             'color.required' => 'Please enter the color !',
-            'color.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'color.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
-            'condition.required' => 'Please enter the condition of the product !',
-            'condition.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'condition.required' => 'Please select the condition of the product !',
+            'condition.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'wattage.required' => 'Please enter the charging wattage !',
-            'wattage.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'wattage.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'type.required' => 'Please enter the charging type !',
-            'type.string' => 'Only alphabets, numbers & special characters are allowed !'
+            'type.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
         ]);
 
         DB::beginTransaction();

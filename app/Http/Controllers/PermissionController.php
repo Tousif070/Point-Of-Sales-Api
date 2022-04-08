@@ -38,12 +38,12 @@ class PermissionController extends Controller
             'permission_group' => 'required | string'
         ], [
             'name.required' => 'Please enter the name of the permission !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'name.unique' => 'Permission already exists !',
             'description.required' => 'Please enter a description for this permission !',
-            'description.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'description.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'permission_group.required' => 'Please select a permission group or enter a new group !',
-            'permission_group.string' => 'Only alphabets, numbers & special characters are allowed !'
+            'permission_group.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
         ]);
 
         $permission = new Permission();

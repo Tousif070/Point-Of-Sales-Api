@@ -83,13 +83,13 @@ class UserController extends Controller
             'pin_number' => 'required | numeric'
         ], [
             'first_name.required' => 'Please enter your first name !',
-            'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'last_name.required' => 'Please enter your last name !',
-            'last_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'username.required' => 'Please enter your username !',
-            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'username.unique' => 'Username already exists !',
 
             'email.required' => 'Please enter your email !',
@@ -97,7 +97,7 @@ class UserController extends Controller
             'email.unique' => 'Email already exists !',
 
             'password.required' => 'Please enter a password !',
-            'password.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'password.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'password.confirmed' => 'Passwords do not match !',
 
             'pin_number.required' => 'Please enter a pin number !',
@@ -162,13 +162,13 @@ class UserController extends Controller
             'email' => 'required | email | unique:users,email'
         ], [
             'first_name.required' => 'Please enter your first name !',
-            'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'last_name.required' => 'Please enter your last name !',
-            'last_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'username.required' => 'Please enter your username !',
-            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'username.unique' => 'Username already exists !',
 
             'email.required' => 'Please enter your email !',
@@ -234,13 +234,13 @@ class UserController extends Controller
             'email' => 'required | email | unique:users,email'
         ], [
             'first_name.required' => 'Please enter your first name !',
-            'first_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'last_name.required' => 'Please enter your last name !',
-            'last_name.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'username.required' => 'Please enter your username !',
-            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'username.unique' => 'Username already exists !',
 
             'email.required' => 'Please enter your email !',

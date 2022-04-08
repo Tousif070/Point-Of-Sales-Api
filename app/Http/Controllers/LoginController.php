@@ -15,9 +15,9 @@ class LoginController extends Controller
             'password' => 'required | string'
         ], [
             'username.required' => 'Please enter your username !',
-            'username.string' => 'Only alphabets, numbers & special characters are allowed !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'password.required' => 'Please enter your password !',
-            'password.string' => 'Only alphabets, numbers & special characters are allowed !'
+            'password.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
         ]);
 
         $user = User::where('username', '=', $request->username)->first();
