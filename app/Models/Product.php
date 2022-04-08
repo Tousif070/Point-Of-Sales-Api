@@ -11,4 +11,9 @@ class Product extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = "products";
+
+    public function productCategory()
+    {
+        return $this->belongsTo('App\Models\ProductCategory');
+    }
 }

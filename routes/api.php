@@ -113,6 +113,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'PurchaseVariationController@store');
 
+            Route::get('get-product-category-type/{product_id}', 'PurchaseVariationController@getProductCategoryType');
+
         });
 
     });

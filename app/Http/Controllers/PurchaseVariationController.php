@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PurchaseTransaction;
 use App\Models\PurchaseVariation;
+use App\Models\Product;
 use DB;
 use Exception;
 
@@ -147,4 +148,23 @@ class PurchaseVariationController extends Controller
     {
         //
     }
+
+    public function getProductCategoryType($product_id)
+    {
+        if(!auth()->user()->hasPermission("purchase-variation.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $product = Product::find($product_id);
+
+        if($product == null)
+        {
+            return response(['message' => 'Product not found !'], 404);
+        }
+
+        return response(['product_category_type' => $product->productCategory->type]);
+    }
+
+
 }
