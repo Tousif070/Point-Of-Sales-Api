@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\PurchaseTransaction;
 use App\Models\PurchaseVariation;
 use DB;
 use Exception;
@@ -88,6 +89,14 @@ class PurchaseVariationController extends Controller
             $purchase_variation->risk_fund = $request->risk_fund;
 
             $purchase_variation->save();
+
+
+            $purchase_transaction = PurchaseTransaction::find($purchase_variation->purchase_transaction_id);
+
+            $purchase_transaction->amount += ($purchase_variation->purchase_price * $purchase_variation->quantity_purchased);
+
+            $purchase_transaction->save();
+
 
             DB::commit();
 
