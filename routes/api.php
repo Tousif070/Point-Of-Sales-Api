@@ -102,6 +102,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'PurchaseTransactionController@store');
 
+            Route::get('get-purchase-variations/{purchase_variation_id}', 'PurchaseTransactionController@getPurchaseVariations');
+
         });
 
 
