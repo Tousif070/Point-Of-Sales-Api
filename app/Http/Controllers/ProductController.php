@@ -68,6 +68,7 @@ class ProductController extends Controller
             'name' => 'required | string',
             'brand_id' => 'required | numeric',
             'product_category_id' => 'required | numeric',
+            'product_model_id' => 'required | numeric',
             'image' => 'required | image | max:2048',
             'color' => 'required | string',
             'ram' => 'required | numeric',
@@ -83,6 +84,9 @@ class ProductController extends Controller
 
             'product_category_id.required' => 'Please select the product category !',
             'product_category_id.numeric' => 'Product Category ID should be numeric !',
+
+            'product_model_id.required' => 'Please select the product model !',
+            'product_model_id.numeric' => 'Product Model ID should be numeric !',
 
             'image.required' => 'Please upload an image !',
             'image.image' => 'Please upload an image file !',
@@ -115,6 +119,8 @@ class ProductController extends Controller
             $product->brand_id = $request->brand_id;
 
             $product->product_category_id = $request->product_category_id;
+
+            $product->product_model_id = $request->product_model_id;
 
 
             // PRODUCT IMAGE
@@ -174,6 +180,7 @@ class ProductController extends Controller
             'name' => 'required | string',
             'brand_id' => 'required | numeric',
             'product_category_id' => 'required | numeric',
+            'product_model_id' => 'required | numeric',
             'image' => 'required | image | max:2048',
             'color' => 'required | string',
             'condition' => 'required | string',
@@ -188,6 +195,9 @@ class ProductController extends Controller
 
             'product_category_id.required' => 'Please select the product category !',
             'product_category_id.numeric' => 'Product Category ID should be numeric',
+
+            'product_model_id.required' => 'Please select the product model !',
+            'product_model_id.numeric' => 'Product Model ID should be numeric !',
 
             'image.required' => 'Please upload an image !',
             'image.image' => 'Please upload an image file !',
@@ -217,6 +227,8 @@ class ProductController extends Controller
             $product->brand_id = $request->brand_id;
 
             $product->product_category_id = $request->product_category_id;
+
+            $product->product_model_id = $request->product_model_id;
 
 
             // PRODUCT IMAGE

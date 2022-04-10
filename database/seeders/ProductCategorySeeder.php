@@ -28,13 +28,13 @@ class ProductCategorySeeder extends Seeder
         }
 
 
-        $product_category = ProductCategory::where('name', '=', 'Charger')->first();
+        $product_category = ProductCategory::where('name', '=', 'Charger/Power Adapter')->first();
 
         if($product_category == null)
         {
             $product_category = new ProductCategory();
 
-            $product_category->name = "Charger";
+            $product_category->name = "Charger/Power Adapter";
 
             $product_category->type = "Single";
 
