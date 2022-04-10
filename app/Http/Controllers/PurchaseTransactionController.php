@@ -131,14 +131,14 @@ class PurchaseTransactionController extends Controller
         //
     }
 
-    public function getPurchaseVariations($purchase_variation_id)
+    public function getPurchaseVariations($purchase_transaction_id)
     {
         if(!auth()->user()->hasPermission("purchase.index"))
         {
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $purchase_transaction = PurchaseTransaction::find($purchase_variation_id);
+        $purchase_transaction = PurchaseTransaction::find($purchase_transaction_id);
 
         if($purchase_transaction == null)
         {
