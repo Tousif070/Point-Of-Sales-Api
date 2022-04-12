@@ -19,6 +19,8 @@ class CreateBrandsTable extends Migration
 
             $table->string('name')->unique();
 
+            $table->string('image');
+
             $table->timestamps();
 
             $table->softDeletes();

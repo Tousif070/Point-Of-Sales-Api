@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use Storage;
 use DB;
 use Exception;
 
@@ -40,11 +41,16 @@ class BrandController extends Controller
         }
 
         $request->validate([
-            'name' => 'required | string | unique:brands,name'
+            'name' => 'required | string | unique:brands,name',
+            'image' => 'required | image | max:2048',
         ], [
             'name.required' => 'Please enter the brand name !',
             'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
-            'name.unique' => 'Brand name already exists !'
+            'name.unique' => 'Brand name already exists !',
+
+            'image.required' => 'Please upload an image !',
+            'image.image' => 'Please upload an image file !',
+            'image.max' => 'Maximum size limit is 2 MB !'
         ]);
 
         DB::beginTransaction();
@@ -54,6 +60,15 @@ class BrandController extends Controller
             $brand = new Brand();
 
             $brand->name = $request->name;
+
+
+            // BRAND IMAGE
+            $image_name = date('YmdHis') . "_" . mt_rand(1, 999999) . "." . $request->file('image')->getClientOriginalExtension();
+
+            $image_path = $request->file('image')->storeAs('public/brand_images', $image_name);
+
+            $brand->image = asset('public' . Storage::url($image_path));
+
 
             $brand->save();
 
