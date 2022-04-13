@@ -71,4 +71,28 @@ class User extends Authenticatable
 
         return false;
     }
+
+    public function getPermissions()
+    {
+        $permissions = [];
+
+        foreach($this->roles as $role)
+        {
+            if($role->name == "super_admin")
+            {
+                $permissions[] = "all";
+
+                break;
+            }
+
+            foreach($role->permissions as $permission)
+            {
+                $permissions[] = $permission->name;
+            }
+        }
+
+        return $permissions;
+    }
+
+
 }

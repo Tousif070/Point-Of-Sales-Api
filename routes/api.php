@@ -44,6 +44,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('assign-role', 'UserController@assignRole');
 
+            Route::get('has-permission', 'UserController@hasPermission');
+
+            Route::get('get-permissions', 'UserController@getPermissions');
+
         });
 
 
