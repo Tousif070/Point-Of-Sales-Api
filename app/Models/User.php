@@ -94,5 +94,17 @@ class User extends Authenticatable
         return $permissions;
     }
 
+    public function getRoles()
+    {
+        $roles = [];
+
+        foreach($this->roles as $role)
+        {
+            $roles[] = $role->name;
+        }
+
+        return $roles;
+    }
+
 
 }

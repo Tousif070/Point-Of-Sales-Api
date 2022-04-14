@@ -148,5 +148,22 @@ class RoleController extends Controller
         }
     }
 
+    public function getPermissions($role_id)
+    {
+        if(!auth()->user()->hasPermission("role.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $role = Role::find($role_id);
+
+        if($role == null)
+        {
+            return response(['message' => 'Role not found !'], 404);
+        }
+
+        return response(['permissions' => $role->getPermissions()], 200);
+    }
+
 
 }

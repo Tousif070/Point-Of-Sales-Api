@@ -48,6 +48,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('get-permissions', 'UserController@getPermissions');
 
+            Route::get('get-roles', 'UserController@getRoles');
+
         });
 
 
@@ -58,6 +60,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::post('store', 'RoleController@store');
 
             Route::post('assign-permission', 'RoleController@assignPermission');
+
+            Route::get('get-permissions/{role_id}', 'RoleController@getPermissions');
 
         });
 
