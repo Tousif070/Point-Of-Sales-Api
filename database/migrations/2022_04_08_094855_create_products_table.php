@@ -35,7 +35,7 @@ class CreateProductsTable extends Migration
             $table->foreign('product_model_id')->references('id')->on('product_models')->onDelete('cascade');
 
 
-            $table->integer('sku')->unsigned()->nullable();
+            $table->integer('sku')->unsigned()->unique()->nullable();
 
             $table->string('image');
 

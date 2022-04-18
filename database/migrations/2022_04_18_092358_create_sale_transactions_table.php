@@ -17,7 +17,7 @@ class CreateSaleTransactionsTable extends Migration
             
             $table->increments('id');
 
-            $table->string('invoice_no');
+            $table->string('invoice_no')->unique()->nullable();
 
             $table->string('status');
 

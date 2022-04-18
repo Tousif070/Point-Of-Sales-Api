@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
 use App\Models\SaleVariation;
+use App\Models\PurchaseVariation;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -53,9 +54,9 @@ class SaleTransactionController extends Controller
 
             $sale_transaction->payment_status = "Due";
 
-            $sale_transaction->transaction_date = Carbon::parse($request->sale_transaction->transaction_date);
-            // CHANGE CONTACT_ID TO CUSTOMER_ID
-            $sale_transaction->contact_id = $request->sale_transaction->customer_id;
+            $sale_transaction->transaction_date = Carbon::parse($request->sale_transaction['transaction_date']);
+
+            $sale_transaction->customer_id = $request->sale_transaction['customer_id'];
 
             $sale_transaction->finalized_by = auth()->user()->id;
 
@@ -72,15 +73,25 @@ class SaleTransactionController extends Controller
 
                 $sale_variation->sale_transaction_id = $sale_transaction->id;
 
-                $sale_variation->product_id = $entry->product_id;
+                $sale_variation->product_id = $entry['product_id'];
 
-                $sale_variation->purchase_variation_id = $entry->purchase_variation_id;
+                $sale_variation->purchase_variation_id = $entry['purchase_variation_id'];
 
-                $sale_variation->quantity = $entry->quantity;
+                $sale_variation->quantity = $entry['quantity'];
 
-                $sale_variation->unit_price = $entry->unit_price;
+                $sale_variation->unit_price = $entry['unit_price'];
 
-                $amount += $entry->unit_price;
+                // ADJUSTING PURCHASE VARIATION
+                $purchase_variation = PurchaseVariation::find($entry['purchase_variation_id']);
+
+                $purchase_variation->quantity_available -= $entry['quantity'];
+
+                $purchase_variation->quantity_sold += $entry['quantity'];
+
+                $purchase_variation->save();
+
+
+                $amount += $entry['unit_price'];
 
                 $sale_variation->save();
             }
