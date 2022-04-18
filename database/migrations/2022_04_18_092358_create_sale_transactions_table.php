@@ -28,9 +28,9 @@ class CreateSaleTransactionsTable extends Migration
             $table->dateTime('transaction_date');
 
 
-            $table->integer('contact_id')->unsigned();
+            $table->integer('customer_id')->unsigned();
 
-            $table->foreign('contact_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('users')->onDelete('cascade');
 
 
             $table->decimal('shipping_charge', 10, 2)->nullable();
