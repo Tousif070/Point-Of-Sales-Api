@@ -42,7 +42,33 @@ class SaleTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        // VALIDATION WILL BE ADDED HERE
+        $request->validate([
+            'sale_transaction.transaction_date' => 'required | date',
+            'sale_transaction.customer_id' => 'required | numeric',
+
+            'sale_variations.*.product_id' => 'required | numeric',
+            'sale_variations.*.purchase_variation_id' => 'required | numeric',
+            'sale_variations.*.quantity' => 'required | numeric',
+            'sale_variations.*.unit_price' => 'required | numeric'
+        ], [
+            'sale_transaction.transaction_date.required' => 'Please specify the transaction date !',
+            'sale_transaction.transaction_date.date' => 'Please specify a valid date !',
+
+            'sale_transaction.customer_id.required' => 'Please select the customer !',
+            'sale_transaction.customer_id.numeric' => 'Customer ID should be numeric !',
+
+            'sale_variations.*.product_id.required' => 'Product ID is required !',
+            'sale_variations.*.product_id.numeric' => 'Product ID should be numeric !',
+
+            'sale_variations.*.purchase_variation_id.required' => 'Purchase Variation ID is required !',
+            'sale_variations.*.purchase_variation_id.numeric' => 'Purchase Variation ID should be numeric !',
+
+            'sale_variations.*.quantity.required' => 'Quantity is required !',
+            'sale_variations.*.quantity.numeric' => 'Quantity should be numeric !',
+
+            'sale_variations.*.unit_price.required' => 'Selling Price is required !',
+            'sale_variations.*.unit_price.numeric' => 'Selling Price should be numeric !'
+        ]);
 
         DB::beginTransaction();
 
@@ -81,7 +107,7 @@ class SaleTransactionController extends Controller
 
                 $sale_variation->unit_price = $entry['unit_price'];
 
-                // ADJUSTING PURCHASE VARIATION
+                // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION
                 $purchase_variation = PurchaseVariation::find($entry['purchase_variation_id']);
 
                 $purchase_variation->quantity_available -= $entry['quantity'];
