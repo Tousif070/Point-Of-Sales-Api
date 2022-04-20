@@ -180,6 +180,25 @@ class SaleTransactionController extends Controller
         //
     }
 
+    public function imeiScan(Request $request)
+    {
+        if(!auth()->user()->hasPermission("sale.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $purchase_variation = PurchaseVariation::where('imei', '=', $request->imei)
+            ->where('quantity_available', '>', 0)
+            ->first();
+        
+        if($purchase_variation == null)
+        {
+            return response(['message' => 'Not Available !'], 404);
+        }
+
+        return response(['purchase_variation' => $purchase_variation], 200);
+    }
+
     public function getSaleVariations($sale_transaction_id)
     {
         if(!auth()->user()->hasPermission("sale.index"))
