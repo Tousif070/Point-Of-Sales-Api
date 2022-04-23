@@ -162,7 +162,22 @@ class SaleReturnTransactionController extends Controller
         //
     }
 
-    
+    public function getSaleVariations($sale_return_transaction_id)
+    {
+        if(!auth()->user()->hasPermission("sale-return.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $sale_return_transaction = SaleReturnTransaction::find($sale_return_transaction_id);
+
+        if($sale_return_transaction == null)
+        {
+            return response(['message' => 'Sale Return Transaction not found !'], 404);
+        }
+
+        return response(['sale_variations' => $sale_return_transaction->saleVariations], 200);
+    }
 
 
 }
