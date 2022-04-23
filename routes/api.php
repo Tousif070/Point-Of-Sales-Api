@@ -147,6 +147,17 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         });
 
+
+        Route::group(['prefix' => 'sale-return'], function() {
+
+            Route::get('index', 'SaleReturnTransactionController@index');
+
+            Route::post('store', 'SaleReturnTransactionController@store');
+
+            
+
+        });
+
     });
 
 });

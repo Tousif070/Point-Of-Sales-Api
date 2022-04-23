@@ -369,5 +369,34 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - SALE RETURN
+
+        $permission = Permission::where('name', '=', 'sale-return.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "sale-return.index";
+            $permission->description = "To view the list of sale return transactions";
+            $permission->permission_group = "Sale Return";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'sale-return.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "sale-return.store";
+            $permission->description = "To store a new sale return transaction";
+            $permission->permission_group = "Sale Return";
+
+            $permission->save();
+        }
+
+
     }
 }

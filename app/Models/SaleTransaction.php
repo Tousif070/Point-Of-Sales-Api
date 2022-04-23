@@ -16,4 +16,9 @@ class SaleTransaction extends Model
     {
         return $this->hasMany('App\Models\SaleVariation');
     }
+
+    public function saleReturnTransactions()
+    {
+        return $this->hasMany('App\Models\SaleReturnTransaction');
+    }
 }
