@@ -162,7 +162,7 @@ class RoleController extends Controller
             return response(['message' => 'Role not found !'], 404);
         }
 
-        return response(['permissions' => $role->getPermissions()], 200);
+        return response(['permissions' => $role->name != "super_admin" ? $role->permissions : "All"], 200);
     }
 
 

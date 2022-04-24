@@ -22,24 +22,27 @@ class Role extends Model
         return $this->belongsToMany('App\Models\Permission', 'role_permission', 'role_id', 'permission_id');
     }
 
-    public function getPermissions()
-    {
-        $permissions = [];
 
-        if($this->name != "super_admin")
-        {
-            foreach($this->permissions as $permission)
-            {
-                $permissions[] = $permission->name;
-            }
-        }
-        else
-        {
-            $permissions[] = "all";
-        }
+    // THE FOLLOWING METHOD IS NOT NEEDED FOR NOW
 
-        return $permissions;
-    }
+    // public function getPermissionNames()
+    // {
+    //     $permissions = [];
+
+    //     if($this->name != "super_admin")
+    //     {
+    //         foreach($this->permissions as $permission)
+    //         {
+    //             $permissions[] = $permission->name;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         $permissions[] = "all";
+    //     }
+
+    //     return $permissions;
+    // }
 
 
 }

@@ -29,7 +29,10 @@ class LoginController extends Controller
 
         $user_token = $user->createToken(mt_rand(1, 1000000) . "_" . $user->email);
 
-        return response(['user_token' => $user_token->plainTextToken], 200);
+        return response([
+            'user' => $user,
+            'user_token' => $user_token->plainTextToken
+        ], 200);
     }
 
     public function logout()

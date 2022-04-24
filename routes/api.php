@@ -46,9 +46,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('has-permission', 'UserController@hasPermission');
 
-            Route::get('get-permissions', 'UserController@getPermissions');
+            Route::get('get-roles/{user_id}', 'UserController@getRoles');
 
-            Route::get('get-roles', 'UserController@getRoles');
+            Route::get('get-permissions', 'UserController@getPermissions');
 
         });
 

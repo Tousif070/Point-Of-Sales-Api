@@ -361,14 +361,14 @@ class UserController extends Controller
         return response(['value' => auth()->user()->hasPermission($request->permission)], 200);
     }
 
+    public function getRoles($user_id)
+    {
+        return response(['roles' => auth()->user()->getRoles()], 200);
+    }
+
     public function getPermissions()
     {
         return response(['permissions' => auth()->user()->getPermissions()], 200);
-    }
-
-    public function getRoles()
-    {
-        return response(['roles' => auth()->user()->getRoles()], 200);
     }
 
 
