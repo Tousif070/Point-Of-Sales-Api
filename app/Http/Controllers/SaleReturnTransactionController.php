@@ -85,9 +85,12 @@ class SaleReturnTransactionController extends Controller
             {
                 $sale_variation = SaleVariation::find($return['sale_variation_id']);
 
-                $sale_variation->return_quantity = $return['return_quantity'];
+                if($return['return_quantity'] == 0 || $return['return_quantity'] > ($sale_variation->quantity - $sale_variation->return_quantity))
+                {
+                    DB::rollBack();
 
-                $sale_variation->sale_return_transaction_id = $request->sale_return_transaction['sale_transaction_id'];
+                    return response(['message' => 'Return quantity cannot be 0 or greater than returnable quantity !'], 409);
+                }
 
                 // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION
                 $purchase_variation = PurchaseVariation::find($sale_variation->purchase_variation_id);
@@ -99,9 +102,14 @@ class SaleReturnTransactionController extends Controller
                 $purchase_variation->save();
 
 
-                $amount += $sale_variation->unit_price;
+                $sale_variation->return_quantity += $return['return_quantity'];
+
+                $sale_variation->sale_return_transaction_id = $sale_return_transaction->id;
 
                 $sale_variation->save();
+
+
+                $amount += ($sale_variation->unit_price * $return['return_quantity']);
             }
 
 
