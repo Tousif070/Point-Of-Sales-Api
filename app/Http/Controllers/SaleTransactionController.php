@@ -95,6 +95,23 @@ class SaleTransactionController extends Controller
 
             foreach($request->sale_variations as $entry)
             {
+                $purchase_variation = PurchaseVariation::find($entry['purchase_variation_id']);
+
+                if($entry['quantity'] == 0 || $entry['quantity'] > $purchase_variation->quantity_available)
+                {
+                    DB::rollBack();
+
+                    return response(['message' => 'Sale quantity cannot be 0 or greater than available quantity !'], 409);
+                }
+
+                // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION
+                $purchase_variation->quantity_available -= $entry['quantity'];
+
+                $purchase_variation->quantity_sold += $entry['quantity'];
+
+                $purchase_variation->save();
+
+
                 $sale_variation = new SaleVariation();
 
                 $sale_variation->sale_transaction_id = $sale_transaction->id;
@@ -107,19 +124,10 @@ class SaleTransactionController extends Controller
 
                 $sale_variation->unit_price = $entry['unit_price'];
 
-                // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION
-                $purchase_variation = PurchaseVariation::find($entry['purchase_variation_id']);
-
-                $purchase_variation->quantity_available -= $entry['quantity'];
-
-                $purchase_variation->quantity_sold += $entry['quantity'];
-
-                $purchase_variation->save();
-
-
-                $amount += $entry['unit_price'];
-
                 $sale_variation->save();
+
+
+                $amount += ($entry['unit_price'] * $entry['quantity']);
             }
 
 
