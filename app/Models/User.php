@@ -81,7 +81,7 @@ class User extends Authenticatable
         {
             if($role->name == "super_admin")
             {
-                $permissions[] = "all";
+                $permissions = "all";
 
                 break;
             }
