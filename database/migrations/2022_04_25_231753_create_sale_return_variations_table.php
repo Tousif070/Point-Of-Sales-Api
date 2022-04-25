@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSaleVariationsTable extends Migration
+class CreateSaleReturnVariationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,14 @@ class CreateSaleVariationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sale_variations', function (Blueprint $table) {
-            
+        Schema::create('sale_return_variations', function (Blueprint $table) {
+
             $table->increments('id');
 
 
-            $table->integer('sale_transaction_id')->unsigned();
+            $table->integer('sale_return_transaction_id')->unsigned();
 
-            $table->foreign('sale_transaction_id')->references('id')->on('sale_transactions')->onDelete('cascade');
+            $table->foreign('sale_return_transaction_id')->references('id')->on('sale_return_transactions')->onDelete('cascade');
 
 
             $table->integer('product_id')->unsigned();
@@ -34,8 +34,6 @@ class CreateSaleVariationsTable extends Migration
 
 
             $table->integer('quantity')->unsigned();
-
-            $table->integer('return_quantity')->unsigned()->default(0);
 
             $table->decimal('selling_price', 10, 2);
 
@@ -55,6 +53,6 @@ class CreateSaleVariationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sale_variations');
+        Schema::dropIfExists('sale_return_variations');
     }
 }

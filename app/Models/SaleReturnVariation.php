@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class SaleVariation extends Model
+class SaleReturnVariation extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = "sale_variations";
+    protected $table = "sale_return_variations";
 
-    public function saleTransaction()
+    public function saleReturnTransaction()
     {
-        return $this->belongsTo('App\Models\SaleTransaction');
+        return $this->belongsTo('App\Models\SaleReturnTransaction');
     }
 }

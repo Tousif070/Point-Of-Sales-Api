@@ -12,13 +12,13 @@ class SaleTransaction extends Model
 
     protected $table = "sale_transactions";
 
-    public function saleVariations()
-    {
-        return $this->hasMany('App\Models\SaleVariation');
-    }
-
     public function saleReturnTransactions()
     {
         return $this->hasMany('App\Models\SaleReturnTransaction');
+    }
+
+    public function saleVariations()
+    {
+        return $this->hasMany('App\Models\SaleVariation');
     }
 }
