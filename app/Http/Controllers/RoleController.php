@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Role;
+use App\Models\Permission;
 use DB;
 use Exception;
 
@@ -110,6 +111,35 @@ class RoleController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function assignPermissionView($role_id)
+    {
+        if(!auth()->user()->hasPermission("role.assign-permission"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $role = Role::find($role_id);
+
+        if($role == null)
+        {
+            return response(['message' => 'Role not found !'], 404);
+        }
+
+        $grouped_permissions = [];
+
+        $permissions = Permission::select(['id', 'name', 'description', 'permission_group'])->get();
+
+        foreach($permissions as $permission)
+        {
+            $grouped_permissions[$permission->permission_group][] = $permission;
+        }
+
+        return response([
+            'role_permissions' => $role->permissions,
+            'all_permissions' => $grouped_permissions
+        ], 200);
     }
 
     public function assignPermission(Request $request)

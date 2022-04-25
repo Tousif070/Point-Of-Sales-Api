@@ -57,6 +57,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'RoleController@store');
 
+            Route::get('assign-permission-view/{role_id}', 'RoleController@assignPermissionView');
+
             Route::post('assign-permission', 'RoleController@assignPermission');
 
         });
