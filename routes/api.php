@@ -152,7 +152,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('store', 'SaleReturnTransactionController@store');
 
-            Route::get('get-sale-variations/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleVariations');
+            Route::get('get-sale-return-variations/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleReturnVariations');
 
         });
 

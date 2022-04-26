@@ -49,7 +49,7 @@ class SaleTransactionController extends Controller
             'sale_variations.*.product_id' => 'required | numeric',
             'sale_variations.*.purchase_variation_id' => 'required | numeric',
             'sale_variations.*.quantity' => 'required | numeric',
-            'sale_variations.*.unit_price' => 'required | numeric'
+            'sale_variations.*.selling_price' => 'required | numeric'
         ], [
             'sale_transaction.transaction_date.required' => 'Please specify the transaction date !',
             'sale_transaction.transaction_date.date' => 'Please specify a valid date !',
@@ -66,8 +66,8 @@ class SaleTransactionController extends Controller
             'sale_variations.*.quantity.required' => 'Quantity is required !',
             'sale_variations.*.quantity.numeric' => 'Quantity should be numeric !',
 
-            'sale_variations.*.unit_price.required' => 'Selling Price is required !',
-            'sale_variations.*.unit_price.numeric' => 'Selling Price should be numeric !'
+            'sale_variations.*.selling_price.required' => 'Selling Price is required !',
+            'sale_variations.*.selling_price.numeric' => 'Selling Price should be numeric !'
         ]);
 
         DB::beginTransaction();
@@ -122,12 +122,14 @@ class SaleTransactionController extends Controller
 
                 $sale_variation->quantity = $entry['quantity'];
 
-                $sale_variation->unit_price = $entry['unit_price'];
+                $sale_variation->selling_price = $entry['selling_price'];
+
+                $sale_variation->purchase_price = $purchase_variation->purchase_price;
 
                 $sale_variation->save();
 
 
-                $amount += ($entry['unit_price'] * $entry['quantity']);
+                $amount += ($entry['selling_price'] * $entry['quantity']);
             }
 
 

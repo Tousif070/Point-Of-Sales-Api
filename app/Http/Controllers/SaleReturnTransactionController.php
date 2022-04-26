@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SaleReturnTransaction;
 use App\Models\SaleVariation;
+use App\Models\SaleReturnVariation;
 use App\Models\PurchaseVariation;
 use DB;
 use Exception;
@@ -92,6 +93,10 @@ class SaleReturnTransactionController extends Controller
                     return response(['message' => 'Return quantity cannot be 0 or greater than returnable quantity !'], 409);
                 }
 
+                $sale_variation->return_quantity += $return['return_quantity'];
+
+                $sale_variation->save();
+
                 // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION
                 $purchase_variation = PurchaseVariation::find($sale_variation->purchase_variation_id);
 
@@ -102,14 +107,24 @@ class SaleReturnTransactionController extends Controller
                 $purchase_variation->save();
 
 
-                $sale_variation->return_quantity += $return['return_quantity'];
+                $sale_return_variation = new SaleReturnVariation();
 
-                $sale_variation->sale_return_transaction_id = $sale_return_transaction->id;
+                $sale_return_variation->sale_return_transaction_id = $sale_return_transaction->id;
 
-                $sale_variation->save();
+                $sale_return_variation->product_id = $sale_variation->product_id;
+
+                $sale_return_variation->purchase_variation_id = $sale_variation->purchase_variation_id;
+
+                $sale_return_variation->quantity = $return['return_quantity'];
+
+                $sale_return_variation->selling_price = $sale_variation->selling_price;
+
+                $sale_return_variation->purchase_price = $sale_variation->purchase_price;
+
+                $sale_return_variation->save();
 
 
-                $amount += ($sale_variation->unit_price * $return['return_quantity']);
+                $amount += ($sale_variation->selling_price * $return['return_quantity']);
             }
 
 
@@ -170,7 +185,7 @@ class SaleReturnTransactionController extends Controller
         //
     }
 
-    public function getSaleVariations($sale_return_transaction_id)
+    public function getSaleReturnVariations($sale_return_transaction_id)
     {
         if(!auth()->user()->hasPermission("sale-return.index"))
         {
@@ -184,7 +199,7 @@ class SaleReturnTransactionController extends Controller
             return response(['message' => 'Sale Return Transaction not found !'], 404);
         }
 
-        return response(['sale_variations' => $sale_return_transaction->saleVariations], 200);
+        return response(['sale_return_variations' => $sale_return_transaction->saleReturnVariations], 200);
     }
 
 
