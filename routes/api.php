@@ -42,6 +42,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('register-supplier', 'UserController@registerSupplier');
 
+            Route::get('assign-role-view/{user_id}', 'UserController@assignRoleView');
+
             Route::post('assign-role', 'UserController@assignRole');
 
             Route::get('has-permission', 'UserController@hasPermission');

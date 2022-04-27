@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use DB;
 use Exception;
@@ -318,6 +319,28 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function assignRoleView($user_id)
+    {
+        if(!auth()->user()->hasPermission("user.assign-role"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $user = User::find($user_id);
+
+        if($user == null)
+        {
+            return response(['message' => 'User not found !'], 404);
+        }
+
+        $roles = Role::select(['id', 'name', 'description'])->get();
+
+        return response([
+            'user_roles' => $user->roles,
+            'all_roles' => $roles
+        ], 200);
     }
 
     public function assignRole(Request $request)
