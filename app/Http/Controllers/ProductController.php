@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Brand;
+use App\Models\ProductCategory;
+use App\Models\ProductModel;
 use Storage;
 use DB;
 use Exception;
@@ -22,7 +25,28 @@ class ProductController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $products = Product::all();
+        $products = Product::join('brands as b', 'b.id', '=', 'products.brand_id')
+            ->join('product_categories as pc', 'pc.id', '=', 'products.product_category_id')
+            ->join('product_models as pm', 'pm.id', '=', 'products.product_model_id')
+            ->select(
+
+                'products.id',
+                'products.name',
+                'b.name as brand',
+                'pc.name as product_category',
+                'pm.name as product_model',
+                'products.sku',
+                'products.image',
+                'products.color',
+                'products.ram',
+                'products.storage',
+                'products.condition',
+                'products.size',
+                'products.wattage',
+                'products.type',
+                'products.length'
+
+            )->get();
 
         return response(['products' => $products], 200);
     }
@@ -302,4 +326,21 @@ class ProductController extends Controller
     {
         //
     }
+
+    public function storeProductView()
+    {
+        $brands = Brand::select(['id', 'name'])->get();
+
+        $product_categories = ProductCategory::select(['id', 'name'])->get();
+
+        $product_models = ProductModel::select(['id', 'name'])->get();
+
+        return response([
+            'brands' => $brands,
+            'product_categories' => $product_categories,
+            'product_models' => $product_models
+        ], 200);
+    }
+
+
 }

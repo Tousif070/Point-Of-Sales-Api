@@ -105,6 +105,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::group(['prefix' => 'product'], function() {
 
             Route::get('index', 'ProductController@index');
+
+            Route::get('store-product-view', 'ProductController@storeProductView');
             
             Route::post('store-phone', 'ProductController@storePhone');
 
