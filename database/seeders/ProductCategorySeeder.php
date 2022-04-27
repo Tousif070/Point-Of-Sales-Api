@@ -20,7 +20,7 @@ class ProductCategorySeeder extends Seeder
         {
             $product_category = new ProductCategory();
 
-            $product_category->name = "Phone";
+            $product_category->name = "PHONE";
 
             $product_category->type = "Variable";
 
@@ -34,7 +34,7 @@ class ProductCategorySeeder extends Seeder
         {
             $product_category = new ProductCategory();
 
-            $product_category->name = "Charger/Power Adapter";
+            $product_category->name = "CHARGER/POWER ADAPTER";
 
             $product_category->type = "Single";
 

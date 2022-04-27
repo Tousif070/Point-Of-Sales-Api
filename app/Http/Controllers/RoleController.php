@@ -129,7 +129,7 @@ class RoleController extends Controller
 
         $grouped_permissions = [];
 
-        $permissions = Permission::select(['id', 'name', 'description', 'permission_group'])->get();
+        $permissions = Permission::select(['id', 'alias', 'description', 'permission_group'])->get();
 
         foreach($permissions as $permission)
         {

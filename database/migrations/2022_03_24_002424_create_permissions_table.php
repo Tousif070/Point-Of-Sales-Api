@@ -19,6 +19,8 @@ class CreatePermissionsTable extends Migration
 
             $table->string('name')->unique();
 
+            $table->string('alias');
+
             $table->string('description');
 
             $table->string('permission_group');

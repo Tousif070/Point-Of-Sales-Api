@@ -34,12 +34,15 @@ class PermissionController extends Controller
     {
         $request->validate([
             'name' => 'required | string | unique:permissions,name',
+            'alias' => 'required | string',
             'description' => 'required | string',
             'permission_group' => 'required | string'
         ], [
             'name.required' => 'Please enter the name of the permission !',
             'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'name.unique' => 'Permission already exists !',
+            'alias.required' => 'Please enter an alias for this permission !',
+            'alias.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'description.required' => 'Please enter a description for this permission !',
             'description.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'permission_group.required' => 'Please select a permission group or enter a new group !',
@@ -49,6 +52,8 @@ class PermissionController extends Controller
         $permission = new Permission();
 
         $permission->name = $request->name;
+
+        $permission->alias = $request->alias;
 
         $permission->description = $request->description;
 

@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.index-official";
+            $permission->alias = "View User Officials";
             $permission->description = "To view the list of user officials";
             $permission->permission_group = "User";
 
@@ -36,6 +37,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.index-customer";
+            $permission->alias = "View Customers";
             $permission->description = "To view the list of customers";
             $permission->permission_group = "User";
 
@@ -49,6 +51,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.index-supplier";
+            $permission->alias = "View Suppliers";
             $permission->description = "To view the list of suppliers";
             $permission->permission_group = "User";
 
@@ -62,6 +65,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.register-official";
+            $permission->alias = "Register User Official";
             $permission->description = "To register a new user official for the company";
             $permission->permission_group = "User";
 
@@ -75,6 +79,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.register-customer";
+            $permission->alias = "Register Customer";
             $permission->description = "To register a new customer";
             $permission->permission_group = "User";
 
@@ -88,6 +93,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.register-supplier";
+            $permission->alias = "Register Supplier";
             $permission->description = "To register a new supplier";
             $permission->permission_group = "User";
 
@@ -101,6 +107,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "user.assign-role";
+            $permission->alias = "Assign Role";
             $permission->description = "To assign a role to a user";
             $permission->permission_group = "User";
 
@@ -117,6 +124,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "role.index";
+            $permission->alias = "View Roles";
             $permission->description = "To view the list of roles";
             $permission->permission_group = "Role";
 
@@ -130,6 +138,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "role.store";
+            $permission->alias = "Create Role";
             $permission->description = "To store a new role";
             $permission->permission_group = "Role";
 
@@ -143,6 +152,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "role.assign-permission";
+            $permission->alias = "Assign Permission";
             $permission->description = "To assign a permission to a role";
             $permission->permission_group = "Role";
 
@@ -159,6 +169,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "permission.index";
+            $permission->alias = "View Permissions";
             $permission->description = "To view the list of permissions";
             $permission->permission_group = "Permission";
 
@@ -175,6 +186,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "brand.index";
+            $permission->alias = "View Brands";
             $permission->description = "To view the list of brands";
             $permission->permission_group = "Brand";
 
@@ -188,6 +200,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "brand.store";
+            $permission->alias = "Create Brand";
             $permission->description = "To store a new brand";
             $permission->permission_group = "Brand";
 
@@ -204,6 +217,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "product-category.index";
+            $permission->alias = "View Product Categories";
             $permission->description = "To view the list of product categories";
             $permission->permission_group = "Product Category";
 
@@ -220,6 +234,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "product-model.index";
+            $permission->alias = "View Product Models";
             $permission->description = "To view the list of product models";
             $permission->permission_group = "Product Model";
 
@@ -233,6 +248,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "product-model.store";
+            $permission->alias = "Create Product Model";
             $permission->description = "To store a new product model";
             $permission->permission_group = "Product Model";
 
@@ -249,6 +265,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "product.index";
+            $permission->alias = "View Products";
             $permission->description = "To view the list of products";
             $permission->permission_group = "Product";
 
@@ -262,6 +279,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "product.store-phone";
+            $permission->alias = "Create Product (Phone)";
             $permission->description = "To store a new product (phone)";
             $permission->permission_group = "Product";
 
@@ -275,7 +293,8 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "product.store-charger";
-            $permission->description = "To store a new product (charger)";
+            $permission->alias = "Create Product (Charger/Power Adapter)";
+            $permission->description = "To store a new product (charger/power adapter)";
             $permission->permission_group = "Product";
 
             $permission->save();
@@ -291,6 +310,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "purchase.index";
+            $permission->alias = "View Purchase List";
             $permission->description = "To view the list of purchase transactions";
             $permission->permission_group = "Purchase";
 
@@ -304,6 +324,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "purchase.store";
+            $permission->alias = "Create Purchase";
             $permission->description = "To store a new purchase transaction";
             $permission->permission_group = "Purchase";
 
@@ -320,6 +341,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "purchase-variation.index";
+            $permission->alias = "View Purchase Variations";
             $permission->description = "To view the list of purchase variations";
             $permission->permission_group = "Purchase Variation";
 
@@ -333,6 +355,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "purchase-variation.store";
+            $permission->alias = "Create Purchase Variation";
             $permission->description = "To store a new purchase variation";
             $permission->permission_group = "Purchase Variation";
 
@@ -349,6 +372,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "sale.index";
+            $permission->alias = "View Sales List/Invoices";
             $permission->description = "To view the list of sale transactions";
             $permission->permission_group = "Sale";
 
@@ -362,6 +386,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "sale.store";
+            $permission->alias = "Create Sale Invoice";
             $permission->description = "To store a new sale transaction";
             $permission->permission_group = "Sale";
 
@@ -378,6 +403,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "sale-return.index";
+            $permission->alias = "View Sale Returns";
             $permission->description = "To view the list of sale return transactions";
             $permission->permission_group = "Sale Return";
 
@@ -391,6 +417,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "sale-return.store";
+            $permission->alias = "Create Sale Return";
             $permission->description = "To store a new sale return transaction";
             $permission->permission_group = "Sale Return";
 
