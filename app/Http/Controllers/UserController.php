@@ -365,7 +365,10 @@ class UserController extends Controller
 
             DB::commit();
 
-            return response(['message' => 'Role Assigned !'], 200);
+            return response([
+                'message' => 'Role Assigned !',
+                'user_roles' => $user->roles
+            ], 200);
 
         } catch(Exception $ex) {
 

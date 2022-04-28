@@ -164,7 +164,10 @@ class RoleController extends Controller
 
             DB::commit();
 
-            return response(['message' => 'Permission Assigned !'], 200);
+            return response([
+                'message' => 'Permission Assigned !',
+                'role_permissions' => $role->permissions
+            ], 200);
 
         } catch(Exception $ex) {
 
