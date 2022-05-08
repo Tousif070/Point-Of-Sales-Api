@@ -80,8 +80,8 @@ class UserController extends Controller
             'last_name' => 'required | string',
             'username' => 'required | string | unique:users,username',
             'email' => 'required | email | unique:users,email',
-            'password' => 'required | string | confirmed',
-            'pin_number' => 'required | numeric'
+            'password' => 'required | string | confirmed | min:8',
+            'pin_number' => 'required | numeric | min:10000'
         ], [
             'first_name.required' => 'Please enter your first name !',
             'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
@@ -100,9 +100,11 @@ class UserController extends Controller
             'password.required' => 'Please enter a password !',
             'password.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'password.confirmed' => 'Passwords do not match !',
+            'password.min' => 'Password should be minimum of 8 characters !',
 
             'pin_number.required' => 'Please enter a pin number !',
-            'pin_number.numeric' => 'Only numbers are allowed !'
+            'pin_number.numeric' => 'Only numbers are allowed !',
+            'pin_number.min' => 'Pin number should be minimum of 5 digits !'
         ]);
 
         DB::beginTransaction();
