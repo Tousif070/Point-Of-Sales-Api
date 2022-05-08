@@ -44,7 +44,7 @@ class PurchaseVariationController extends Controller
         $request->validate([
             'purchase_transaction_id' => 'required | numeric',
             'product_id' => 'required | numeric',
-            'imei' => 'required | string | unique:purchase_variations,imei',
+            'serial' => 'required | string | unique:purchase_variations,serial',
             'quantity_purchased' => 'required | numeric',
             'purchase_price' => 'required | numeric',
             'risk_fund' => 'required | numeric'
@@ -55,9 +55,9 @@ class PurchaseVariationController extends Controller
             'product_id.required' => 'Product ID is required !',
             'product_id.numeric' => 'Product ID should be numeric !',
 
-            'imei.required' => 'IMEI is required !',
-            'imei.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
-            'imei.unique' => 'Duplicate IMEI !',
+            'serial.required' => 'serial is required !',
+            'serial.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+            'serial.unique' => 'Duplicate serial !',
 
             'quantity_purchased.required' => 'Purchase quantity is required !',
             'quantity_purchased.numeric' => 'Purchase quantity should be numeric !',
@@ -79,7 +79,7 @@ class PurchaseVariationController extends Controller
 
             $purchase_variation->product_id = $request->product_id;
 
-            $purchase_variation->imei = $request->imei;
+            $purchase_variation->serial = $request->serial;
 
             $purchase_variation->quantity_purchased = $request->quantity_purchased;
 

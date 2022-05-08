@@ -137,6 +137,7 @@ class RoleController extends Controller
         }
 
         return response([
+            'role_name' => $role->name,
             'role_permissions' => $role->permissions,
             'all_permissions' => $grouped_permissions
         ], 200);

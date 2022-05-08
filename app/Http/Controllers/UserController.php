@@ -340,6 +340,7 @@ class UserController extends Controller
         $roles = Role::select(['id', 'name', 'description'])->get();
 
         return response([
+            'user_name' => $user->first_name . " " . $user->last_name,
             'user_roles' => $user->roles,
             'all_roles' => $roles
         ], 200);

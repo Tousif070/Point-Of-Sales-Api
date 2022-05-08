@@ -33,6 +33,9 @@ class CreateSaleVariationsTable extends Migration
             $table->foreign('purchase_variation_id')->references('id')->on('purchase_variations')->onDelete('cascade');
 
 
+            $table->unique(['sale_transaction_id', 'purchase_variation_id']);
+
+
             $table->integer('quantity')->unsigned();
 
             $table->integer('return_quantity')->unsigned()->default(0);

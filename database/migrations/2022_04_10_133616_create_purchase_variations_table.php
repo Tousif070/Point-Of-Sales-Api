@@ -28,7 +28,7 @@ class CreatePurchaseVariationsTable extends Migration
             $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
 
 
-            $table->string('imei')->unique();
+            $table->string('serial')->unique()->nullable();
 
             $table->integer('quantity_purchased')->unsigned();
 
