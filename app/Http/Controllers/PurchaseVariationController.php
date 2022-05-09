@@ -79,7 +79,10 @@ class PurchaseVariationController extends Controller
 
             $purchase_variation->product_id = $request->product_id;
 
-            $purchase_variation->serial = $request->serial;
+            if($request->serial != "N/A")
+            {
+                $purchase_variation->serial = $request->serial;
+            }
 
             $purchase_variation->quantity_purchased = $request->quantity_purchased;
 
