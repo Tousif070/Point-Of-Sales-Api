@@ -23,7 +23,7 @@ class UserController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $users = User::where('type', '=', 1)->get();
+        $users = User::with(['roles'])->where('type', '=', 1)->get();
 
         return response(['users' => $users], 200);
     }
