@@ -91,7 +91,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required | string',
             'brand_id' => 'required | numeric',
-            'product_category_id' => 'required | numeric',
+            // 'product_category_id' => 'required | numeric', NOT NEEDED FOR NOW
             'product_model_id' => 'required | numeric',
             'image' => 'required | image | max:2048',
             'color' => 'required | string',
@@ -106,8 +106,9 @@ class ProductController extends Controller
             'brand_id.required' => 'Please select the brand !',
             'brand_id.numeric' => 'Brand ID should be numeric !',
 
-            'product_category_id.required' => 'Please select the product category !',
-            'product_category_id.numeric' => 'Product Category ID should be numeric !',
+            // THE FOLLOWING IS NOT NEEDED FOR NOW
+            // 'product_category_id.required' => 'Please select the product category !',
+            // 'product_category_id.numeric' => 'Product Category ID should be numeric !',
 
             'product_model_id.required' => 'Please select the product model !',
             'product_model_id.numeric' => 'Product Model ID should be numeric !',
@@ -142,7 +143,8 @@ class ProductController extends Controller
 
             $product->brand_id = $request->brand_id;
 
-            $product->product_category_id = $request->product_category_id;
+            // $product->product_category_id = $request->product_category_id; NOT NEEDED FOR NOW
+            $product->product_category_id = 1;
 
             $product->product_model_id = $request->product_model_id;
 
@@ -203,7 +205,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required | string',
             'brand_id' => 'required | numeric',
-            'product_category_id' => 'required | numeric',
+            // 'product_category_id' => 'required | numeric', NOT NEEDED FOR NOW
             'product_model_id' => 'required | numeric',
             'image' => 'required | image | max:2048',
             'color' => 'required | string',
@@ -217,8 +219,9 @@ class ProductController extends Controller
             'brand_id.required' => 'Please select the brand !',
             'brand_id.numeric' => 'Brand ID should be numeric !',
 
-            'product_category_id.required' => 'Please select the product category !',
-            'product_category_id.numeric' => 'Product Category ID should be numeric',
+            // THE FOLLOWING IS NOT NEEDED FOR NOW
+            // 'product_category_id.required' => 'Please select the product category !',
+            // 'product_category_id.numeric' => 'Product Category ID should be numeric',
 
             'product_model_id.required' => 'Please select the product model !',
             'product_model_id.numeric' => 'Product Model ID should be numeric !',
@@ -250,7 +253,8 @@ class ProductController extends Controller
 
             $product->brand_id = $request->brand_id;
 
-            $product->product_category_id = $request->product_category_id;
+            // $product->product_category_id = $request->product_category_id; NOT NEEDED FOR NOW
+            $product->product_category_id = 2;
 
             $product->product_model_id = $request->product_model_id;
 
@@ -329,15 +333,16 @@ class ProductController extends Controller
 
     public function storeProductView()
     {
-        $brands = Brand::select(['id', 'name'])->get();
+        $brands = Brand::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
-        $product_categories = ProductCategory::select(['id', 'name'])->get();
+        // THE FOLLOWING IS NOT NEEDED FOR NOW
+        // $product_categories = ProductCategory::select(['id', 'name'])->get();
 
-        $product_models = ProductModel::select(['id', 'name'])->get();
+        $product_models = ProductModel::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
         return response([
             'brands' => $brands,
-            'product_categories' => $product_categories,
+            // 'product_categories' => $product_categories,
             'product_models' => $product_models
         ], 200);
     }
