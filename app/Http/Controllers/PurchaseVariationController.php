@@ -169,5 +169,28 @@ class PurchaseVariationController extends Controller
         return response(['product_category_type' => $product->productCategory->type]);
     }
 
+    public function getAveragePurchasePrice()
+    {
+        if(!auth()->user()->hasPermission("purchase-variation.avg-purchase-price"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $average_purchase_prices = Product::join('purchase_variations as pv', 'pv.product_id', '=', 'products.id')
+            ->select(
+
+                'products.id',
+                'products.name',
+                'products.sku',
+                DB::raw("SUM(pv.quantity_available) as quantity_available"),
+                DB::raw("ROUND(SUM(pv.quantity_available * pv.purchase_price) / SUM(pv.quantity_available), 2) as average_purchase_price")
+
+            )->where('pv.quantity_available', '>', 0)
+            ->groupBy('products.id')
+            ->get();
+        
+        return response(['average_purchase_prices' => $average_purchase_prices], 200);
+    }
+
 
 }

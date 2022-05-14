@@ -134,6 +134,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('get-product-category-type/{product_id}', 'PurchaseVariationController@getProductCategoryType');
 
+            Route::get('get-average-purchase-price', 'PurchaseVariationController@getAveragePurchasePrice');
+
         });
 
 

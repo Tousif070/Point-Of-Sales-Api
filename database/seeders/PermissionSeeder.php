@@ -362,6 +362,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'purchase-variation.avg-purchase-price')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase-variation.avg-purchase-price";
+            $permission->alias = "View Average Purchase Price";
+            $permission->description = "To view average purchase prices of available products";
+            $permission->permission_group = "Purchase Variation";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - SALE
 
