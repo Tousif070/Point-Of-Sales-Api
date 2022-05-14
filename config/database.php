@@ -57,6 +57,19 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
+
+            // MYSQL STRICT IS SET TO TRUE JUST LIKE AS BEFORE. NO NEED TO CHANGE THAT
+            // THE DEFAULT MYSQL MODES HAVE BEEN ADDED BELOW EXPLICITLY
+            // MODE - 'ONLY_FULL_GROUP_BY' HAS BEEN DISABLED SO THAT MYSQL QUERIES CONSISTING OF GROUP BY CLAUSES CAN BE EXECUTED SUCCESSFULLY WITHOUT ANY SORT OF RESTRICTIONS
+            'modes' => [
+                // 'ONLY_FULL_GROUP_BY', THIS HAS BEEN DISABLED FOR EXECUTING GROUP QUERIES BY ONE COLUMN
+                'STRICT_TRANS_TABLES',
+                'NO_ZERO_IN_DATE',
+                'NO_ZERO_DATE',
+                'ERROR_FOR_DIVISION_BY_ZERO',
+                'NO_ENGINE_SUBSTITUTION'
+            ],
+
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
