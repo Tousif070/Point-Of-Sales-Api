@@ -439,5 +439,36 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - EXPENSE
+
+        $permission = Permission::where('name', '=', 'expense.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense.index";
+            $permission->alias = "View Expenses";
+            $permission->description = "To view the list of expense transactions";
+            $permission->permission_group = "Expense";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'expense.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense.store";
+            $permission->alias = "Create Expense";
+            $permission->description = "To store a new expense transaction";
+            $permission->permission_group = "Expense";
+
+            $permission->save();
+        }
+
+
     }
 }
