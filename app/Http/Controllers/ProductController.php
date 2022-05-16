@@ -347,5 +347,24 @@ class ProductController extends Controller
         ], 200);
     }
 
+    public function getPurchaseVariations($product_id)
+    {
+        if(!auth()->user()->hasPermission("product.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $product = Product::find($product_id);
+
+        if($product == null)
+        {
+            return response(['message' => 'Product not found !'], 404);
+        }
+
+        return response([
+            'purchase_variations' => $product->purchaseVariations()->where('quantity_available', '>', 0)->get()
+        ], 200);
+    }
+
 
 }

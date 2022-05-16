@@ -112,6 +112,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('store-charger', 'ProductController@storeCharger');
 
+            Route::get('get-purchase-variations/{product_id}', 'ProductController@getPurchaseVariations');
+
         });
 
 

@@ -16,4 +16,9 @@ class PurchaseVariation extends Model
     {
         return $this->belongsTo('App\Models\PurchaseTransaction');
     }
+
+    public function product()
+    {
+        return $this->belongsTo('App\Models\Product');
+    }
 }
