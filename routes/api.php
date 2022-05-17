@@ -165,6 +165,24 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
 
 
+        Route::group(['prefix' => 'expense-category'], function() {
+
+            Route::get('index', 'ExpenseCategoryController@index');
+            
+            Route::post('store', 'ExpenseCategoryController@store');
+
+        });
+
+
+        Route::group(['prefix' => 'expense-reference'], function() {
+
+            Route::get('index', 'ExpenseReferenceController@index');
+            
+            Route::post('store', 'ExpenseReferenceController@store');
+
+        });
+
+
         Route::group(['prefix' => 'expense'], function() {
 
             Route::get('index', 'ExpenseTransactionController@index');

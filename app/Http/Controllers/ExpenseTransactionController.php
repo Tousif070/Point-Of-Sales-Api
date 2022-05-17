@@ -40,7 +40,72 @@ class ExpenseTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        return "HAHAHA";
+        $request->validate([
+            'expense_reference_id' => 'required | numeric',
+            'expense_category_id' => 'required | numeric',
+            'amount' => 'required | numeric',
+            'transaction_date' => 'required | date',
+            'expense_for' => 'nullable | numeric',
+            'expense_note' => 'required | string'
+        ], [
+            'expense_reference_id.required' => 'Please select the expense reference !',
+            'expense_reference_id.numeric' => 'Expense Reference ID should be numeric !',
+
+            'expense_category_id.required' => 'Please select the expense category !',
+            'expense_category_id.numeric' => 'Expense Category ID should be numeric !',
+
+            'amount.required' => 'Please enter the amount of expense !',
+            'amount.numeric' => 'Expense amount should be numeric !',
+
+            'transaction_date.required' => 'Please specify the transaction date !',
+            'transaction_date.date' => 'Please specify a valid date !',
+
+            'expense_for.numeric' => 'Expense for should be numeric !',
+
+            'expense_note.required' => 'Please enter a note for this expense !',
+            'expense_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $expense_transaction = new ExpenseTransaction();
+
+            $expense_transaction->expense_reference_id = $request->expense_reference_id;
+
+            $expense_transaction->expense_category_id = $request->expense_category_id;
+
+            $expense_transaction->amount = $request->amount;
+
+            $expense_transaction->payment_status = "Paid";
+
+            $expense_transaction->transaction_date = Carbon::parse($request->transaction_date);
+
+            $expense_transaction->expense_for = $request->expense_for;
+
+            $expense_transaction->expense_note = $request->expense_note;
+
+            $expense_transaction->finalized_by = auth()->user()->id;
+
+            $expense_transaction->finalized_at = Carbon::now();
+
+            $expense_transaction->save();
+
+            DB::commit();
+
+            return response(['expense_transaction' => $expense_transaction], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**

@@ -439,6 +439,68 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - EXPENSE CATEGORY
+
+        $permission = Permission::where('name', '=', 'expense-category.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense-category.index";
+            $permission->alias = "View Expense Categories";
+            $permission->description = "To view the list of expense categories";
+            $permission->permission_group = "Expense Category";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'expense-category.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense-category.store";
+            $permission->alias = "Create Expense Category";
+            $permission->description = "To store a new expense category";
+            $permission->permission_group = "Expense Category";
+
+            $permission->save();
+        }
+
+
+        // PERMISSION GROUP - EXPENSE REFERENCE
+
+        $permission = Permission::where('name', '=', 'expense-reference.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense-reference.index";
+            $permission->alias = "View Expense References";
+            $permission->description = "To view the list of expense references";
+            $permission->permission_group = "Expense Reference";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'expense-reference.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense-reference.store";
+            $permission->alias = "Create Expense Reference";
+            $permission->description = "To store a new expense reference";
+            $permission->permission_group = "Expense Reference";
+
+            $permission->save();
+        }
+
+
         // PERMISSION GROUP - EXPENSE
 
         $permission = Permission::where('name', '=', 'expense.index')->first();
