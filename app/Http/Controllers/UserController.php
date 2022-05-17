@@ -387,7 +387,10 @@ class UserController extends Controller
 
     public function hasPermission(Request $request)
     {
-        return response(['value' => auth()->user()->hasPermission($request->permission)], 200);
+        return response([
+            'value' => auth()->user()->hasPermission($request->permission),
+            'permission_name' => $request->permission
+        ], 200);
     }
 
     public function getRoles($user_id)
