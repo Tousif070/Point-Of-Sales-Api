@@ -20,12 +20,12 @@ class CreateExpenseTransactionsTable extends Migration
             
             $table->integer('expense_reference_id')->unsigned();
 
-            $table->foreign('expense_reference_id')->references('id')->on('expense_references')->onDelete('cascade');
+            $table->foreign('expense_reference_id')->references('id')->on('expense_references');
 
 
             $table->integer('expense_category_id')->unsigned();
 
-            $table->foreign('expense_category_id')->references('id')->on('expense_categories')->onDelete('cascade');
+            $table->foreign('expense_category_id')->references('id')->on('expense_categories');
 
 
             $table->decimal('amount', 20, 2);
@@ -37,7 +37,7 @@ class CreateExpenseTransactionsTable extends Migration
 
             $table->integer('expense_for')->unsigned()->nullable();
 
-            $table->foreign('expense_for')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('expense_for')->references('id')->on('users');
 
 
             $table->string('expense_note');
@@ -45,7 +45,7 @@ class CreateExpenseTransactionsTable extends Migration
 
             $table->integer('finalized_by')->unsigned();
 
-            $table->foreign('finalized_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('finalized_by')->references('id')->on('users');
 
 
             $table->dateTime('finalized_at');
@@ -57,7 +57,7 @@ class CreateExpenseTransactionsTable extends Migration
 
             $table->integer('verified_by')->unsigned()->nullable();
 
-            $table->foreign('verified_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('verified_by')->references('id')->on('users');
 
 
             $table->dateTime('verified_at')->nullable();

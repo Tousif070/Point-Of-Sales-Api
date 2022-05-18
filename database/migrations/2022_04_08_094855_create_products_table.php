@@ -22,17 +22,17 @@ class CreateProductsTable extends Migration
 
             $table->integer('brand_id')->unsigned();
 
-            $table->foreign('brand_id')->references('id')->on('brands')->onDelete('cascade');
+            $table->foreign('brand_id')->references('id')->on('brands');
 
 
             $table->integer('product_category_id')->unsigned();
 
-            $table->foreign('product_category_id')->references('id')->on('product_categories')->onDelete('cascade');
+            $table->foreign('product_category_id')->references('id')->on('product_categories');
 
 
             $table->integer('product_model_id')->unsigned();
 
-            $table->foreign('product_model_id')->references('id')->on('product_models')->onDelete('cascade');
+            $table->foreign('product_model_id')->references('id')->on('product_models');
 
 
             $table->integer('sku')->unsigned()->unique()->nullable();

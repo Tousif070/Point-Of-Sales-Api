@@ -30,7 +30,7 @@ class CreatePurchaseTransactionsTable extends Migration
 
             $table->integer('supplier_id')->unsigned();
 
-            $table->foreign('supplier_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('supplier_id')->references('id')->on('users');
 
 
             $table->decimal('shipping_charge', 10, 2)->nullable();
@@ -42,7 +42,7 @@ class CreatePurchaseTransactionsTable extends Migration
 
             $table->integer('finalized_by')->unsigned();
 
-            $table->foreign('finalized_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('finalized_by')->references('id')->on('users');
 
 
             $table->dateTime('finalized_at');
@@ -54,7 +54,7 @@ class CreatePurchaseTransactionsTable extends Migration
 
             $table->integer('verified_by')->unsigned()->nullable();
 
-            $table->foreign('verified_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('verified_by')->references('id')->on('users');
 
 
             $table->dateTime('verified_at')->nullable();

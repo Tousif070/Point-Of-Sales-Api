@@ -20,12 +20,12 @@ class CreatePurchaseVariationsTable extends Migration
 
             $table->integer('purchase_transaction_id')->unsigned();
 
-            $table->foreign('purchase_transaction_id')->references('id')->on('purchase_transactions')->onDelete('cascade');
+            $table->foreign('purchase_transaction_id')->references('id')->on('purchase_transactions');
 
 
             $table->integer('product_id')->unsigned();
 
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products');
 
 
             $table->string('serial')->unique()->nullable();

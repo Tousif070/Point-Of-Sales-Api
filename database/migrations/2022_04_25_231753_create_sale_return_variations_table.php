@@ -20,17 +20,17 @@ class CreateSaleReturnVariationsTable extends Migration
 
             $table->integer('sale_return_transaction_id')->unsigned();
 
-            $table->foreign('sale_return_transaction_id')->references('id')->on('sale_return_transactions')->onDelete('cascade');
+            $table->foreign('sale_return_transaction_id')->references('id')->on('sale_return_transactions');
 
 
             $table->integer('product_id')->unsigned();
 
-            $table->foreign('product_id')->references('id')->on('products')->onDelete('cascade');
+            $table->foreign('product_id')->references('id')->on('products');
 
 
             $table->integer('purchase_variation_id')->unsigned();
 
-            $table->foreign('purchase_variation_id')->references('id')->on('purchase_variations')->onDelete('cascade');
+            $table->foreign('purchase_variation_id')->references('id')->on('purchase_variations');
 
 
             $table->integer('quantity')->unsigned();

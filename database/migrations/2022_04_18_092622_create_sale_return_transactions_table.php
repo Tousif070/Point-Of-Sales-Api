@@ -24,14 +24,14 @@ class CreateSaleReturnTransactionsTable extends Migration
 
             $table->integer('sale_transaction_id')->unsigned();
 
-            $table->foreign('sale_transaction_id')->references('id')->on('sale_transactions')->onDelete('cascade');
+            $table->foreign('sale_transaction_id')->references('id')->on('sale_transactions');
 
 
             $table->dateTime('transaction_date');
 
             $table->integer('finalized_by')->unsigned();
 
-            $table->foreign('finalized_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('finalized_by')->references('id')->on('users');
 
 
             $table->dateTime('finalized_at');
@@ -43,7 +43,7 @@ class CreateSaleReturnTransactionsTable extends Migration
 
             $table->integer('verified_by')->unsigned()->nullable();
 
-            $table->foreign('verified_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('verified_by')->references('id')->on('users');
 
 
             $table->dateTime('verified_at')->nullable();
