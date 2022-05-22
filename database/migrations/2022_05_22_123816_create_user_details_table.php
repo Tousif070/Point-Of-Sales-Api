@@ -23,6 +23,14 @@ class CreateUserDetailsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
 
 
+            $table->string('business_name')->nullable();
+
+            $table->string('business_website')->nullable();
+
+            $table->string('tax_exemption_certificate')->nullable();
+
+            $table->string('contact_no');
+
             $table->string('address');
 
             $table->string('city');
@@ -30,8 +38,6 @@ class CreateUserDetailsTable extends Migration
             $table->string('state');
 
             $table->string('country');
-
-            $table->string('contact_no');
 
             $table->string('zip_code')->nullable();
 
