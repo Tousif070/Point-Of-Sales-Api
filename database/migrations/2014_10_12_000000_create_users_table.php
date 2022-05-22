@@ -33,7 +33,7 @@ class CreateUsersTable extends Migration
 
             $table->integer('pin_number')->unsigned();
 
-            $table->integer('type')->unsigned();
+            $table->tinyInteger('type')->unsigned();
 
             $table->timestamps();
 

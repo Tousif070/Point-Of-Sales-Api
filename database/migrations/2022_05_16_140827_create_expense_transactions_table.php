@@ -50,7 +50,7 @@ class CreateExpenseTransactionsTable extends Migration
 
             $table->dateTime('finalized_at');
 
-            $table->integer('verification_status')->unsigned()->default(2);
+            $table->tinyInteger('verification_status')->unsigned()->default(2);
 
             $table->string('verification_note')->nullable();
 
