@@ -295,7 +295,56 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showOfficial($user_id)
+    {
+        if(!auth()->user()->hasPermission("user.index-official"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $user = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+            ->select(
+
+                'users.first_name',
+                'users.last_name',
+                'users.username',
+                'users.email',
+                'ud.contact_no',
+                'ud.address',
+                'ud.city',
+                'ud.state',
+                'ud.country',
+                'ud.zip_code'
+
+            )->where('users.id', '=', $user_id)
+            ->first();
+        
+        if($user == null)
+        {
+            return response(['message' => 'User not found !'], 404);
+        }
+        
+        return response(['user' => $user], 200);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showCustomer($id)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showSupplier($id)
     {
         //
     }
