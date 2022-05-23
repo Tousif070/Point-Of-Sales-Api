@@ -86,11 +86,11 @@ class SaleReturnTransactionController extends Controller
             {
                 $sale_variation = SaleVariation::find($return['sale_variation_id']);
 
-                if($return['return_quantity'] == 0 || $return['return_quantity'] > ($sale_variation->quantity - $sale_variation->return_quantity))
+                if($return['return_quantity'] < 1 || $return['return_quantity'] > ($sale_variation->quantity - $sale_variation->return_quantity))
                 {
                     DB::rollBack();
 
-                    return response(['message' => 'Return quantity cannot be 0 or greater than returnable quantity !'], 409);
+                    return response(['message' => 'Return quantity cannot be less than 1 or greater than returnable quantity !'], 409);
                 }
 
                 $sale_variation->return_quantity += $return['return_quantity'];

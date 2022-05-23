@@ -97,11 +97,11 @@ class SaleTransactionController extends Controller
             {
                 $purchase_variation = PurchaseVariation::find($entry['purchase_variation_id']);
 
-                if($entry['quantity'] == 0 || $entry['quantity'] > $purchase_variation->quantity_available)
+                if($entry['quantity'] < 1 || $entry['quantity'] > $purchase_variation->quantity_available)
                 {
                     DB::rollBack();
 
-                    return response(['message' => 'Sale quantity cannot be 0 or greater than available quantity !'], 409);
+                    return response(['message' => 'Sale quantity cannot be less than 1 or greater than available quantity !'], 409);
                 }
 
                 // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION

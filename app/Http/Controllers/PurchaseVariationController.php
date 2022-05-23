@@ -69,6 +69,13 @@ class PurchaseVariationController extends Controller
             'risk_fund.numeric' => 'Risk fund should be numeric !'
         ]);
 
+
+        if($request->quantity_purchased < 1)
+        {
+            return response(['message' => 'Purchase quantity cannot be less than 1 !'], 409);
+        }
+
+
         DB::beginTransaction();
 
         try {
