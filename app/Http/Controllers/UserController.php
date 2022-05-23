@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\UserDetail;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use DB;
@@ -128,6 +129,26 @@ class UserController extends Controller
             $user->type = 1;
 
             $user->save();
+
+
+            $user_details = new UserDetail();
+
+            $user_details->user_id = $user->id;
+
+            $user_details->contact_no = "";
+
+            $user_details->address = "";
+
+            $user_details->city = "";
+
+            $user_details->state = "";
+
+            $user_details->country = "";
+
+            $user_details->zip_code = "";
+
+            $user_details->save();
+
 
             DB::commit();
 
@@ -305,6 +326,7 @@ class UserController extends Controller
         $user = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
             ->select(
 
+                'users.id',
                 'users.first_name',
                 'users.last_name',
                 'users.username',
