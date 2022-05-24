@@ -195,6 +195,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::group(['prefix' => 'expense'], function() {
 
             Route::get('index', 'ExpenseTransactionController@index');
+
+            Route::get('store-expense-view', 'ExpenseTransactionController@storeExpenseView');
             
             Route::post('store', 'ExpenseTransactionController@store');
 

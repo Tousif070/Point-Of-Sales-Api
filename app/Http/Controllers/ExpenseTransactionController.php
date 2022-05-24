@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\ExpenseCategory;
+use App\Models\ExpenseReference;
 use App\Models\ExpenseTransaction;
 use DB;
 use Exception;
@@ -141,4 +143,18 @@ class ExpenseTransactionController extends Controller
     {
         //
     }
+
+    public function storeExpenseView()
+    {
+        $expense_categories = ExpenseCategory::select(['id', 'name'])->orderBy('name', 'asc')->get();
+
+        $expense_references = ExpenseReference::select(['id', 'name'])->orderBy('name', 'asc')->get();
+
+        return response([
+            'expense_categories' => $expense_categories,
+            'expense_references' => $expense_references
+        ], 200);
+    }
+
+
 }
