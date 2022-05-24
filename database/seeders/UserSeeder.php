@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\UserDetail;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -37,6 +38,25 @@ class UserSeeder extends Seeder
             $user->type = 1;
 
             $user->save();
+
+
+            $user_details = new UserDetail();
+
+            $user_details->user_id = $user->id;
+
+            $user_details->contact_no = "";
+
+            $user_details->address = "";
+
+            $user_details->city = "";
+
+            $user_details->state = "";
+
+            $user_details->country = "";
+
+            $user_details->zip_code = "";
+
+            $user_details->save();
 
 
             $role = Role::where('name', '=', 'super_admin')->first();

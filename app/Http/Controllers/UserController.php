@@ -222,6 +222,26 @@ class UserController extends Controller
 
             $user->save();
 
+
+            $user_details = new UserDetail();
+
+            $user_details->user_id = $user->id;
+
+            $user_details->contact_no = "";
+
+            $user_details->address = "";
+
+            $user_details->city = "";
+
+            $user_details->state = "";
+
+            $user_details->country = "";
+
+            $user_details->zip_code = "";
+
+            $user_details->save();
+
+
             DB::commit();
 
             return response(['user' => $user], 201);
@@ -294,6 +314,26 @@ class UserController extends Controller
 
             $user->save();
 
+
+            $user_details = new UserDetail();
+
+            $user_details->user_id = $user->id;
+
+            $user_details->contact_no = "";
+
+            $user_details->address = "";
+
+            $user_details->city = "";
+
+            $user_details->state = "";
+
+            $user_details->country = "";
+
+            $user_details->zip_code = "";
+
+            $user_details->save();
+
+
             DB::commit();
 
             return response(['user' => $user], 201);
@@ -316,14 +356,14 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showOfficial($user_id)
+    public function showOfficial($user_official_id)
     {
         if(!auth()->user()->hasPermission("user.index-official"))
         {
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $user = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+        $user_official = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
             ->select(
 
                 'users.id',
@@ -338,15 +378,16 @@ class UserController extends Controller
                 'ud.country',
                 'ud.zip_code'
 
-            )->where('users.id', '=', $user_id)
+            )->where('users.id', '=', $user_official_id)
+            ->where('users.type', '=', 1)
             ->first();
         
-        if($user == null)
+        if($user_official == null)
         {
-            return response(['message' => 'User not found !'], 404);
+            return response(['message' => 'User Official not found !'], 404);
         }
         
-        return response(['user' => $user], 200);
+        return response(['user_official' => $user_official], 200);
     }
 
     /**
@@ -355,9 +396,41 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showCustomer($id)
+    public function showCustomer($customer_id)
     {
-        //
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $customer = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+            ->select(
+
+                'users.id',
+                'users.first_name',
+                'users.last_name',
+                'users.username',
+                'users.email',
+                'ud.business_name',
+                'ud.business_website',
+                'ud.contact_no',
+                'ud.address',
+                'ud.city',
+                'ud.state',
+                'ud.country',
+                'ud.zip_code',
+                'ud.available_credit'
+
+            )->where('users.id', '=', $customer_id)
+            ->where('users.type', '=', 2)
+            ->first();
+        
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+        
+        return response(['customer' => $customer], 200);
     }
 
     /**
@@ -366,9 +439,40 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function showSupplier($id)
+    public function showSupplier($supplier_id)
     {
-        //
+        if(!auth()->user()->hasPermission("user.index-supplier"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $supplier = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+            ->select(
+
+                'users.id',
+                'users.first_name',
+                'users.last_name',
+                'users.username',
+                'users.email',
+                'ud.business_name',
+                'ud.business_website',
+                'ud.contact_no',
+                'ud.address',
+                'ud.city',
+                'ud.state',
+                'ud.country',
+                'ud.zip_code'
+
+            )->where('users.id', '=', $supplier_id)
+            ->where('users.type', '=', 3)
+            ->first();
+        
+        if($supplier == null)
+        {
+            return response(['message' => 'Supplier not found !'], 404);
+        }
+        
+        return response(['supplier' => $supplier], 200);
     }
 
     /**

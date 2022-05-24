@@ -44,7 +44,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::post('register-supplier', 'UserController@registerSupplier');
 
 
-            Route::get('show-official/{user_id}', 'UserController@showOfficial');
+            Route::get('show-official/{user_official_id}', 'UserController@showOfficial');
+
+            Route::get('show-customer/{customer_id}', 'UserController@showCustomer');
+
+            Route::get('show-supplier/{supplier_id}', 'UserController@showSupplier');
             
 
             Route::get('assign-role-view/{user_id}', 'UserController@assignRoleView');
