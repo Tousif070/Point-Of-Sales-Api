@@ -22,7 +22,21 @@ class PurchaseTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $purchase_transactions = PurchaseTransaction::all();
+        $purchase_transactions = PurchaseTransaction::join('users as u', 'u.id', '=', 'purchase_transactions.finalized_by')
+            ->join('users as u2', 'u2.id', '=', 'purchase_transactions.supplier_id')
+            ->select(
+
+                'purchase_transactions.id',
+                DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'purchase_transactions.reference_no',
+                'u2.first_name as supplier',
+                'purchase_transactions.purchase_status',
+                'purchase_transactions.payment_status',
+                'purchase_transactions.amount',
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(purchase_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+
+            )->orderBy('purchase_transactions.transaction_date', 'desc')
+            ->get();
 
         return response(['purchase_transactions' => $purchase_transactions], 200);
     }

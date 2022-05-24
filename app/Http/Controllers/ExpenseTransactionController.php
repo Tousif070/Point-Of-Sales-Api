@@ -24,7 +24,23 @@ class ExpenseTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $expense_transactions = ExpenseTransaction::all();
+        $expense_transactions = ExpenseTransaction::join('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
+            ->join('expense_references as er', 'er.id', '=', 'expense_transactions.expense_reference_id')
+            ->join('users as u', 'u.id', '=', 'expense_transactions.finalized_by')
+            ->select(
+
+                'expense_transactions.id',
+                DB::raw('DATE_FORMAT(expense_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'er.name as reference',
+                'ec.name as category',
+                'expense_transactions.amount',
+                'expense_transactions.payment_status',
+                DB::raw('(select first_name from users where id = expense_transactions.expense_for) as expense_for'),
+                'expense_transactions.expense_note',
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(expense_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+
+            )->orderBy('expense_transactions.transaction_date', 'desc')
+            ->get();
 
         return response(['expense_transactions' => $expense_transactions], 200);
     }
