@@ -52,7 +52,7 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Models\Role', 'role_user', 'user_id', 'role_id');
     }
 
-    public function userDetails()
+    public function userDetail()
     {
         return $this->hasOne('App\Models\UserDetail');
     }

@@ -579,4 +579,109 @@ class UserController extends Controller
     }
 
 
+    // FOR CUSTOMER SHIPPING ADDRESS
+
+    public function getShippingAddresses($customer_id)
+    {
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+        
+        return response([
+            'shipping_addresses' => json_decode($customer->userDetail->shipping_addresses)
+        ], 200);
+    }
+
+    public function storeShippingAddress(Request $request, $customer_id)
+    {
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+        $shipping_address = [];
+        $shipping_address['address'] = $request->address;
+        $shipping_address['city'] = $request->city;
+        $shipping_address['state'] = $request->state;
+        $shipping_address['country'] =$request->country;
+
+        if(!empty($customer->userDetail->shipping_addresses))
+        {
+            $shipping_addresses = json_decode($customer->userDetail->shipping_addresses, true);
+        }
+        else
+        {
+            $shipping_addresses = [];
+        }
+
+        $shipping_addresses[] = $shipping_address;
+        $customer->userDetail->shipping_addresses = json_encode($shipping_addresses);
+        $customer->userDetail->save();
+        
+        return response([
+            'shipping_addresses' => $shipping_addresses
+        ], 200);
+    }
+
+    public function editShippingAddress(Request $request, $customer_id)
+    {
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+        
+        $shipping_addresses = json_decode($customer->userDetail->shipping_addresses, true);
+
+        if($request->index < 0 || $request->index >= count($shipping_addresses))
+        {
+            return response(['message' => 'Invalid Index !'], 409);
+        }
+        
+        $shipping_addresses[$request->index]['address'] = $request->address;
+        $shipping_addresses[$request->index]['city'] = $request->city;
+        $shipping_addresses[$request->index]['state'] = $request->state;
+        $shipping_addresses[$request->index]['country'] = $request->country;
+        
+        $customer->userDetail->shipping_addresses = json_encode($shipping_addresses);
+        $customer->userDetail->save();
+        
+        return response([
+            'shipping_addresses' => $shipping_addresses
+        ], 200);
+    }
+
+    public function deleteShippingAddress(Request $request, $customer_id)
+    {
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+        
+        $shipping_addresses = json_decode($customer->userDetail->shipping_addresses, true);
+
+        if($request->index < 0 || $request->index >= count($shipping_addresses))
+        {
+            return response(['message' => 'Invalid Index !'], 409);
+        }
+
+        array_splice($shipping_addresses, $request->index, 1);
+        
+        $customer->userDetail->shipping_addresses = json_encode($shipping_addresses);
+        $customer->userDetail->save();
+        
+        return response([
+            'shipping_addresses' => $shipping_addresses
+        ], 200);
+    }
+
+
 }

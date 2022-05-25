@@ -49,6 +49,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('show-customer/{customer_id}', 'UserController@showCustomer');
 
             Route::get('show-supplier/{supplier_id}', 'UserController@showSupplier');
+
+
+            Route::get('customer/get-shipping-addresses/{customer_id}', 'UserController@getShippingAddresses');
+
+            Route::post('customer/store-shipping-address/{customer_id}', 'UserController@storeShippingAddress');
+
+            Route::post('customer/edit-shipping-address/{customer_id}', 'UserController@editShippingAddress');
+
+            Route::post('customer/delete-shipping-address/{customer_id}', 'UserController@deleteShippingAddress');
             
 
             Route::get('assign-role-view/{user_id}', 'UserController@assignRoleView');
