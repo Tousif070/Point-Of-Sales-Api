@@ -583,6 +583,11 @@ class UserController extends Controller
 
     public function getShippingAddresses($customer_id)
     {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
 
         if($customer == null)
@@ -597,6 +602,11 @@ class UserController extends Controller
 
     public function storeShippingAddress(Request $request, $customer_id)
     {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
 
         if($customer == null)
@@ -630,6 +640,11 @@ class UserController extends Controller
 
     public function editShippingAddress(Request $request, $customer_id)
     {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
 
         if($customer == null)
@@ -659,6 +674,11 @@ class UserController extends Controller
 
     public function deleteShippingAddress(Request $request, $customer_id)
     {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+        
         $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
 
         if($customer == null)
