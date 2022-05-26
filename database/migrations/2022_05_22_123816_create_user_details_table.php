@@ -41,7 +41,7 @@ class CreateUserDetailsTable extends Migration
 
             $table->string('zip_code')->nullable();
 
-            $table->text('shipping_addresses')->nullable();
+            $table->text('shipping_addresses')->default("[]");
 
             $table->tinyInteger('customer_approval_status')->unsigned()->nullable();
 
