@@ -51,6 +51,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('show-supplier/{supplier_id}', 'UserController@showSupplier');
 
 
+            Route::post('update-official/{user_official_id}', 'UserController@updateOfficial');
+
+
             Route::get('customer/get-shipping-addresses/{customer_id}', 'UserController@getShippingAddresses');
 
             Route::post('customer/store-shipping-address/{customer_id}', 'UserController@storeShippingAddress');

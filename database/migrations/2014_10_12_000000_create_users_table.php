@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
 
             $table->rememberToken();
 
-            $table->integer('pin_number')->unsigned();
+            $table->string('pin_number');
 
             $table->tinyInteger('type')->unsigned();
 

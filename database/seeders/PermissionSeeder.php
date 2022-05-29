@@ -100,6 +100,48 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'user.update-official')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.update-official";
+            $permission->alias = "Update User Official";
+            $permission->description = "To update information of a user official";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'user.update-customer')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.update-customer";
+            $permission->alias = "Update Customer";
+            $permission->description = "To update information of a customer";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'user.update-supplier')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.update-supplier";
+            $permission->alias = "Update Supplier";
+            $permission->description = "To update information of a supplier";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
         $permission = Permission::where('name', '=', 'user.assign-role')->first();
 
         if($permission == null)

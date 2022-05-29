@@ -82,7 +82,7 @@ class UserController extends Controller
             'username' => 'required | string | unique:users,username',
             'email' => 'required | email | unique:users,email',
             'password' => 'required | string | confirmed | min:8',
-            'pin_number' => 'required | numeric | min:10000'
+            'pin_number' => 'required | string | min:5'
         ], [
             'first_name.required' => 'Please enter your first name !',
             'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
@@ -104,7 +104,7 @@ class UserController extends Controller
             'password.min' => 'Password should be minimum of 8 characters !',
 
             'pin_number.required' => 'Please enter a pin number !',
-            'pin_number.numeric' => 'Only numbers are allowed !',
+            'pin_number.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
             'pin_number.min' => 'Pin number should be minimum of 5 digits !'
         ]);
 
@@ -482,7 +482,151 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function updateOfficial(Request $request, $user_official_id)
+    {
+        if(!auth()->user()->hasPermission("user.update-official"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $user = User::find($user_official_id);
+
+        if($user == null)
+        {
+            return response(['message' => 'User Official not found !'], 404);
+        }
+
+        $request->validate([
+            'first_name' => 'required | string',
+            'last_name' => 'required | string',
+            'username' => 'required | string',
+            'email' => 'required | email',
+            'password' => 'string | confirmed | min:8 | nullable',
+            'pin_number' => 'string | min:5 | nullable',
+
+            'contact_no' => 'required | string',
+            'address' => 'required | string',
+            'city' => 'required | string',
+            'state' => 'required | string',
+            'country' => 'required | string',
+            'zip_code' => 'string | nullable'
+        ], [
+            'first_name.required' => 'Please enter your first name !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'last_name.required' => 'Please enter your last name !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'username.required' => 'Please enter your username !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'email.required' => 'Please enter your email !',
+            'email.email' => 'Please enter a valid email !',
+
+            'password.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+            'password.confirmed' => 'Passwords do not match !',
+            'password.min' => 'Password should be minimum of 8 characters !',
+
+            'pin_number.numeric' => 'Only numbers are allowed !',
+            'pin_number.min' => 'Pin number should be minimum of 5 digits !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $user->first_name = $request->first_name;
+
+            $user->last_name = $request->last_name;
+
+            if($user->username != $request->username)
+            {
+                $result_set = User::where('username', '=', $request->username)->get();
+
+                if(count($result_set) == 0)
+                {
+                    $user->username = $request->username;
+                }
+                else
+                {
+                    return response(['message' => 'Username already exists !'], 409);
+                }
+            }
+
+            if($user->email != $request->email)
+            {
+                $result_set = User::where('email', '=', $request->email)->get();
+
+                if(count($result_set) == 0)
+                {
+                    $user->email = $request->email;
+                }
+                else
+                {
+                    return response(['message' => 'Email already exists !'], 409);
+                }
+            }
+
+            $user->password = empty($request->password) ? $user->password : Hash::make($request->password);
+
+            $user->pin_number = empty($request->pin_number) ? $user->pin_number : $request->pin_number;
+
+            $user->save();
+
+
+            $user_details = UserDetail::where('user_id', '=', $user->id)->first();
+
+            $user_details->contact_no = $request->contact_no;
+
+            $user_details->address = $request->address;
+
+            $user_details->city = $request->city;
+
+            $user_details->state = $request->state;
+
+            $user_details->country = $request->country;
+
+            $user_details->zip_code = $request->zip_code;
+
+            $user_details->save();
+
+
+            DB::commit();
+
+            return response(['message' => 'Updated !'], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateCustomer(Request $request, $customer_id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function updateSupplier(Request $request, $supplier_id)
     {
         //
     }
