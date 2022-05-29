@@ -131,23 +131,23 @@ class UserController extends Controller
             $user->save();
 
 
-            $user_details = new UserDetail();
+            $user_detail = new UserDetail();
 
-            $user_details->user_id = $user->id;
+            $user_detail->user_id = $user->id;
 
-            $user_details->contact_no = "";
+            $user_detail->contact_no = "";
 
-            $user_details->address = "";
+            $user_detail->address = "";
 
-            $user_details->city = "";
+            $user_detail->city = "";
 
-            $user_details->state = "";
+            $user_detail->state = "";
 
-            $user_details->country = "";
+            $user_detail->country = "";
 
-            $user_details->zip_code = "";
+            $user_detail->zip_code = "";
 
-            $user_details->save();
+            $user_detail->save();
 
 
             DB::commit();
@@ -223,23 +223,23 @@ class UserController extends Controller
             $user->save();
 
 
-            $user_details = new UserDetail();
+            $user_detail = new UserDetail();
 
-            $user_details->user_id = $user->id;
+            $user_detail->user_id = $user->id;
 
-            $user_details->contact_no = "";
+            $user_detail->contact_no = "";
 
-            $user_details->address = "";
+            $user_detail->address = "";
 
-            $user_details->city = "";
+            $user_detail->city = "";
 
-            $user_details->state = "";
+            $user_detail->state = "";
 
-            $user_details->country = "";
+            $user_detail->country = "";
 
-            $user_details->zip_code = "";
+            $user_detail->zip_code = "";
 
-            $user_details->save();
+            $user_detail->save();
 
 
             DB::commit();
@@ -315,23 +315,23 @@ class UserController extends Controller
             $user->save();
 
 
-            $user_details = new UserDetail();
+            $user_detail = new UserDetail();
 
-            $user_details->user_id = $user->id;
+            $user_detail->user_id = $user->id;
 
-            $user_details->contact_no = "";
+            $user_detail->contact_no = "";
 
-            $user_details->address = "";
+            $user_detail->address = "";
 
-            $user_details->city = "";
+            $user_detail->city = "";
 
-            $user_details->state = "";
+            $user_detail->state = "";
 
-            $user_details->country = "";
+            $user_detail->country = "";
 
-            $user_details->zip_code = "";
+            $user_detail->zip_code = "";
 
-            $user_details->save();
+            $user_detail->save();
 
 
             DB::commit();
@@ -489,7 +489,7 @@ class UserController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $user = User::find($user_official_id);
+        $user = User::where('id', '=', $user_official_id)->where('type', '=', 1)->first();
 
         if($user == null)
         {
@@ -574,21 +574,21 @@ class UserController extends Controller
             $user->save();
 
 
-            $user_details = UserDetail::where('user_id', '=', $user->id)->first();
+            $user_detail = UserDetail::where('user_id', '=', $user->id)->first();
 
-            $user_details->contact_no = $request->contact_no;
+            $user_detail->contact_no = $request->contact_no;
 
-            $user_details->address = $request->address;
+            $user_detail->address = $request->address;
 
-            $user_details->city = $request->city;
+            $user_detail->city = $request->city;
 
-            $user_details->state = $request->state;
+            $user_detail->state = $request->state;
 
-            $user_details->country = $request->country;
+            $user_detail->country = $request->country;
 
-            $user_details->zip_code = $request->zip_code;
+            $user_detail->zip_code = $request->zip_code;
 
-            $user_details->save();
+            $user_detail->save();
 
 
             DB::commit();
@@ -616,7 +616,133 @@ class UserController extends Controller
      */
     public function updateCustomer(Request $request, $customer_id)
     {
-        //
+        if(!auth()->user()->hasPermission("user.update-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $user = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($user == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+        $request->validate([
+            'first_name' => 'required | string',
+            'last_name' => 'required | string',
+            'username' => 'required | string',
+            'email' => 'required | email',
+            'password' => 'string | confirmed | min:8 | nullable',
+            'pin_number' => 'string | min:5 | nullable',
+
+            'business_name' => 'string | nullable',
+            'business_website' => 'string | nullable',
+            'contact_no' => 'required | string',
+            'address' => 'required | string',
+            'city' => 'required | string',
+            'state' => 'required | string',
+            'country' => 'required | string',
+            'zip_code' => 'string | nullable'
+        ], [
+            'first_name.required' => 'Please enter your first name !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'last_name.required' => 'Please enter your last name !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'username.required' => 'Please enter your username !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'email.required' => 'Please enter your email !',
+            'email.email' => 'Please enter a valid email !',
+
+            'password.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+            'password.confirmed' => 'Passwords do not match !',
+            'password.min' => 'Password should be minimum of 8 characters !',
+
+            'pin_number.numeric' => 'Only numbers are allowed !',
+            'pin_number.min' => 'Pin number should be minimum of 5 digits !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $user->first_name = $request->first_name;
+
+            $user->last_name = $request->last_name;
+
+            if($user->username != $request->username)
+            {
+                $result_set = User::where('username', '=', $request->username)->get();
+
+                if(count($result_set) == 0)
+                {
+                    $user->username = $request->username;
+                }
+                else
+                {
+                    return response(['message' => 'Username already exists !'], 409);
+                }
+            }
+
+            if($user->email != $request->email)
+            {
+                $result_set = User::where('email', '=', $request->email)->get();
+
+                if(count($result_set) == 0)
+                {
+                    $user->email = $request->email;
+                }
+                else
+                {
+                    return response(['message' => 'Email already exists !'], 409);
+                }
+            }
+
+            $user->password = empty($request->password) ? $user->password : Hash::make($request->password);
+
+            $user->pin_number = empty($request->pin_number) ? $user->pin_number : $request->pin_number;
+
+            $user->save();
+
+
+            $user_detail = UserDetail::where('user_id', '=', $user->id)->first();
+
+            $user_detail->business_name = $request->business_name;
+
+            $user_detail->business_website = $request->business_website;
+
+            $user_detail->contact_no = $request->contact_no;
+
+            $user_detail->address = $request->address;
+
+            $user_detail->city = $request->city;
+
+            $user_detail->state = $request->state;
+
+            $user_detail->country = $request->country;
+
+            $user_detail->zip_code = $request->zip_code;
+
+            $user_detail->save();
+
+
+            DB::commit();
+
+            return response(['message' => 'Updated !'], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**
@@ -628,7 +754,133 @@ class UserController extends Controller
      */
     public function updateSupplier(Request $request, $supplier_id)
     {
-        //
+        if(!auth()->user()->hasPermission("user.update-supplier"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $user = User::where('id', '=', $supplier_id)->where('type', '=', 3)->first();
+
+        if($user == null)
+        {
+            return response(['message' => 'Supplier not found !'], 404);
+        }
+
+        $request->validate([
+            'first_name' => 'required | string',
+            'last_name' => 'required | string',
+            'username' => 'required | string',
+            'email' => 'required | email',
+            'password' => 'string | confirmed | min:8 | nullable',
+            'pin_number' => 'string | min:5 | nullable',
+
+            'business_name' => 'string | nullable',
+            'business_website' => 'string | nullable',
+            'contact_no' => 'required | string',
+            'address' => 'required | string',
+            'city' => 'required | string',
+            'state' => 'required | string',
+            'country' => 'required | string',
+            'zip_code' => 'string | nullable'
+        ], [
+            'first_name.required' => 'Please enter your first name !',
+            'first_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'last_name.required' => 'Please enter your last name !',
+            'last_name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'username.required' => 'Please enter your username !',
+            'username.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'email.required' => 'Please enter your email !',
+            'email.email' => 'Please enter a valid email !',
+
+            'password.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+            'password.confirmed' => 'Passwords do not match !',
+            'password.min' => 'Password should be minimum of 8 characters !',
+
+            'pin_number.numeric' => 'Only numbers are allowed !',
+            'pin_number.min' => 'Pin number should be minimum of 5 digits !'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+
+            $user->first_name = $request->first_name;
+
+            $user->last_name = $request->last_name;
+
+            if($user->username != $request->username)
+            {
+                $result_set = User::where('username', '=', $request->username)->get();
+
+                if(count($result_set) == 0)
+                {
+                    $user->username = $request->username;
+                }
+                else
+                {
+                    return response(['message' => 'Username already exists !'], 409);
+                }
+            }
+
+            if($user->email != $request->email)
+            {
+                $result_set = User::where('email', '=', $request->email)->get();
+
+                if(count($result_set) == 0)
+                {
+                    $user->email = $request->email;
+                }
+                else
+                {
+                    return response(['message' => 'Email already exists !'], 409);
+                }
+            }
+
+            $user->password = empty($request->password) ? $user->password : Hash::make($request->password);
+
+            $user->pin_number = empty($request->pin_number) ? $user->pin_number : $request->pin_number;
+
+            $user->save();
+
+
+            $user_detail = UserDetail::where('user_id', '=', $user->id)->first();
+
+            $user_detail->business_name = $request->business_name;
+
+            $user_detail->business_website = $request->business_website;
+
+            $user_detail->contact_no = $request->contact_no;
+
+            $user_detail->address = $request->address;
+
+            $user_detail->city = $request->city;
+
+            $user_detail->state = $request->state;
+
+            $user_detail->country = $request->country;
+
+            $user_detail->zip_code = $request->zip_code;
+
+            $user_detail->save();
+
+
+            DB::commit();
+
+            return response(['message' => 'Updated !'], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     /**
@@ -762,7 +1014,7 @@ class UserController extends Controller
         $shipping_address['address'] = $request->address;
         $shipping_address['city'] = $request->city;
         $shipping_address['state'] = $request->state;
-        $shipping_address['country'] =$request->country;
+        $shipping_address['country'] = $request->country;
 
         if(!empty($customer->userDetail->shipping_addresses))
         {

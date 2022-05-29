@@ -53,6 +53,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('update-official/{user_official_id}', 'UserController@updateOfficial');
 
+            Route::post('update-customer/{customer_id}', 'UserController@updateCustomer');
+
+            Route::post('update-supplier/{supplier_id}', 'UserController@updateSupplier');
+
 
             Route::get('customer/get-shipping-addresses/{customer_id}', 'UserController@getShippingAddresses');
 
