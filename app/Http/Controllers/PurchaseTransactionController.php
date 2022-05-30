@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\PurchaseTransaction;
+use App\Models\PurchaseVariation;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -159,7 +160,26 @@ class PurchaseTransactionController extends Controller
             return response(['message' => 'Purchase Transaction not found !'], 404);
         }
 
-        return response(['purchase_variations' => $purchase_transaction->purchaseVariations], 200);
+        $purchase_variations = PurchaseVariation::join('purchase_transactions as pt', 'pt.id', '=', 'purchase_variations.purchase_transaction_id')
+            ->join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->select(
+
+                'purchase_variations.id',
+                'pt.reference_no as purchase_reference',
+                'p.name',
+                'p.sku',
+                DB::raw('IF(purchase_variations.serial is null, "N/A", purchase_variations.serial) as imei'),
+                'purchase_variations.quantity_purchased',
+                'purchase_variations.quantity_available',
+                'purchase_variations.quantity_sold',
+                'purchase_variations.purchase_price',
+                'purchase_variations.risk_fund'
+
+            )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
+            ->orderBy('purchase_variations.created_at', 'desc')
+            ->get();
+
+        return response(['purchase_variations' => $purchase_variations], 200);
     }
 
 

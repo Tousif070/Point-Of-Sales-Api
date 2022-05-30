@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ExpenseCategory;
 use App\Models\ExpenseReference;
 use App\Models\ExpenseTransaction;
+use App\Models\User;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -166,9 +167,12 @@ class ExpenseTransactionController extends Controller
 
         $expense_references = ExpenseReference::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
+        $expense_for = User::select(['id', 'first_name'])->where('type', '=', 1)->orderBy('first_name', 'asc')->get();
+
         return response([
             'expense_categories' => $expense_categories,
-            'expense_references' => $expense_references
+            'expense_references' => $expense_references,
+            'expense_for' => $expense_for
         ], 200);
     }
 

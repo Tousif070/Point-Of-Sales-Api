@@ -23,7 +23,23 @@ class PurchaseVariationController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $purchase_variations = PurchaseVariation::all();
+        $purchase_variations = PurchaseVariation::join('purchase_transactions as pt', 'pt.id', '=', 'purchase_variations.purchase_transaction_id')
+            ->join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->select(
+
+                'purchase_variations.id',
+                'pt.reference_no as purchase_reference',
+                'p.name',
+                'p.sku',
+                DB::raw('IF(purchase_variations.serial is null, "N/A", purchase_variations.serial) as imei'),
+                'purchase_variations.quantity_purchased',
+                'purchase_variations.quantity_available',
+                'purchase_variations.quantity_sold',
+                'purchase_variations.purchase_price',
+                'purchase_variations.risk_fund'
+
+            )->orderBy('purchase_variations.created_at', 'desc')
+            ->get();
 
         return response(['purchase_variations' => $purchase_variations], 200);
     }
@@ -107,6 +123,16 @@ class PurchaseVariationController extends Controller
             $purchase_transaction->amount += ($purchase_variation->purchase_price * $purchase_variation->quantity_purchased);
 
             $purchase_transaction->save();
+
+
+            $product = Product::find($purchase_variation->product_id);
+
+
+            $purchase_variation->purchase_reference = $purchase_transaction->reference_no;
+
+            $purchase_variation->name = $product->name;
+
+            $purchase_variation->sku = $product->sku;
 
 
             DB::commit();
