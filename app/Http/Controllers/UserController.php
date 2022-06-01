@@ -549,7 +549,11 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response(['message' => 'Username already exists !'], 409);
+                    return response([
+                        'errors' => [
+                            'username' => ['Username already exists !']
+                        ]
+                    ], 409);
                 }
             }
 
@@ -563,7 +567,11 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response(['message' => 'Email already exists !'], 409);
+                    return response([
+                        'errors' => [
+                            'email' => ['Email already exists !']
+                        ]
+                    ], 409);
                 }
             }
 
@@ -683,7 +691,11 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response(['message' => 'Username already exists !'], 409);
+                    return response([
+                        'errors' => [
+                            'username' => ['Username already exists !']
+                        ]
+                    ], 409);
                 }
             }
 
@@ -697,7 +709,11 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response(['message' => 'Email already exists !'], 409);
+                    return response([
+                        'errors' => [
+                            'email' => ['Email already exists !']
+                        ]
+                    ], 409);
                 }
             }
 
@@ -821,7 +837,11 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response(['message' => 'Username already exists !'], 409);
+                    return response([
+                        'errors' => [
+                            'username' => ['Username already exists !']
+                        ]
+                    ], 409);
                 }
             }
 
@@ -835,7 +855,11 @@ class UserController extends Controller
                 }
                 else
                 {
-                    return response(['message' => 'Email already exists !'], 409);
+                    return response([
+                        'errors' => [
+                            'email' => ['Email already exists !']
+                        ]
+                    ], 409);
                 }
             }
 
