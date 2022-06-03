@@ -27,7 +27,9 @@ class CreateUserDetailsTable extends Migration
 
             $table->string('business_website')->nullable();
 
-            $table->string('tax_exemption_certificate')->nullable();
+            $table->string('tax_id')->nullable();
+
+            $table->string('license_certificate')->nullable();
 
             $table->string('contact_no');
 

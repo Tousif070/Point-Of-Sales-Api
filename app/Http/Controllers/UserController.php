@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Storage;
 use DB;
 use Exception;
 
@@ -413,6 +414,8 @@ class UserController extends Controller
                 'users.email',
                 'ud.business_name',
                 'ud.business_website',
+                'ud.tax_id',
+                'ud.license_certificate',
                 'ud.contact_no',
                 'ud.address',
                 'ud.city',
@@ -646,6 +649,8 @@ class UserController extends Controller
 
             'business_name' => 'string | nullable',
             'business_website' => 'string | nullable',
+            'tax_id' => 'required | string',
+            'license_certificate' => 'file | max:2048 | nullable',
             'contact_no' => 'required | string',
             'address' => 'required | string',
             'city' => 'required | string',
@@ -729,6 +734,20 @@ class UserController extends Controller
             $user_detail->business_name = $request->business_name;
 
             $user_detail->business_website = $request->business_website;
+
+            $user_detail->tax_id = $request->tax_id;
+
+
+            // LICENSE CERTIFICATE
+            if(!empty($request->file('license_certificate')))
+            {
+                $file_name = date('YmdHis') . "_" . mt_rand(1, 999999) . "." . $request->file('license_certificate')->getClientOriginalExtension();
+
+                $file_path = $request->file('license_certificate')->storeAs('public/documents', $file_name);
+
+                $user_detail->license_certificate = asset('public' . Storage::url($file_path));
+            }
+
 
             $user_detail->contact_no = $request->contact_no;
 
