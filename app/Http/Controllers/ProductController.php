@@ -371,9 +371,25 @@ class ProductController extends Controller
             return response(['message' => 'Product not found !'], 404);
         }
 
-        return response([
-            'purchase_variations' => $product->purchaseVariations()->where('quantity_available', '>', 0)->get()
-        ], 200);
+        $purchase_variations = Product::join('purchase_variations as pv', 'pv.product_id', '=', 'products.id')
+            ->select(
+
+                'pv.id',
+                'products.name',
+                'products.sku',
+                DB::raw('IF(pv.serial is null, "N/A", pv.serial) as imei'),
+                'pv.quantity_purchased',
+                'pv.quantity_available',
+                'pv.quantity_sold',
+                'pv.purchase_price',
+                'pv.risk_fund'
+
+            )->where('products.id', '=', $product_id)
+            ->where('pv.quantity_available', '>', 0)
+            ->orderBy('pv.created_at', 'desc')
+            ->get();
+
+        return response(['purchase_variations' => $purchase_variations], 200);
     }
 
 
