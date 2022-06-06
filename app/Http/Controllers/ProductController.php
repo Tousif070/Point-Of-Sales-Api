@@ -165,12 +165,12 @@ class ProductController extends Controller
 
             $product->condition = $request->condition;
 
-            $product->size = $request->size;
+            $product->size = $request->size . " Inch";
 
             $model_name = ProductModel::find($request->product_model_id)->name;
 
             // PRODUCT NAME STORED WITH A SPECIFIC FORMAT
-            $product->name = $model_name . " " . $request->color . " " . $request->ram . "/" . $request->storage . " " . $request->condition;
+            $product->name = $model_name . " " . $product->color . " " . $product->ram . "/" . $product->storage . " " . $product->condition;
 
             $product->save();
 
@@ -276,14 +276,14 @@ class ProductController extends Controller
 
             $product->condition = $request->condition;
 
-            $product->wattage = $request->wattage;
+            $product->wattage = $request->wattage . "W";
 
             $product->type = $request->type;
 
             $model_name = ProductModel::find($request->product_model_id)->name;
 
             // PRODUCT NAME STORED WITH A SPECIFIC FORMAT
-            $product->name = $model_name . " " . $request->color . " " . $request->wattage . "/" . $request->type . " " . $request->condition;
+            $product->name = $model_name . " " . $product->color . " " . $product->wattage . "/" . $product->type . " " . $product->condition;
 
             $product->save();
 
