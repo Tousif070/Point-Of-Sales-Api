@@ -678,6 +678,23 @@ class UserController extends Controller
             'pin_number.min' => 'Pin number should be minimum of 5 digits !'
         ]);
 
+
+        // CUSTOM VALIDATION FOR LICENSE CERTIFICATE
+        if(!empty($request->file('license_certificate')))
+        {
+            $extension = $request->file('license_certificate')->getClientOriginalExtension();
+
+            if(!($extension == "pdf" || $extension == "jpg" || $extension == "png"))
+            {
+                return response([
+                    'errors' => [
+                        'license_certificate' => ['Only pdf, jpg & png formats are allowed !']
+                    ]
+                ], 409);
+            }
+        }
+
+
         DB::beginTransaction();
 
         try {
