@@ -89,7 +89,7 @@ class ProductController extends Controller
 
 
         $request->validate([
-            'name' => 'required | string',
+            // 'name' => 'required | string', NOT NEEDED FOR NOW
             'brand_id' => 'required | numeric',
             // 'product_category_id' => 'required | numeric', NOT NEEDED FOR NOW
             'product_model_id' => 'required | numeric',
@@ -100,8 +100,10 @@ class ProductController extends Controller
             'condition' => 'required | string',
             'size' => 'required | string',
         ], [
-            'name.required' => 'Please enter the name !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            // THE FOLLOWING IS NOT NEEDED FOR NOW
+            // 'name.required' => 'Please enter the name !',
+            // 'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'brand_id.required' => 'Please select the brand !',
             'brand_id.numeric' => 'Brand ID should be numeric !',
@@ -139,8 +141,6 @@ class ProductController extends Controller
 
             $product = new Product();
 
-            $product->name = $request->name;
-
             $product->brand_id = $request->brand_id;
 
             // $product->product_category_id = $request->product_category_id; NOT NEEDED FOR NOW
@@ -166,6 +166,11 @@ class ProductController extends Controller
             $product->condition = $request->condition;
 
             $product->size = $request->size;
+
+            $model_name = ProductModel::find($request->product_model_id)->name;
+
+            // PRODUCT NAME STORED WITH A SPECIFIC FORMAT
+            $product->name = $model_name . " " . $request->color . " " . $request->ram . "/" . $request->storage . " " . $request->condition;
 
             $product->save();
 
@@ -203,7 +208,7 @@ class ProductController extends Controller
         }
 
         $request->validate([
-            'name' => 'required | string',
+            // 'name' => 'required | string', NOT NEEDED FOR NOW
             'brand_id' => 'required | numeric',
             // 'product_category_id' => 'required | numeric', NOT NEEDED FOR NOW
             'product_model_id' => 'required | numeric',
@@ -213,8 +218,10 @@ class ProductController extends Controller
             'wattage' => 'required | string',
             'type' => 'required | string'
         ], [
-            'name.required' => 'Please enter the name !',
-            'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            // THE FOLLOWING IS NOT NEEDED FOR NOW
+            // 'name.required' => 'Please enter the name !',
+            // 'name.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'brand_id.required' => 'Please select the brand !',
             'brand_id.numeric' => 'Brand ID should be numeric !',
@@ -249,8 +256,6 @@ class ProductController extends Controller
 
             $product = new Product();
 
-            $product->name = $request->name;
-
             $product->brand_id = $request->brand_id;
 
             // $product->product_category_id = $request->product_category_id; NOT NEEDED FOR NOW
@@ -274,6 +279,11 @@ class ProductController extends Controller
             $product->wattage = $request->wattage;
 
             $product->type = $request->type;
+
+            $model_name = ProductModel::find($request->product_model_id)->name;
+
+            // PRODUCT NAME STORED WITH A SPECIFIC FORMAT
+            $product->name = $model_name . " " . $request->color . " " . $request->wattage . "/" . $request->type . " " . $request->condition;
 
             $product->save();
 
