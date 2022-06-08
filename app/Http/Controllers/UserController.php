@@ -109,6 +109,18 @@ class UserController extends Controller
             'pin_number.min' => 'Pin number should be minimum of 5 digits !'
         ]);
 
+        
+        // CUSTOM VALIDATION FOR PIN NUMBER
+        if(!is_numeric($request->pin_number))
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Pin Number should be numeric !']
+                ]
+            ], 409);
+        }
+
+
         DB::beginTransaction();
 
         try {
@@ -217,7 +229,7 @@ class UserController extends Controller
 
             $user->password = Hash::make("11111111");
 
-            $user->pin_number = 12345;
+            $user->pin_number = "12345";
 
             $user->type = 2;
 
@@ -309,7 +321,7 @@ class UserController extends Controller
 
             $user->password = Hash::make("11111111");
 
-            $user->pin_number = 12345;
+            $user->pin_number = "12345";
 
             $user->type = 3;
 
@@ -534,6 +546,18 @@ class UserController extends Controller
             'pin_number.min' => 'Pin number should be minimum of 5 digits !'
         ]);
 
+
+        // CUSTOM VALIDATION FOR PIN NUMBER
+        if(!is_numeric($request->pin_number))
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Pin Number should be numeric !']
+                ]
+            ], 409);
+        }
+
+
         DB::beginTransaction();
 
         try {
@@ -692,6 +716,17 @@ class UserController extends Controller
                     ]
                 ], 409);
             }
+        }
+
+
+        // CUSTOM VALIDATION FOR PIN NUMBER
+        if(!is_numeric($request->pin_number))
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Pin Number should be numeric !']
+                ]
+            ], 409);
         }
 
 
@@ -854,6 +889,18 @@ class UserController extends Controller
             'pin_number.numeric' => 'Only numbers are allowed !',
             'pin_number.min' => 'Pin number should be minimum of 5 digits !'
         ]);
+
+
+        // CUSTOM VALIDATION FOR PIN NUMBER
+        if(!is_numeric($request->pin_number))
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Pin Number should be numeric !']
+                ]
+            ], 409);
+        }
+
 
         DB::beginTransaction();
 
