@@ -548,13 +548,16 @@ class UserController extends Controller
 
 
         // CUSTOM VALIDATION FOR PIN NUMBER
-        if(!is_numeric($request->pin_number))
+        if(!empty($request->pin_number))
         {
-            return response([
-                'errors' => [
-                    'pin_number' => ['Pin Number should be numeric !']
-                ]
-            ], 409);
+            if(!is_numeric($request->pin_number))
+            {
+                return response([
+                    'errors' => [
+                        'pin_number' => ['Pin Number should be numeric !']
+                    ]
+                ], 409);
+            }
         }
 
 
@@ -720,13 +723,16 @@ class UserController extends Controller
 
 
         // CUSTOM VALIDATION FOR PIN NUMBER
-        if(!is_numeric($request->pin_number))
+        if(!empty($request->pin_number))
         {
-            return response([
-                'errors' => [
-                    'pin_number' => ['Pin Number should be numeric !']
-                ]
-            ], 409);
+            if(!is_numeric($request->pin_number))
+            {
+                return response([
+                    'errors' => [
+                        'pin_number' => ['Pin Number should be numeric !']
+                    ]
+                ], 409);
+            }
         }
 
 
@@ -892,13 +898,16 @@ class UserController extends Controller
 
 
         // CUSTOM VALIDATION FOR PIN NUMBER
-        if(!is_numeric($request->pin_number))
+        if(!empty($request->pin_number))
         {
-            return response([
-                'errors' => [
-                    'pin_number' => ['Pin Number should be numeric !']
-                ]
-            ], 409);
+            if(!is_numeric($request->pin_number))
+            {
+                return response([
+                    'errors' => [
+                        'pin_number' => ['Pin Number should be numeric !']
+                    ]
+                ], 409);
+            }
         }
 
 
