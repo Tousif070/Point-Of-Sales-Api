@@ -142,6 +142,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'user.cua')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.cua";
+            $permission->alias = "Customer User Association (CUA)";
+            $permission->description = "To assign a customer under a user";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
         $permission = Permission::where('name', '=', 'user.assign-role')->first();
 
         if($permission == null)

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\Role;
+use App\Models\CustomerUserAssociation;
 use Illuminate\Support\Facades\Hash;
 use Storage;
 use DB;
@@ -1213,6 +1214,75 @@ class UserController extends Controller
         return response([
             'shipping_addresses' => $shipping_addresses
         ], 200);
+    }
+
+
+    // FOR CUSTOMER USER ASSOCIATION
+
+    public function cuaIndex()
+    {
+        if(!auth()->user()->hasPermission("user.cua"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $cua_list = CustomerUserAssociation::join('users as u', 'u.id', '=', 'customer_user_associations.customer_id')
+            ->join('users as u2', 'u2.id', '=', 'customer_user_associations.user_official_id')
+            ->select(
+
+                'customer_user_associations.id',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as user_official')
+
+            )->orderBy('u.first_name', 'asc')
+            ->get();
+        
+        return response(['cua_list' => $cua_list], 200);
+    }
+
+    public function cuaAssign(Request $request)
+    {
+        if(!auth()->user()->hasPermission("user.cua"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            $customer = User::where('id', '=', $request->customer_id)->where('type', '=', 2)->first();
+
+            if($customer == null)
+            {
+                return response(['message' => 'Customer not found !'], 404);
+            }
+
+            $user_official = User::where('id', '=', $request->user_official_id)->where('type', '=', 1)->first();
+
+            if($user_official == null)
+            {
+                return response(['message' => 'User Official not found !'], 404);
+            }
+
+            $customer->associatedUserOfficial()->sync([$user_official->id]);
+
+            DB::commit();
+
+            return response([
+                'message' => $customer->first_name . " " . $customer->last_name . " has been assigned under " . $user_official->first_name . " ". $user_official->last_name
+            ], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
 

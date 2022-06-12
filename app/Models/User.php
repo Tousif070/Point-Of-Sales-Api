@@ -57,6 +57,16 @@ class User extends Authenticatable
         return $this->hasOne('App\Models\UserDetail');
     }
 
+    public function associatedCustomers()
+    {
+        return $this->belongsToMany('App\Models\User', 'customer_user_associations', 'user_official_id', 'customer_id');
+    }
+
+    public function associatedUserOfficial() // THE METHOD NAME IS KEPT SINGULAR BECAUSE A CUSTOMER WILL ALWAYS BE ASSOCIATED WITH ONLY ONE USER OFFICIAL. BUT THE RELATIONSHIP IS REPRESENTED USING A MANY TO MANY RELATIONSHIP AS THIS OFFERS MORE CONTROL AND FLEXIBILITY OVER THIS FEATURE
+    {
+        return $this->belongsToMany('App\Models\User', 'customer_user_associations', 'customer_id', 'user_official_id');
+    }
+
     public function hasPermission($permission_name)
     {
         foreach($this->roles as $role)

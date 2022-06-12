@@ -65,6 +65,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::post('customer/edit-shipping-address/{customer_id}', 'UserController@editShippingAddress');
 
             Route::post('customer/delete-shipping-address/{customer_id}', 'UserController@deleteShippingAddress');
+
+
+            Route::get('cua-index', 'UserController@cuaIndex');
+
+            Route::post('cua-assign', 'UserController@cuaAssign');
             
 
             Route::get('assign-role-view/{user_id}', 'UserController@assignRoleView');
