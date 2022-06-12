@@ -36,7 +36,7 @@ class ExpenseTransactionController extends Controller
                 'ec.name as category',
                 'expense_transactions.amount',
                 'expense_transactions.payment_status',
-                DB::raw('(select first_name from users where id = expense_transactions.expense_for) as expense_for'),
+                DB::raw('(select CONCAT_WS(" ", first_name, last_name) from users where id = expense_transactions.expense_for) as expense_for'),
                 'expense_transactions.expense_note',
                 DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(expense_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
 
@@ -167,7 +167,7 @@ class ExpenseTransactionController extends Controller
 
         $expense_references = ExpenseReference::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
-        $expense_for = User::select(['id', 'first_name'])->where('type', '=', 1)->orderBy('first_name', 'asc')->get();
+        $expense_for = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 1)->orderBy('first_name', 'asc')->get();
 
         return response([
             'expense_categories' => $expense_categories,

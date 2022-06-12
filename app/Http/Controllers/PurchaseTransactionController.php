@@ -30,7 +30,7 @@ class PurchaseTransactionController extends Controller
                 'purchase_transactions.id',
                 DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'purchase_transactions.reference_no',
-                'u2.first_name as supplier',
+                DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as supplier'),
                 'purchase_transactions.purchase_status',
                 DB::raw(
                     'IF(
