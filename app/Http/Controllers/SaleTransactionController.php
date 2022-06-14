@@ -216,8 +216,19 @@ class SaleTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $purchase_variation = PurchaseVariation::where('serial', '=', $request->imei)
-            ->where('quantity_available', '>', 0)
+        $purchase_variation = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->select(
+
+                'purchase_variations.id',
+                'p.id as product_id',
+                'p.name',
+                'p.sku',
+                'purchase_variations.serial as imei',
+                'purchase_variations.quantity_available',
+                'purchase_variations.purchase_price',
+
+            )->where('purchase_variations.serial', '=', $request->imei)
+            ->where('purchase_variations.quantity_available', '>', 0)
             ->first();
         
         if($purchase_variation == null)
