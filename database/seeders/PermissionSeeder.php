@@ -588,5 +588,36 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - PAYMENT METHOD
+
+        $permission = Permission::where('name', '=', 'payment-method.index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment-method.index";
+            $permission->alias = "View Payment Methods";
+            $permission->description = "To view the list of payment methods";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'payment-method.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment-method.store";
+            $permission->alias = "Create Payment Method";
+            $permission->description = "To store a new payment method";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
+
     }
 }

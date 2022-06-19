@@ -223,6 +223,15 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         });
 
+
+        Route::group(['prefix' => 'payment-method'], function() {
+
+            Route::get('index', 'PaymentMethodController@index');
+            
+            Route::post('store', 'PaymentMethodController@store');
+
+        });
+
     });
 
 });
