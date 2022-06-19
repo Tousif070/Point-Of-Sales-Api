@@ -216,6 +216,11 @@ class SaleTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
+        if(empty($request->imei))
+        {
+            return response(['message' => 'Nothing to scan !'], 404);
+        }
+
         $purchase_variation = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
             ->select(
 
