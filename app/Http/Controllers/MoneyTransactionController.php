@@ -28,7 +28,7 @@ class MoneyTransactionController extends Controller
 
         if($money_transaction != null)
         {
-            return $money_transaction->finalize($request->all());
+            return $money_transaction->finalize($request);
         }
         else
         {

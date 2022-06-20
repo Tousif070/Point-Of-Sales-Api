@@ -619,5 +619,22 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - MONEY TRANSACTION
+
+        $permission = Permission::where('name', '=', 'money-transaction.sale-payment')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "money-transaction.sale-payment";
+            $permission->alias = "Make Sale Payment";
+            $permission->description = "To make sale payment for sale invoice";
+            $permission->permission_group = "Money Transaction";
+
+            $permission->save();
+        }
+
+
     }
 }
