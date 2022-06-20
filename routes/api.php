@@ -232,6 +232,13 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         });
 
+
+        Route::group(['prefix' => 'money-transaction'], function() {
+
+            Route::post('store', 'MoneyTransactionController@store');
+
+        });
+
     });
 
 });

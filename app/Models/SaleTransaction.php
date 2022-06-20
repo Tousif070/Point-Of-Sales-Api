@@ -21,4 +21,9 @@ class SaleTransaction extends Model
     {
         return $this->hasMany('App\Models\SaleVariation');
     }
+
+    public function payments()
+    {
+        return $this->hasMany('App\Models\Payment', 'transaction_id', 'id');
+    }
 }
