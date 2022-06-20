@@ -377,7 +377,8 @@ class UserController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $user_official = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+        $user_official = User::with(['roles'])
+            ->join('user_details as ud', 'ud.user_id', '=', 'users.id')
             ->select(
 
                 'users.id',

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
 use App\Models\SaleVariation;
 use App\Models\PurchaseVariation;
+use App\Models\User;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -259,6 +260,15 @@ class SaleTransactionController extends Controller
         }
 
         return response(['sale_variations' => $sale_transaction->saleVariations], 200);
+    }
+
+    public function storeSaleView()
+    {
+        $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+
+        return response([
+            'customers' => $customers
+        ], 200);
     }
 
 

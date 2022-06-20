@@ -150,6 +150,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::group(['prefix' => 'purchase'], function() {
 
             Route::get('index', 'PurchaseTransactionController@index');
+
+            Route::get('store-purchase-view', 'PurchaseTransactionController@storePurchaseView');
             
             Route::post('store', 'PurchaseTransactionController@store');
 
@@ -174,6 +176,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         Route::group(['prefix' => 'sale'], function() {
 
             Route::get('index', 'SaleTransactionController@index');
+
+            Route::get('store-sale-view', 'SaleTransactionController@storeSaleView');
 
             Route::post('store', 'SaleTransactionController@store');
 

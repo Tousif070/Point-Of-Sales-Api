@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PurchaseTransaction;
 use App\Models\PurchaseVariation;
+use App\Models\User;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -186,6 +187,15 @@ class PurchaseTransactionController extends Controller
             ->get();
 
         return response(['purchase_variations' => $purchase_variations], 200);
+    }
+
+    public function storePurchaseView()
+    {
+        $suppliers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 3)->orderBy('first_name', 'asc')->get();
+
+        return response([
+            'suppliers' => $suppliers
+        ], 200);
     }
 
 
