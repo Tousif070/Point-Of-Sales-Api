@@ -225,5 +225,14 @@ class PurchaseVariationController extends Controller
         return response(['average_purchase_prices' => $average_purchase_prices], 200);
     }
 
+    public function storePurchaseVariationView()
+    {
+        $products = Product::select(['id', 'name', 'sku'])->orderBy('sku', 'asc')->get();
+
+        return response([
+            'products' => $products
+        ], 200);
+    }
+
 
 }
