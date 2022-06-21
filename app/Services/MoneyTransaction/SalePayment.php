@@ -18,15 +18,16 @@ class SalePayment implements MoneyTransactionContract
         }
 
         $request->validate([
-            'payment_for' => 'required | string',
+            // 'payment_for' => 'required | string', NOT NEEDED FOR NOW
             'transaction_id' => 'required | numeric',
             'amount' => 'required | numeric',
             'payment_date' => 'required | date',
             'payment_method_id' => 'required | numeric',
             'payment_note' => 'string | nullable'
         ], [
-            'payment_for.required' => 'Payment for is required !',
-            'payment_for.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+            // THE FOLLOWING IS NOT NEEDED FOR NOW
+            // 'payment_for.required' => 'Payment for is required !',
+            // 'payment_for.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
             'transaction_id.required' => 'Please specify the transaction !',
             'transaction_id.numeric' => 'Transaction ID should be numeric !',
@@ -47,13 +48,14 @@ class SalePayment implements MoneyTransactionContract
         // CALCULATING THE DUE AMOUNT
         $sale_transaction = SaleTransaction::find($request->transaction_id);
         
-        $due = $sale_transaction->amount - $sale_transaction->payments()->sum('amount');
+        $due = $sale_transaction->amount - $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount');
 
         if($due == 0)
         {
             return response(['message' => 'This Sale Invoice is already paid !'], 409);
         }
-        else if($request->amount < 1 || $request->amount > $due)
+        
+        if($request->amount < 1 || $request->amount > $due)
         {
             return response(['message' => 'Amount cannot be less than 1 or greater than the due amount !'], 409);
         }
@@ -65,7 +67,7 @@ class SalePayment implements MoneyTransactionContract
 
             $payment = new Payment();
 
-            $payment->payment_for = $request->payment_for;
+            $payment->payment_for = "sale";
 
             $payment->transaction_id = $request->transaction_id;
 
@@ -84,7 +86,7 @@ class SalePayment implements MoneyTransactionContract
             $payment->save();
 
 
-            $total_paid = $sale_transaction->payments()->sum('amount');
+            $total_paid = $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount');
 
             if($total_paid < $sale_transaction->amount)
             {
