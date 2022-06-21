@@ -69,6 +69,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('cua-index', 'UserController@cuaIndex');
 
+            Route::get('cua-assign-view', 'UserController@cuaAssignView');
+
             Route::post('cua-assign', 'UserController@cuaAssign');
             
 

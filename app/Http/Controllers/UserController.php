@@ -1241,6 +1241,18 @@ class UserController extends Controller
         return response(['cua_list' => $cua_list], 200);
     }
 
+    public function cuaAssignView()
+    {
+        $user_officials = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 1)->orderBy('first_name', 'asc')->get();
+
+        $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+
+        return response([
+            'user_officials' => $user_officials,
+            'customers' => $customers
+        ], 200);
+    }
+
     public function cuaAssign(Request $request)
     {
         if(!auth()->user()->hasPermission("user.cua"))
