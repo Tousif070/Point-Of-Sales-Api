@@ -7,10 +7,12 @@ use App\Models\User;
 use App\Models\UserDetail;
 use App\Models\Role;
 use App\Models\CustomerUserAssociation;
+use App\Models\CustomerCredit;
 use Illuminate\Support\Facades\Hash;
 use Storage;
 use DB;
 use Exception;
+use Carbon\Carbon;
 
 class UserController extends Controller
 {
@@ -252,6 +254,8 @@ class UserController extends Controller
             $user_detail->country = "";
 
             $user_detail->zip_code = "";
+
+            $user_detail->available_credit = 0.00;
 
             $user_detail->save();
 
@@ -1285,6 +1289,108 @@ class UserController extends Controller
             return response([
                 'message' => $customer->first_name . " " . $customer->last_name . " has been assigned under " . $user_official->first_name . " ". $user_official->last_name
             ], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+
+    // FOR CUSTOMER CREDIT
+
+    public function getCustomerCreditHistory($customer_id)
+    {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+        $customer_credit_history = CustomerCredit::join('users as u', 'u.id', '=', 'customer_credits.finalized_by')
+            ->select(
+
+                DB::raw('DATE_FORMAT(customer_credits.created_at, "%m/%d/%Y") as date'),
+                'customer_credits.amount',
+                'customer_credits.type',
+                'customer_credits.sale_invoice',
+                'customer_credits.sale_return_invoice',
+                'customer_credits.note',
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(customer_credits.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+
+            )->where('customer_credits.customer_id', '=', $customer_id)
+            ->orderBy('customer_credits.created_at', 'desc')
+            ->get();
+        
+        return response(['customer_credit_history' => $customer_credit_history], 200);
+    }
+
+    public function storeCustomerCredit(Request $request, $customer_id)
+    {
+        if(!auth()->user()->hasPermission("user.index-customer"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'amount' => 'required | numeric',
+            'note' => 'string | nullable'
+        ], [
+            'amount.required' => 'Please enter the amount !',
+            'amount.numeric' => 'Amount should be numeric !',
+            'note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
+        ]);
+
+
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+
+        DB::beginTransaction();
+
+        try {
+
+            $customer_credit = new CustomerCredit();
+
+            $customer_credit->amount = $request->amount;
+
+            $customer_credit->type = "add_money";
+
+            $customer_credit->customer_id = $customer_id;
+
+            $customer_credit->note = $request->note;
+
+            $customer_credit->finalized_by = auth()->user()->id;
+
+            $customer_credit->finalized_at = Carbon::now();
+
+            $customer_credit->save();
+
+
+            $customer->userDetail->available_credit += $request->amount;
+
+            $customer->userDetail->save();
+
+
+            DB::commit();
+
+            return response(['message' => 'Amount Added Successfully !'], 201);
 
         } catch(Exception $ex) {
 

@@ -72,6 +72,11 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('cua-assign-view', 'UserController@cuaAssignView');
 
             Route::post('cua-assign', 'UserController@cuaAssign');
+
+
+            Route::get('customer/get-customer-credit-history/{customer_id}', 'UserController@getCustomerCreditHistory');
+
+            Route::post('customer/store-customer-credit/{customer_id}', 'UserController@storeCustomerCredit');
             
 
             Route::get('assign-role-view/{user_id}', 'UserController@assignRoleView');
