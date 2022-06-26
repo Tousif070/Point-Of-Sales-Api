@@ -192,6 +192,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('imei-scan', 'SaleTransactionController@imeiScan');
 
+            Route::get('imei-scan-alternative', 'SaleTransactionController@imeiScanAlternative');
+
+            Route::get('purchase-variations-for-sale', 'SaleTransactionController@purchaseVariationsForSale');
+
             Route::get('get-sale-variations/{sale_transaction_id}', 'SaleTransactionController@getSaleVariations');
 
         });

@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
 use App\Models\SaleVariation;
 use App\Models\PurchaseVariation;
+use App\Models\ProductModel;
+use App\Models\Product;
 use App\Models\User;
 use DB;
 use Exception;
@@ -245,6 +247,75 @@ class SaleTransactionController extends Controller
         return response(['purchase_variation' => $purchase_variation], 200);
     }
 
+    public function imeiScanAlternative(Request $request)
+    {
+        if(!auth()->user()->hasPermission("sale.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        if(empty($request->purchase_variation_id))
+        {
+            return response(['message' => 'Purchase Variation not specified !'], 404);
+        }
+
+        $purchase_variation = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->select(
+
+                'purchase_variations.id',
+                'p.id as product_id',
+                'p.name',
+                'p.sku',
+                DB::raw('IF(purchase_variations.serial is null, "N/A", purchase_variations.serial) as imei'),
+                'purchase_variations.quantity_available',
+                'purchase_variations.purchase_price',
+
+            )->where('purchase_variations.id', '=', $request->purchase_variation_id)
+            ->where('purchase_variations.quantity_available', '>', 0)
+            ->first();
+        
+        if($purchase_variation == null)
+        {
+            return response(['message' => 'Not Available !'], 404);
+        }
+
+        return response(['purchase_variation' => $purchase_variation], 200);
+    }
+
+    public function purchaseVariationsForSale(Request $request)
+    {
+        if(!auth()->user()->hasPermission("sale.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        if(empty($request->product_model_id) && empty($request->product_id))
+        {
+            return response(['message' => 'No result !'], 404);
+        }
+
+        $purchase_variations = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->select(
+
+                'purchase_variations.id',
+                'p.name',
+                'p.sku'
+
+            )->where('purchase_variations.quantity_available', '>', 0);
+            
+        if(!empty($request->product_model_id))
+        {
+            $purchase_variations->where('p.product_model_id', '=', $request->product_model_id);
+        }
+        
+        if(!empty($request->product_id))
+        {
+            $purchase_variations->where('p.id', '=', $request->product_id);
+        }
+        
+        return response(['purchase_variations' => $purchase_variations->get()], 200);
+    }
+
     public function getSaleVariations($sale_transaction_id)
     {
         if(!auth()->user()->hasPermission("sale.index"))
@@ -284,8 +355,14 @@ class SaleTransactionController extends Controller
     {
         $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
 
+        $product_models = ProductModel::select(['id', 'name'])->orderBy('name', 'asc')->get();
+
+        $products = Product::select(['id', 'name', 'sku'])->orderBy('sku', 'asc')->get();
+
         return response([
-            'customers' => $customers
+            'customers' => $customers,
+            'product_models' => $product_models,
+            'products' => $products
         ], 200);
     }
 
