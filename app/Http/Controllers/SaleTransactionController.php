@@ -259,7 +259,25 @@ class SaleTransactionController extends Controller
             return response(['message' => 'Sale Transaction not found !'], 404);
         }
 
-        return response(['sale_variations' => $sale_transaction->saleVariations], 200);
+        $sale_variations = SaleVariation::join('sale_transactions as st', 'st.id', '=', 'sale_variations.sale_transaction_id')
+            ->join('products as p', 'p.id', '=', 'sale_variations.product_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sale_variations.purchase_variation_id')
+            ->select(
+
+                'sale_variations.id',
+                'st.invoice_no',
+                'p.name',
+                'p.sku',
+                DB::raw('IF(pv.serial is null, "N/A", pv.serial) as imei'),
+                DB::raw('sale_variations.quantity - sale_variations.return_quantity as quantity'),
+                'sale_variations.selling_price',
+                'sale_variations.purchase_price'
+
+            )->where('sale_variations.sale_transaction_id', '=', $sale_transaction_id)
+            ->where(DB::raw('sale_variations.quantity - sale_variations.return_quantity'), '>', 0)
+            ->get();
+
+        return response(['sale_variations' => $sale_variations], 200);
     }
 
     public function storeSaleView()
