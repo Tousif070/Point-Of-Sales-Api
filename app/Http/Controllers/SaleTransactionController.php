@@ -291,7 +291,7 @@ class SaleTransactionController extends Controller
 
         if(empty($request->product_model_id) && empty($request->product_id))
         {
-            return response(['message' => 'No result !'], 404);
+            return response(['purchase_variations' => []], 200);
         }
 
         $purchase_variations = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
