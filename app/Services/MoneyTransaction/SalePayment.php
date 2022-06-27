@@ -48,9 +48,9 @@ class SalePayment implements MoneyTransactionContract
         // CALCULATING THE DUE AMOUNT
         $sale_transaction = SaleTransaction::find($request->transaction_id);
         
-        $due = $sale_transaction->amount - $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount');
+        $due = $sale_transaction->amount - $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount') - $sale_transaction->saleReturnTransactions->sum('amount');
 
-        if($due == 0)
+        if($due < 1)
         {
             return response(['message' => 'This Sale Invoice is already paid !'], 409);
         }
@@ -88,11 +88,13 @@ class SalePayment implements MoneyTransactionContract
 
             $total_paid = $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount');
 
-            if($total_paid < $sale_transaction->amount)
+            $total_payable = $sale_transaction->amount - $sale_transaction->saleReturnTransactions->sum('amount');
+
+            if($total_paid < $total_payable)
             {
                 $sale_transaction->payment_status = "Partial";
             }
-            else if($total_paid == $sale_transaction->amount)
+            else if($total_paid == $total_payable)
             {
                 $sale_transaction->payment_status = "Paid";
             }

@@ -7,6 +7,8 @@ use App\Models\SaleReturnTransaction;
 use App\Models\SaleVariation;
 use App\Models\SaleReturnVariation;
 use App\Models\PurchaseVariation;
+use App\Models\User;
+use App\Models\CustomerCredit;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -135,6 +137,9 @@ class SaleReturnTransactionController extends Controller
             $sale_return_transaction->save();
 
 
+            $this->extras($sale_return_transaction);
+
+
             DB::commit();
 
             return response(['sale_return_transaction' => $sale_return_transaction], 201);
@@ -200,6 +205,56 @@ class SaleReturnTransactionController extends Controller
         }
 
         return response(['sale_return_variations' => $sale_return_transaction->saleReturnVariations], 200);
+    }
+
+    public function extras($srt)
+    {
+        $st = $srt->saleTransaction;
+
+        $total_paid = $st->payments()->where('payment_for', '=', 'sale')->sum('amount');
+
+        $total_payable = $st->amount - $st->saleReturnTransactions->sum('amount');
+
+        // CHECKING FOR CUSTOMER CREDIT
+        if($total_paid > $total_payable)
+        {
+            $credit_amount = $total_paid - $total_payable;
+
+            $customer_credit = new CustomerCredit();
+
+            $customer_credit->amount = $credit_amount;
+
+            $customer_credit->type = "sale_return";
+
+            $customer_credit->sale_invoice = $st->invoice_no;
+
+            $customer_credit->sale_return_invoice = $srt->invoice_no;
+
+            $customer_credit->customer_id = $st->customer_id;
+
+            $customer_credit->note = "From sale return";
+
+            $customer_credit->finalized_by = auth()->user()->id;
+
+            $customer_credit->finalized_at = Carbon::now();
+
+            $customer_credit->save();
+
+
+            $customer = User::find($st->customer_id);
+
+            $customer->userDetail->available_credit += $credit_amount;
+
+            $customer->userDetail->save();
+        }
+
+        // CHANGING PAYMENT STATUS IF NEEDED
+        if($st->payment_status != "Paid" && $total_paid >= $total_payable)
+        {
+            $st->payment_status = "Paid";
+
+            $st->save();
+        }
     }
 
 
