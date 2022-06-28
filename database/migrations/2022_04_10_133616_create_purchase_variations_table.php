@@ -30,6 +30,8 @@ class CreatePurchaseVariationsTable extends Migration
 
             $table->string('serial')->unique()->nullable();
 
+            $table->string('group')->unique()->nullable();
+
             $table->integer('quantity_purchased')->unsigned();
 
             $table->integer('quantity_available')->unsigned();

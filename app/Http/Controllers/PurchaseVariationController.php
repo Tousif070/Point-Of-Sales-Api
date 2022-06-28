@@ -118,6 +118,14 @@ class PurchaseVariationController extends Controller
             $purchase_variation->save();
 
 
+            if($request->serial == "N/A")
+            {
+                $purchase_variation->group = "G-" . ($purchase_variation->id + 100);
+
+                $purchase_variation->save();
+            }
+
+
             $purchase_transaction = PurchaseTransaction::find($purchase_variation->purchase_transaction_id);
 
             $purchase_transaction->amount += ($purchase_variation->purchase_price * $purchase_variation->quantity_purchased);

@@ -264,6 +264,7 @@ class SaleTransactionController extends Controller
                 'p.name',
                 'p.sku',
                 DB::raw('IF(purchase_variations.serial is null, "N/A", purchase_variations.serial) as imei'),
+                DB::raw('IF(purchase_variations.group is null, "N/A", purchase_variations.group) as "group"'),
                 'purchase_variations.quantity_available',
                 'purchase_variations.purchase_price',
 
@@ -296,7 +297,10 @@ class SaleTransactionController extends Controller
 
                 'purchase_variations.id',
                 'p.name',
-                'p.sku'
+                'p.sku',
+                DB::raw('IF(purchase_variations.serial is null, "N/A", purchase_variations.serial) as imei'),
+                DB::raw('IF(purchase_variations.group is null, "N/A", purchase_variations.group) as "group"'),
+                'purchase_variations.quantity_available'
 
             )->where('purchase_variations.quantity_available', '>', 0);
             
