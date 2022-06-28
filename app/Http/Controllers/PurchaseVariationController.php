@@ -121,7 +121,7 @@ class PurchaseVariationController extends Controller
 
             if($request->serial == "N/A")
             {
-                $purchase_variation->group = "G-" . ($purchase_variation->id + 100);
+                $purchase_variation->group = "G" . ($purchase_variation->id + 100);
 
                 $purchase_variation->save();
             }
