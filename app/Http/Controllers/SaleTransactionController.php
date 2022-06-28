@@ -29,19 +29,16 @@ class SaleTransactionController extends Controller
 
         $sale_transactions = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.finalized_by')
             ->join('users as u2', 'u2.id', '=', 'sale_transactions.customer_id')
+            ->join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
             ->select(
 
                 'sale_transactions.id',
                 DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as customer'),
-                DB::raw(
-                    'IF(
-                        (select SUM(quantity) from sale_variations where sale_transaction_id = sale_transactions.id) is null, 0, (select SUM(quantity) from sale_variations where sale_transaction_id = sale_transactions.id)
-                    ) as total_items'
-                ),
+                DB::raw('SUM(sv.quantity - sv.return_quantity) as total_items'),
                 'sale_transactions.payment_status',
-                'sale_transactions.amount',
+                DB::raw('sale_transactions.amount - IFNULL((select SUM(amount) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0) as total_payable'),
                 DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(sale_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
 
             )->groupBy('sale_transactions.id')

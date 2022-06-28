@@ -26,6 +26,7 @@ class PurchaseTransactionController extends Controller
 
         $purchase_transactions = PurchaseTransaction::join('users as u', 'u.id', '=', 'purchase_transactions.finalized_by')
             ->join('users as u2', 'u2.id', '=', 'purchase_transactions.supplier_id')
+            ->leftJoin('purchase_variations as pv', 'pv.purchase_transaction_id', '=', 'purchase_transactions.id')
             ->select(
 
                 'purchase_transactions.id',
@@ -33,11 +34,7 @@ class PurchaseTransactionController extends Controller
                 'purchase_transactions.reference_no',
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as supplier'),
                 'purchase_transactions.purchase_status',
-                DB::raw(
-                    'IF(
-                        (select SUM(quantity_purchased) from purchase_variations where purchase_transaction_id = purchase_transactions.id) is null, 0, (select SUM(quantity_purchased) from purchase_variations where purchase_transaction_id = purchase_transactions.id)
-                    ) as total_items'
-                ),
+                DB::raw('IF(SUM(pv.quantity_purchased) is null, 0, SUM(pv.quantity_purchased)) as total_items'),
                 'purchase_transactions.payment_status',
                 'purchase_transactions.amount',
                 DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(purchase_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
