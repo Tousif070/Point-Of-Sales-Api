@@ -341,6 +341,7 @@ class SaleTransactionController extends Controller
                 'p.name',
                 'p.sku',
                 DB::raw('IF(pv.serial is null, "N/A", pv.serial) as imei'),
+                DB::raw('IF(pv.group is null, "N/A", pv.group) as "group"'),
                 DB::raw('sale_variations.quantity - sale_variations.return_quantity as quantity'),
                 'sale_variations.selling_price',
                 'sale_variations.purchase_price'

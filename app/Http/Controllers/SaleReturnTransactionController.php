@@ -27,7 +27,26 @@ class SaleReturnTransactionController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $sale_return_transactions = SaleReturnTransaction::all();
+        $sale_return_transactions = SaleReturnTransaction::join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
+            ->join('users as u', 'u.id', '=', 'sale_return_transactions.finalized_by')
+            ->join('users as u2', 'u2.id', '=', 'st.customer_id')
+            ->join('sale_return_variations as srv', 'srv.sale_return_transaction_id', '=', 'sale_return_transactions.id')
+            ->select(
+
+                'sale_return_transactions.id',
+                DB::raw('DATE_FORMAT(sale_return_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'sale_return_transactions.invoice_no as return_invoice',
+                'st.invoice_no as sale_invoice',
+                DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as customer'),
+                DB::raw('SUM(srv.quantity) as total_items'),
+                'sale_return_transactions.amount',
+                'sale_return_transactions.amount_credited',
+                DB::raw('sale_return_transactions.amount - sale_return_transactions.amount_credited as amount_adjusted'),
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(sale_return_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+
+            )->groupBy('sale_return_transactions.id')
+            ->orderBy('sale_return_transactions.transaction_date', 'desc')
+            ->get();
 
         return response(['sale_return_transactions' => $sale_return_transactions], 200);
     }
@@ -142,7 +161,8 @@ class SaleReturnTransactionController extends Controller
 
             DB::commit();
 
-            return response(['sale_return_transaction' => $sale_return_transaction], 201);
+            // return response(['sale_return_transaction' => $sale_return_transaction], 201); NOT NEEDED FOR NOW
+            return response(['message' => "Sale Return Successful !"], 201);
 
         } catch(Exception $ex) {
 
@@ -204,7 +224,25 @@ class SaleReturnTransactionController extends Controller
             return response(['message' => 'Sale Return Transaction not found !'], 404);
         }
 
-        return response(['sale_return_variations' => $sale_return_transaction->saleReturnVariations], 200);
+        $sale_return_variations = SaleReturnVariation::join('sale_return_transactions as srt', 'srt.id', '=', 'sale_return_variations.sale_return_transaction_id')
+            ->join('products as p', 'p.id', '=', 'sale_return_variations.product_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sale_return_variations.purchase_variation_id')
+            ->select(
+                
+                'sale_return_variations.id',
+                'srt.invoice_no as return_invoice',
+                'p.name',
+                'p.sku',
+                DB::raw('IF(pv.serial is null, "N/A", pv.serial) as imei'),
+                DB::raw('IF(pv.group is null, "N/A", pv.group) as "group"'),
+                'sale_return_variations.quantity',
+                'sale_return_variations.selling_price',
+                'sale_return_variations.purchase_price'
+
+            )->where('sale_return_variations.sale_return_transaction_id', '=', $sale_return_transaction_id)
+            ->get();
+
+        return response(['sale_return_variations' => $sale_return_variations], 200);
     }
 
     public function extras($srt)
@@ -246,6 +284,11 @@ class SaleReturnTransactionController extends Controller
             $customer->userDetail->available_credit += $credit_amount;
 
             $customer->userDetail->save();
+
+
+            $srt->amount_credited = $credit_amount;
+
+            $srt->save();
         }
 
         // CHANGING PAYMENT STATUS IF NEEDED

@@ -29,6 +29,9 @@ class CreateSaleReturnTransactionsTable extends Migration
 
             $table->dateTime('transaction_date');
 
+            $table->decimal('amount_credited', 20, 2)->default(0.00);
+
+
             $table->integer('finalized_by')->unsigned();
 
             $table->foreign('finalized_by')->references('id')->on('users');
