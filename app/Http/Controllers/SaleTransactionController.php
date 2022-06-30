@@ -39,7 +39,8 @@ class SaleTransactionController extends Controller
                 DB::raw('SUM(sv.quantity - sv.return_quantity) as total_items'),
                 'sale_transactions.payment_status',
                 DB::raw('sale_transactions.amount - IFNULL((select SUM(amount) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0) as total_payable'),
-                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(sale_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(sale_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by'),
+                DB::raw('(select COUNT(invoice_no) from sale_return_transactions where sale_transaction_id = sale_transactions.id) as sale_return')
 
             )->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')
