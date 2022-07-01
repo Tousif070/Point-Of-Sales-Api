@@ -17,6 +17,8 @@ class CreatePaymentsTable extends Migration
             
             $table->increments('id');
 
+            $table->string('payment_no')->unique()->nullable();
+
             $table->string('payment_for');
 
             $table->integer('transaction_id')->unsigned();

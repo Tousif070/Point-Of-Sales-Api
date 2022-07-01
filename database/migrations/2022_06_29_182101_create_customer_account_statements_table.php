@@ -19,7 +19,7 @@ class CreateCustomerAccountStatementsTable extends Migration
             
             $table->string('type');
 
-            $table->integer('reference_id')->unsigned();
+            $table->integer('reference_id')->unsigned()->nullable();
 
             $table->decimal('amount', 20, 2);
 

@@ -86,6 +86,11 @@ class SalePayment implements MoneyTransactionContract
             $payment->save();
 
 
+            $payment->payment_no = "SP#" . ($payment->id + 1000);
+
+            $payment->save();
+
+
             $total_paid = $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount');
 
             $total_payable = $sale_transaction->amount - $sale_transaction->saleReturnTransactions->sum('amount');

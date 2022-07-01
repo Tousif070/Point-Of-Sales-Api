@@ -86,6 +86,11 @@ class PurchasePayment implements MoneyTransactionContract
             $payment->save();
 
 
+            $payment->payment_no = "PP#" . ($payment->id + 1000);
+
+            $payment->save();
+
+
             $total_paid = $purchase_transaction->payments()->where('payment_for', '=', 'purchase')->sum('amount');
 
             if($total_paid < $purchase_transaction->amount)
