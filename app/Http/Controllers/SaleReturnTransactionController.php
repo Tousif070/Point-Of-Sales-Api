@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SaleTransaction;
 use App\Models\SaleReturnTransaction;
 use App\Models\SaleVariation;
 use App\Models\SaleReturnVariation;
@@ -298,6 +299,44 @@ class SaleReturnTransactionController extends Controller
 
             $st->save();
         }
+    }
+
+    public function storeSaleReturnView($sale_transaction_id)
+    {
+        if(!auth()->user()->hasPermission("sale-return.store"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $sale_transaction = SaleTransaction::with(['customer'])->select(['invoice_no', 'customer_id'])->where('id', '=', $sale_transaction_id)->first();
+
+        if($sale_transaction == null)
+        {
+            return response(['message' => 'Sale Transaction not found !'], 404);
+        }
+
+        $sale_variations = SaleVariation::join('products as p', 'p.id', '=', 'sale_variations.product_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sale_variations.purchase_variation_id')
+            ->select(
+
+                'sale_variations.id',
+                'p.name',
+                'p.sku',
+                DB::raw('IF(pv.serial is null, "N/A", pv.serial) as imei'),
+                DB::raw('IF(pv.group is null, "N/A", pv.group) as "group"'),
+                'sale_variations.quantity as sale_quantity',
+                'sale_variations.return_quantity as previously_returned',
+                'sale_variations.selling_price as price'
+
+            )->where('sale_variations.sale_transaction_id', '=', $sale_transaction_id)
+            ->where(DB::raw('sale_variations.quantity - sale_variations.return_quantity'), '>', 0)
+            ->get();
+
+        return response([
+            'sale_invoice' => $sale_transaction->invoice_no,
+            'customer_name' => $sale_transaction->customer->first_name . " " . $sale_transaction->customer->last_name,
+            'sale_variations' => $sale_variations
+        ], 200);
     }
 
 

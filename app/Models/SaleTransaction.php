@@ -26,4 +26,9 @@ class SaleTransaction extends Model
     {
         return $this->hasMany('App\Models\Payment', 'transaction_id', 'id');
     }
+
+    public function customer()
+    {
+        return $this->belongsTo('App\Models\User', 'customer_id', 'id');
+    }
 }

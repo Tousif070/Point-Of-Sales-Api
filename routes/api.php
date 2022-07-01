@@ -205,6 +205,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('index', 'SaleReturnTransactionController@index');
 
+            Route::get('store-sale-return-view/{sale_transaction_id}', 'SaleReturnTransactionController@storeSaleReturnView');
+
             Route::post('store', 'SaleReturnTransactionController@store');
 
             Route::get('get-sale-return-variations/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleReturnVariations');
