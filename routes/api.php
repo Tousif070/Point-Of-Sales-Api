@@ -261,6 +261,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         Route::group(['prefix' => 'report'], function() {
 
+            Route::get('cas-index-view', 'ReportController@casIndexView');
+
             Route::get('cas-index', 'ReportController@casIndex');
 
         });

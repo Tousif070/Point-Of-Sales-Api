@@ -650,5 +650,22 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - REPORT
+
+        $permission = Permission::where('name', '=', 'report.cas-index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.cas-index";
+            $permission->alias = "Customer Account Statement (CAS)";
+            $permission->description = "To view customer account statement";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
+
     }
 }
