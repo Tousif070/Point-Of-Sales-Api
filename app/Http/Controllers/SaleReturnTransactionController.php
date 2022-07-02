@@ -10,6 +10,7 @@ use App\Models\SaleReturnVariation;
 use App\Models\PurchaseVariation;
 use App\Models\User;
 use App\Models\CustomerCredit;
+use CAS;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -158,6 +159,17 @@ class SaleReturnTransactionController extends Controller
 
 
             $this->extras($sale_return_transaction);
+
+
+            // SALE RETURN INVOICE ENTRY FOR CUSTOMER ACCOUNT STATEMENT
+            $cas_data_arr = [
+                'type' => 'Return',
+                'reference_id' => $sale_return_transaction->id,
+                'amount' => $sale_return_transaction->amount,
+                'customer_id' => $sale_return_transaction->saleTransaction->customer_id
+            ];
+
+            CAS::store($cas_data_arr);
 
 
             DB::commit();

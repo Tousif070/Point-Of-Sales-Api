@@ -9,6 +9,7 @@ use App\Models\PurchaseVariation;
 use App\Models\ProductModel;
 use App\Models\Product;
 use App\Models\User;
+use CAS;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -158,6 +159,17 @@ class SaleTransactionController extends Controller
             $sale_transaction->amount += $amount;
 
             $sale_transaction->save();
+
+
+            // SALE INVOICE ENTRY FOR CUSTOMER ACCOUNT STATEMENT
+            $cas_data_arr = [
+                'type' => 'Invoice',
+                'reference_id' => $sale_transaction->id,
+                'amount' => $sale_transaction->amount,
+                'customer_id' => $sale_transaction->customer_id
+            ];
+
+            CAS::store($cas_data_arr);
 
 
             DB::commit();

@@ -4,6 +4,7 @@ namespace App\Services\MoneyTransaction;
 
 use App\Models\SaleTransaction;
 use App\Models\Payment;
+use CAS;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -105,6 +106,17 @@ class SalePayment implements MoneyTransactionContract
             }
 
             $sale_transaction->save();
+
+
+            // SALE PAYMENT ENTRY FOR CUSTOMER ACCOUNT STATEMENT
+            $cas_data_arr = [
+                'type' => 'Payment',
+                'reference_id' => $payment->id,
+                'amount' => ($payment->amount * (-1)),
+                'customer_id' => $sale_transaction->customer_id
+            ];
+
+            CAS::store($cas_data_arr);
 
 
             DB::commit();

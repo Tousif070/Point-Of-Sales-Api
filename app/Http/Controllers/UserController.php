@@ -8,6 +8,7 @@ use App\Models\UserDetail;
 use App\Models\Role;
 use App\Models\CustomerUserAssociation;
 use App\Models\CustomerCredit;
+use CAS;
 use Illuminate\Support\Facades\Hash;
 use Storage;
 use DB;
@@ -258,6 +259,10 @@ class UserController extends Controller
             $user_detail->available_credit = 0.00;
 
             $user_detail->save();
+
+
+            // INITIAL OPENING BALANCE ENTRY FOR CUSTOMER ACCOUNT STATEMENT
+            CAS::setInitialOpeningBalance($user->id);
 
 
             DB::commit();
