@@ -254,6 +254,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         Route::group(['prefix' => 'money-transaction'], function() {
 
+            Route::get('sale-payment-view', 'MoneyTransactionController@salePaymentView');
+
+            Route::get('make-payment-view', 'MoneyTransactionController@makePaymentView');
+
+            Route::get('add-customer-credit-view', 'MoneyTransactionController@addCustomerCreditView');
+
             Route::post('store', 'MoneyTransactionController@store');
 
         });

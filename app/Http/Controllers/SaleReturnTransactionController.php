@@ -275,7 +275,7 @@ class SaleReturnTransactionController extends Controller
 
             $customer_credit->amount = $credit_amount;
 
-            $customer_credit->type = "sale_return";
+            $customer_credit->type = "Sale Return";
 
             $customer_credit->sale_invoice = $st->invoice_no;
 

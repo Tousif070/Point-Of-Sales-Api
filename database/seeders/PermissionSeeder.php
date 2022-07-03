@@ -649,6 +649,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'money-transaction.customer-credit')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "money-transaction.customer-credit";
+            $permission->alias = "Add Customer Credit";
+            $permission->description = "To add credit for a customer";
+            $permission->permission_group = "Money Transaction";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - REPORT
 

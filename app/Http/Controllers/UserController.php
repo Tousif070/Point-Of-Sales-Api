@@ -1344,7 +1344,7 @@ class UserController extends Controller
 
     public function storeCustomerCredit(Request $request, $customer_id)
     {
-        if(!auth()->user()->hasPermission("user.index-customer"))
+        if(!auth()->user()->hasPermission("money-transaction.customer-credit"))
         {
             return response(['message' => 'Permission Denied !'], 403);
         }
@@ -1375,7 +1375,7 @@ class UserController extends Controller
 
             $customer_credit->amount = $request->amount;
 
-            $customer_credit->type = "add_money";
+            $customer_credit->type = "Add Money";
 
             $customer_credit->customer_id = $customer_id;
 
