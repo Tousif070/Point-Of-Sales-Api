@@ -21,7 +21,7 @@ class ExpenseCategoryController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $expense_categories = ExpenseCategory::all();
+        $expense_categories = ExpenseCategory::orderBy('name', 'asc')->get();
 
         return response(['expense_categories' => $expense_categories], 200);
     }

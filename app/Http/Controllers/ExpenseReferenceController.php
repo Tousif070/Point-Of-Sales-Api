@@ -21,7 +21,7 @@ class ExpenseReferenceController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $expense_references = ExpenseReference::all();
+        $expense_references = ExpenseReference::orderBy('name', 'asc')->get();
 
         return response(['expense_references' => $expense_references], 200);
     }

@@ -21,7 +21,7 @@ class PaymentMethodController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $payment_methods = PaymentMethod::all();
+        $payment_methods = PaymentMethod::orderBy('name', 'asc')->get();
 
         return response(['payment_methods' => $payment_methods], 200);
     }

@@ -22,7 +22,7 @@ class BrandController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $brands = Brand::all();
+        $brands = Brand::orderBy('name', 'asc')->get();
 
         return response(['brands' => $brands], 200);
     }

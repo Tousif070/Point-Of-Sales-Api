@@ -21,7 +21,7 @@ class ProductModelController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $product_models = ProductModel::all();
+        $product_models = ProductModel::orderBy('name', 'asc')->get();
 
         return response(['product_models' => $product_models], 200);
     }
