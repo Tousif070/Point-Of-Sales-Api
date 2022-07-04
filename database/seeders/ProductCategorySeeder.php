@@ -14,7 +14,7 @@ class ProductCategorySeeder extends Seeder
      */
     public function run()
     {
-        $product_category = ProductCategory::where('name', '=', 'Phone')->first();
+        $product_category = ProductCategory::where('name', '=', 'PHONE')->first();
 
         if($product_category == null)
         {
@@ -28,7 +28,7 @@ class ProductCategorySeeder extends Seeder
         }
 
 
-        $product_category = ProductCategory::where('name', '=', 'Charger/Power Adapter')->first();
+        $product_category = ProductCategory::where('name', '=', 'CHARGER/POWER ADAPTER')->first();
 
         if($product_category == null)
         {

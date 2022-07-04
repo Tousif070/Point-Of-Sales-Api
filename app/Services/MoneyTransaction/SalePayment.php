@@ -62,6 +62,24 @@ class SalePayment implements MoneyTransactionContract
         }
 
 
+        // CHECKING IF PAYMENT METHOD IS CUSTOMER CREDIT OR NOT
+        if($request->payment_method_id == 1)
+        {
+            $available_credit = $sale_transaction->customer->userDetail->available_credit;
+
+            if($available_credit >= $request->amount)
+            {
+                $sale_transaction->customer->userDetail->available_credit -= $request->amount;
+
+                $sale_transaction->customer->userDetail->save();
+            }
+            else
+            {
+                return response(['message' => 'Insufficient Customer Credit !'], 409);
+            }
+        }
+
+
         DB::beginTransaction();
 
         try {
