@@ -271,6 +271,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('cas-index', 'ReportController@casIndex');
 
+            Route::get('spr-index', 'ReportController@sprIndex');
+
         });
 
     });
