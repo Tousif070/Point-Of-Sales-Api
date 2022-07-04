@@ -17,6 +17,7 @@ class CustomerAccountStatement
             ->leftJoin('payment_methods as pm', 'pm.id', '=', 'p.payment_method_id')
             ->select(
 
+                'customer_account_statements.id',
                 DB::raw('DATE_FORMAT(customer_account_statements.created_at, "%m/%d/%Y") as date'),
                 'customer_account_statements.type',
                 'customer_account_statements.reference_id',
