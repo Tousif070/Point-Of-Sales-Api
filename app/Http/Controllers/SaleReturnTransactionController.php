@@ -262,18 +262,12 @@ class SaleReturnTransactionController extends Controller
     {
         $st = $srt->saleTransaction;
 
-        $total_paid = $st->payments()->where('payment_for', '=', 'sale')->sum('amount');
-
-        $total_payable = $st->amount - $st->saleReturnTransactions->sum('amount');
-
         // CHECKING FOR CUSTOMER CREDIT
-        if($total_paid > $total_payable)
+        if($st->payment_status == "Paid")
         {
-            $credit_amount = $total_paid - $total_payable;
-
             $customer_credit = new CustomerCredit();
 
-            $customer_credit->amount = $credit_amount;
+            $customer_credit->amount = $srt->amount;
 
             $customer_credit->type = "Sale Return";
 
@@ -294,15 +288,59 @@ class SaleReturnTransactionController extends Controller
 
             $customer = User::find($st->customer_id);
 
-            $customer->userDetail->available_credit += $credit_amount;
+            $customer->userDetail->available_credit += $srt->amount;
 
             $customer->userDetail->save();
 
 
-            $srt->amount_credited = $credit_amount;
+            $srt->amount_credited = $srt->amount;
 
             $srt->save();
         }
+        else
+        {
+            $total_paid = $st->payments()->where('payment_for', '=', 'sale')->sum('amount');
+    
+            $total_payable = $st->amount - $st->saleReturnTransactions->sum('amount');
+    
+            if($total_paid > $total_payable)
+            {
+                $credit_amount = $total_paid - $total_payable;
+    
+                $customer_credit = new CustomerCredit();
+    
+                $customer_credit->amount = $credit_amount;
+    
+                $customer_credit->type = "Sale Return";
+    
+                $customer_credit->sale_invoice = $st->invoice_no;
+    
+                $customer_credit->sale_return_invoice = $srt->invoice_no;
+    
+                $customer_credit->customer_id = $st->customer_id;
+    
+                $customer_credit->note = "From sale return";
+    
+                $customer_credit->finalized_by = auth()->user()->id;
+    
+                $customer_credit->finalized_at = Carbon::now();
+    
+                $customer_credit->save();
+    
+    
+                $customer = User::find($st->customer_id);
+    
+                $customer->userDetail->available_credit += $credit_amount;
+    
+                $customer->userDetail->save();
+    
+    
+                $srt->amount_credited = $credit_amount;
+    
+                $srt->save();
+            }
+        }
+
 
         // CHANGING PAYMENT STATUS IF NEEDED
         if($st->payment_status != "Paid" && $total_paid >= $total_payable)
