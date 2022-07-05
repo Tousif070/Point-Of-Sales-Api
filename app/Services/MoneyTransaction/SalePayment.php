@@ -58,7 +58,13 @@ class SalePayment implements MoneyTransactionContract
         
         if($request->amount < 1 || $request->amount > $due)
         {
-            return response(['message' => 'Amount cannot be less than 1 or greater than the due amount !'], 409);
+            // return response(['message' => 'Amount cannot be less than 1 or greater than the due amount !'], 409); NOT NEEDED FOR NOW
+
+            return response([
+                'errors' => [
+                    'amount' => ['Amount cannot be less than 1 or greater than the due amount !']
+                ]
+            ], 409);
         }
 
 
@@ -75,7 +81,13 @@ class SalePayment implements MoneyTransactionContract
             }
             else
             {
-                return response(['message' => 'Insufficient Customer Credit !'], 409);
+                // return response(['message' => 'Insufficient Customer Credit !'], 409); NOT NEEDED FOR NOW
+
+                return response([
+                    'errors' => [
+                        'payment_method_id' => ['Insufficient Customer Credit !']
+                    ]
+                ], 409);
             }
         }
 
