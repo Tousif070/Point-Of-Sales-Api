@@ -368,7 +368,14 @@ class SaleTransactionController extends Controller
 
     public function storeSaleView()
     {
-        $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+        if(!in_array("super_admin", auth()->user()->getRoles()) && auth()->user()->hasPermission("user.cua-enable"))
+        {
+            $customers = auth()->user()->associatedCustomers()->select(['customer_user_associations.customer_id as id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+        }
+        else
+        {
+            $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+        }
 
         $product_models = ProductModel::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
