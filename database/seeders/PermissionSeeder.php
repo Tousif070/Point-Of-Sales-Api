@@ -156,6 +156,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'user.cua-enable')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "user.cua-enable";
+            $permission->alias = "Enable CUA";
+            $permission->description = "If enabled then one can deal with only his/her assigned customers. Otherwise can deal with all customers";
+            $permission->permission_group = "User";
+
+            $permission->save();
+        }
+
         $permission = Permission::where('name', '=', 'user.assign-role')->first();
 
         if($permission == null)
