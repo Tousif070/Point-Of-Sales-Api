@@ -106,6 +106,54 @@ class MoneyTransactionController extends Controller
 
         return response(['sale_transactions' => $sale_transactions], 200);
     }
+
+    public function customerDropdown()
+    {
+        $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+
+        return response([
+            'customers' => $customers
+        ], 200);
+    }
+
+    public function collectiveSalePaymentView(Request $request)
+    {
+        if(!auth()->user()->hasPermission("money-transaction.sale-payment"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        if(empty($request->customer_id))
+        {
+            return response(['sale_transactions' => []], 200);
+        }
+
+        $sale_transactions = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
+            ->leftJoin('payments as p', 'p.transaction_id', '=', 'sale_transactions.id')
+            ->select(
+
+                'sale_transactions.id',
+                DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'sale_transactions.invoice_no',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                'sale_transactions.payment_status',
+                DB::raw('sale_transactions.amount - IFNULL((select SUM(amount) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0) as total_payable'),
+                DB::raw('IFNULL(SUM(p.amount), 0) as paid'),
+                DB::raw('
+                
+                sale_transactions.amount - IFNULL((select SUM(amount) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0)
+                - IFNULL(SUM(p.amount), 0)
+                
+                as due')
+
+            )->where('sale_transactions.payment_status', '<>', 'Paid')
+            ->where('sale_transactions.customer_id', '=', $request->customer_id)
+            ->groupBy('sale_transactions.id')
+            ->orderBy('sale_transactions.transaction_date', 'desc')
+            ->get();
+
+        return response(['sale_transactions' => $sale_transactions], 200);
+    }
     
     public function makePaymentView()
     {

@@ -256,6 +256,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('sale-payment-view', 'MoneyTransactionController@salePaymentView');
 
+            Route::get('customer-dropdown', 'MoneyTransactionController@customerDropdown');
+
+            Route::get('collective-sale-payment-view', 'MoneyTransactionController@collectiveSalePaymentView');
+
             Route::get('make-payment-view', 'MoneyTransactionController@makePaymentView');
 
             Route::get('add-customer-credit-view', 'MoneyTransactionController@addCustomerCreditView');

@@ -3,6 +3,7 @@
 namespace App\Services\MoneyTransaction;
 
 use App\Services\MoneyTransaction\SalePayment;
+use App\Services\MoneyTransaction\CollectiveSalePayment;
 use App\Services\MoneyTransaction\PurchasePayment;
 
 class MoneyTransactionService
@@ -14,6 +15,10 @@ class MoneyTransactionService
             if(request()->money_transaction_type == "sale")
             {
                 return new SalePayment();
+            }
+            else if(request()->money_transaction_type == "sale_collective")
+            {
+                return new CollectiveSalePayment();
             }
             else if(request()->money_transaction_type == "purchase")
             {
