@@ -24,8 +24,8 @@ class CustomerAccountStatement
                 DB::raw('(CASE
                 
                     WHEN customer_account_statements.type = "Invoice" THEN st.invoice_no
-                    WHEN customer_account_statements.type = "Payment" THEN p.payment_no
-                    WHEN customer_account_statements.type = "Return" THEN srt.invoice_no
+                    WHEN customer_account_statements.type = "Payment" THEN CONCAT_WS("-", (select invoice_no from sale_transactions where id = p.transaction_id), p.payment_no)
+                    WHEN customer_account_statements.type = "Return" THEN CONCAT_WS("-", (select invoice_no from sale_transactions where id = srt.sale_transaction_id), srt.invoice_no)
                     ELSE "-"
                 
                 END) as reference'),

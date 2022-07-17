@@ -38,7 +38,10 @@ class ReportController extends Controller
             return response(['statements' => []], 200);
         }
 
-        return response(['statements' => CAS::get($request->customer_id)], 200);
+        return response([
+            'available_credit' => $customer->userDetail->available_credit,
+            'statements' => CAS::get($request->customer_id)
+        ], 200);
     }
 
     public function sprIndex()
