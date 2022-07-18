@@ -117,19 +117,12 @@ class CollectiveSalePayment implements MoneyTransactionContract
                 }
     
     
-                $payment->payment_no = "G#" . $prefix . "|SP#" . ($payment->id + 1000);
+                $payment->payment_no = "G" . $prefix . ":SP#" . ($payment->id + 1000);
     
                 $payment->save();
     
     
-                $total_paid = $sale_transaction->payments()->where('payment_for', '=', 'sale')->sum('amount');
-    
-                $total_payable = $sale_transaction->amount - $sale_transaction->saleReturnTransactions->sum('amount');
-    
-                if($total_paid == $total_payable)
-                {
-                    $sale_transaction->payment_status = "Paid";
-                }
+                $sale_transaction->payment_status = "Paid";
     
                 $sale_transaction->save();
     
@@ -149,7 +142,7 @@ class CollectiveSalePayment implements MoneyTransactionContract
 
             DB::commit();
 
-            return response(['message' => 'Sale Payment Complete !'], 200);
+            return response(['message' => 'Collective Sale Payment Complete !'], 200);
 
         } catch(Exception $ex) {
 
