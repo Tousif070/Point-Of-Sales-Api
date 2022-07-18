@@ -83,7 +83,12 @@ class MoneyTransactionController extends Controller
         }
 
         $sale_transactions = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
-            ->leftJoin('payments as p', 'p.transaction_id', '=', 'sale_transactions.id')
+            ->leftJoin('payments as p', function($query) {
+
+                $query->on('p.transaction_id', '=', 'sale_transactions.id')
+                    ->where('p.payment_for', '=', 'sale');
+
+            })
             ->select(
 
                 'sale_transactions.id',
@@ -167,7 +172,12 @@ class MoneyTransactionController extends Controller
         }
 
         $sale_transactions = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
-            ->leftJoin('payments as p', 'p.transaction_id', '=', 'sale_transactions.id')
+            ->leftJoin('payments as p', function($query) {
+
+                $query->on('p.transaction_id', '=', 'sale_transactions.id')
+                    ->where('p.payment_for', '=', 'sale');
+
+            })
             ->select(
 
                 'sale_transactions.id',
