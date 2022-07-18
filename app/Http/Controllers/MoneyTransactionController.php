@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
+use App\Models\PurchaseTransaction;
 use App\Models\PaymentMethod;
 use App\Models\User;
 use DB;
@@ -105,6 +106,43 @@ class MoneyTransactionController extends Controller
             ->get();
 
         return response(['sale_transactions' => $sale_transactions], 200);
+    }
+
+    public function purchasePaymentView()
+    {
+        if(!auth()->user()->hasPermission("money-transaction.purchase-payment"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $purchase_transactions = PurchaseTransaction::join('users as u', 'u.id', '=', 'purchase_transactions.supplier_id')
+            ->leftJoin('payments as p', function($query) {
+
+                $query->on('p.transaction_id', '=', 'purchase_transactions.id')
+                    ->where('p.payment_for', '=', 'purchase');
+
+            })
+            ->select(
+
+                'purchase_transactions.id',
+                DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'purchase_transactions.reference_no',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as supplier'),
+                'purchase_transactions.payment_status',
+                DB::raw('purchase_transactions.amount as total_payable'),
+                DB::raw('IFNULL(SUM(p.amount), 0) as paid'),
+                DB::raw('
+                
+                    purchase_transactions.amount - IFNULL(SUM(p.amount), 0)
+                
+                as due')
+
+            )->where('purchase_transactions.payment_status', '<>', 'Paid')
+            ->groupBy('purchase_transactions.id')
+            ->orderBy('purchase_transactions.transaction_date', 'desc')
+            ->get();
+
+        return response(['purchase_transactions' => $purchase_transactions], 200);
     }
 
     public function customerDropdown()
