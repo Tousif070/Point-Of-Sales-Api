@@ -708,6 +708,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'report.ppr-index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.ppr-index";
+            $permission->alias = "Purchase Payment Report (PPR)";
+            $permission->description = "To view all the purchase payments";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
 
     }
 }

@@ -279,6 +279,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('spr-index', 'ReportController@sprIndex');
 
+            Route::get('ppr-index', 'ReportController@pprIndex');
+
         });
 
     });

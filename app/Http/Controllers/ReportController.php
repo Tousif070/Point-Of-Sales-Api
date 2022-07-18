@@ -71,4 +71,34 @@ class ReportController extends Controller
 
         return response(['payments' => $payments], 200);
     }
+
+    public function pprIndex()
+    {
+        if(!auth()->user()->hasPermission("report.ppr-index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $payments = Payment::join('users as u', 'u.id', '=', 'payments.finalized_by')
+            ->join('purchase_transactions as pt', 'pt.id', '=', 'payments.transaction_id')
+            ->join('payment_methods as pm', 'pm.id', '=', 'payments.payment_method_id')
+            ->select(
+
+                'payments.id',
+                DB::raw('DATE_FORMAT(payments.payment_date, "%m/%d/%Y") as date'),
+                'payments.payment_no',
+                'pt.reference_no as purchase_invoice',
+                'payments.amount',
+                'pm.name as payment_method',
+                'payments.payment_note',
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(payments.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+
+            )->where('payments.payment_for', '=', 'purchase')
+            ->orderBy('payments.payment_date', 'desc')
+            ->get();
+
+        return response(['payments' => $payments], 200);
+    }
+
+
 }
