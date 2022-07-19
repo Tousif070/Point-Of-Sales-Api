@@ -389,5 +389,20 @@ class SaleTransactionController extends Controller
         ], 200);
     }
 
+    public function getSaleInvoice($sale_transaction_id)
+    {
+        if(!auth()->user()->hasPermission("sale.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $sale_transaction = SaleTransaction::find($sale_transaction_id);
+
+        if($sale_transaction == null)
+        {
+            return response(['message' => 'Sale Transaction not found !'], 404);
+        }
+    }
+
 
 }

@@ -198,6 +198,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('get-sale-variations/{sale_transaction_id}', 'SaleTransactionController@getSaleVariations');
 
+            Route::get('get-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@getSaleInvoice');
+
         });
 
 
