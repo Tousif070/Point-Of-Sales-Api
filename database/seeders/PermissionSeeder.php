@@ -722,6 +722,34 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'report.pbsi')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.pbsi";
+            $permission->alias = "Profit by Sale Invoice";
+            $permission->description = "To view gross profit from sale invoices";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'report.pbc')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.pbc";
+            $permission->alias = "Profit by Customer";
+            $permission->description = "To view gross profit from customers";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
 
     }
 }

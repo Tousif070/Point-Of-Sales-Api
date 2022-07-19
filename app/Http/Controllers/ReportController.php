@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\SaleTransaction;
+use App\Models\SaleReturnTransaction;
 use App\Models\Payment;
 use App\Models\User;
 use CAS;
@@ -105,6 +107,134 @@ class ReportController extends Controller
             ->get();
 
         return response(['payments' => $payments], 200);
+    }
+
+    public function profitBySaleInvoice()
+    {
+        if(!auth()->user()->hasPermission("report.pbsi"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $profit_by_sale_invoice = [];
+
+        $serial = 0;
+
+        $sale_transactions = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
+            ->select(
+
+                'sale_transactions.invoice_no',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) as gross_profit')
+
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('sale_transactions.id')
+            ->orderBy('sale_transactions.id', 'asc');
+        
+        $sale_return_transactions = SaleReturnTransaction::join('sale_return_variations as srv', 'srv.sale_return_transaction_id', '=', 'sale_return_transactions.id')
+            ->join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
+            ->join('users as u', 'u.id', '=', 'st.customer_id')
+            ->select(
+
+                'sale_return_transactions.invoice_no',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit')
+
+            )->groupBy('sale_return_transactions.id')
+            ->orderBy('sale_return_transactions.id', 'asc');
+        
+        foreach($sale_transactions->get() as $st)
+        {
+            $st->key = ++$serial;
+
+            $st->type = "Sale";
+
+            $profit_by_sale_invoice[] = $st;
+        }
+
+        foreach($sale_return_transactions->get() as $srt)
+        {
+            $srt->key = ++$serial;
+
+            $srt->type = "Sale Return";
+
+            $profit_by_sale_invoice[] = $srt;
+        }
+
+        return response(['profit_by_sale_invoice' => $profit_by_sale_invoice], 200);
+    }
+
+    public function profitByCustomerView()
+    {
+        $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+
+        return response([
+            'customers' => $customers
+        ], 200);
+    }
+
+    public function profitByCustomer(Request $request)
+    {
+        if(!auth()->user()->hasPermission("report.pbc"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $profit_by_customer = [];
+
+        $serial = 0;
+
+        $sale_transactions = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
+            ->select(
+
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) as gross_profit')
+
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('sale_transactions.customer_id')
+            ->orderBy('u.first_name', 'asc');
+        
+        $sale_return_transactions = SaleReturnTransaction::join('sale_return_variations as srv', 'srv.sale_return_transaction_id', '=', 'sale_return_transactions.id')
+            ->join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
+            ->join('users as u', 'u.id', '=', 'st.customer_id')
+            ->select(
+
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit')
+
+            )->groupBy('st.customer_id')
+            ->orderBy('u.first_name', 'asc');
+        
+        
+        if(!empty($request->customer_id))
+        {
+            $sale_transactions->where('sale_transactions.customer_id', '=', $request->customer_id);
+
+            $sale_return_transactions->where('st.customer_id', '=', $request->customer_id);
+        }
+        
+        
+        foreach($sale_transactions->get() as $st)
+        {
+            $st->key = ++$serial;
+
+            $st->type = "Sale";
+
+            $profit_by_customer[] = $st;
+        }
+
+        foreach($sale_return_transactions->get() as $srt)
+        {
+            $srt->key = ++$serial;
+
+            $srt->type = "Sale Return";
+
+            $profit_by_customer[] = $srt;
+        }
+
+        return response(['profit_by_customer' => $profit_by_customer], 200);
     }
 
 
