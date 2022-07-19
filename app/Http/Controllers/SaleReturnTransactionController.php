@@ -48,6 +48,7 @@ class SaleReturnTransactionController extends Controller
 
             )->groupBy('sale_return_transactions.id')
             ->orderBy('sale_return_transactions.transaction_date', 'desc')
+            ->orderBy('sale_return_transactions.invoice_no', 'desc')
             ->get();
 
         return response(['sale_return_transactions' => $sale_return_transactions], 200);

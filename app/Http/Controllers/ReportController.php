@@ -76,6 +76,7 @@ class ReportController extends Controller
 
             )->where('payments.payment_for', '=', 'sale')
             ->orderBy('payments.payment_date', 'desc')
+            ->orderBy('payments.payment_no', 'desc')
             ->get();
 
         return response(['payments' => $payments], 200);
@@ -104,6 +105,7 @@ class ReportController extends Controller
 
             )->where('payments.payment_for', '=', 'purchase')
             ->orderBy('payments.payment_date', 'desc')
+            ->orderBy('payments.payment_no', 'desc')
             ->get();
 
         return response(['payments' => $payments], 200);

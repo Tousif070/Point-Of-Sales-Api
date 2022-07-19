@@ -45,6 +45,7 @@ class SaleTransactionController extends Controller
 
             )->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')
+            ->orderBy('sale_transactions.invoice_no', 'desc')
             ->get();
 
         return response(['sale_transactions' => $sale_transactions], 200);
