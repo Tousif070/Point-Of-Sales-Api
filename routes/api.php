@@ -164,6 +164,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('get-purchase-variations/{purchase_transaction_id}', 'PurchaseTransactionController@getPurchaseVariations');
 
+            Route::get('get-purchase-invoice/{purchase_transaction_id}', 'PurchaseTransactionController@getPurchaseInvoice');
+
         });
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\PurchaseTransaction;
 use App\Models\PurchaseVariation;
+use App\Models\Payment;
 use App\Models\User;
 use DB;
 use Exception;
@@ -193,6 +194,118 @@ class PurchaseTransactionController extends Controller
 
         return response([
             'suppliers' => $suppliers
+        ], 200);
+    }
+
+    public function getPurchaseInvoice($purchase_transaction_id)
+    {
+        if(!auth()->user()->hasPermission("purchase.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $purchase_transaction = PurchaseTransaction::find($purchase_transaction_id);
+
+        if($purchase_transaction == null)
+        {
+            return response(['message' => 'Purchase Transaction not found !'], 404);
+        }
+
+
+        $purchase_transaction = PurchaseTransaction::join('users as u', 'u.id', '=', 'purchase_transactions.supplier_id')
+            ->leftJoin('payments as p', function($query) {
+
+                $query->on('p.transaction_id', '=', 'purchase_transactions.id')
+                    ->where('p.payment_for', '=', 'purchase');
+
+            })
+            ->select(
+
+                'purchase_transactions.id',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as supplier'),
+                'purchase_transactions.reference_no',
+                DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'purchase_transactions.payment_status',
+                'purchase_transactions.amount as total',
+                DB::raw('IFNULL(SUM(p.amount), 0) as paid')
+
+            )->where('purchase_transactions.id', '=', $purchase_transaction_id)
+            ->first();
+
+
+        $payments = Payment::join('payment_methods as pm', 'pm.id', '=', 'payments.payment_method_id')
+            ->select(
+
+                'payments.id',
+                DB::raw('DATE_FORMAT(payments.payment_date, "%m/%d/%Y") as date'),
+                'payments.payment_no',
+                'payments.amount',
+                'pm.name as payment_method',
+                'payments.payment_note',
+
+            )->where('payments.payment_for', '=', 'purchase')
+            ->where('payments.transaction_id', '=', $purchase_transaction_id)
+            ->orderBy('payments.payment_date', 'desc')
+            ->orderBy('payments.payment_no', 'desc')
+            ->get();
+
+
+        $product_summary = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->select(
+
+                'p.name',
+                DB::raw('SUM(purchase_variations.quantity_purchased) as quantity'),
+                'purchase_variations.purchase_price'
+
+            )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
+            ->groupBy('purchase_variations.purchase_price')
+            ->groupBy('purchase_variations.product_id')
+            ->orderBy('p.name', 'asc')
+            ->get();
+
+
+        $serial_list = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
+            ->select(
+
+                'purchase_variations.id',
+                'pm.name',
+                'purchase_variations.serial as imei',
+                'p.color',
+                'p.ram',
+                'p.storage',
+                'p.condition'
+
+            )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
+            ->where('purchase_variations.serial', '<>', null)
+            ->orderBy('pm.name', 'asc')
+            ->get();
+
+
+        $group_list = PurchaseVariation::join('products as p', 'p.id', '=', 'purchase_variations.product_id')
+            ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
+            ->select(
+
+                'purchase_variations.id',
+                'pm.name',
+                'purchase_variations.group as group',
+                'p.color',
+                'p.wattage',
+                'p.type',
+                'p.condition'
+
+            )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
+            ->where('purchase_variations.group', '<>', null)
+            ->orderBy('pm.name', 'asc')
+            ->get();
+
+
+        return response([
+            'purchase_transaction' => $purchase_transaction,
+            'payments' => $payments,
+            'product_summary' => $product_summary,
+            'serial_list' => $serial_list,
+            'group_list' => $group_list
         ], 200);
     }
 

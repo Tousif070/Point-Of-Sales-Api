@@ -470,7 +470,7 @@ class SaleTransactionController extends Controller
 
                 'sale_variations.id',
                 'pm.name',
-                DB::raw('pv.serial as imei'),
+                'pv.serial as imei',
                 'p.color',
                 'p.ram',
                 'p.storage',
