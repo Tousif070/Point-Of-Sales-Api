@@ -8,6 +8,7 @@ use App\Models\SaleVariation;
 use App\Models\PurchaseVariation;
 use App\Models\ProductModel;
 use App\Models\Product;
+use App\Models\Payment;
 use App\Models\User;
 use CAS;
 use DB;
@@ -402,6 +403,92 @@ class SaleTransactionController extends Controller
         {
             return response(['message' => 'Sale Transaction not found !'], 404);
         }
+
+
+        $sale_transaction = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
+            ->join('user_details as ud', 'ud.user_id', '=', 'u.id')
+            ->leftJoin('payments as p', function($query) {
+
+                $query->on('p.transaction_id', '=', 'sale_transactions.id')
+                    ->where('p.payment_for', '=', 'sale');
+
+            })
+            ->select(
+
+                'sale_transactions.id',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                DB::raw('CONCAT_WS(", ", ud.address, ud.city, ud.state, ud.country) as billing_address'),
+                'sale_transactions.invoice_no',
+                DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'sale_transactions.payment_status',
+                'sale_transactions.amount as total',
+                DB::raw('(select COUNT(invoice_no) from sale_return_transactions where sale_transaction_id = sale_transactions.id) as sale_return'),
+                DB::raw('sale_transactions.amount - IFNULL((select SUM(amount) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0) as total_payable_after_sale_return'),
+                DB::raw('IFNULL(SUM(p.amount), 0) as paid'),
+                DB::raw('IFNULL((select SUM(amount_credited) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0) as amount_credited')
+
+            )->where('sale_transactions.id', '=', $sale_transaction_id)
+            ->first();
+
+
+        $payments = Payment::join('payment_methods as pm', 'pm.id', '=', 'payments.payment_method_id')
+            ->select(
+
+                'payments.id',
+                DB::raw('DATE_FORMAT(payments.payment_date, "%m/%d/%Y") as date'),
+                'payments.payment_no',
+                'payments.amount',
+                'pm.name as payment_method',
+                'payments.payment_note',
+
+            )->where('payments.payment_for', '=', 'sale')
+            ->where('payments.transaction_id', '=', $sale_transaction_id)
+            ->orderBy('payments.payment_date', 'desc')
+            ->orderBy('payments.payment_no', 'desc')
+            ->get();
+
+
+        $product_summary = SaleVariation::join('products as p', 'p.id', '=', 'sale_variations.product_id')
+            ->select(
+
+                'p.name',
+                DB::raw('SUM(sale_variations.quantity - sale_variations.return_quantity) as quantity'),
+                'sale_variations.selling_price as unit_price',
+
+            )->where('sale_variations.sale_transaction_id', '=', $sale_transaction_id)
+            ->where(DB::raw('sale_variations.quantity - sale_variations.return_quantity'), '>', 0)
+            ->groupBy('sale_variations.selling_price')
+            ->groupBy('sale_variations.product_id')
+            ->orderBy('p.name', 'asc')
+            ->get();
+
+
+        $serial_list = SaleVariation::join('products as p', 'p.id', '=', 'sale_variations.product_id')
+            ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sale_variations.purchase_variation_id')
+            ->select(
+
+                'sale_variations.id',
+                'pm.name',
+                DB::raw('pv.serial as imei'),
+                'p.color',
+                'p.ram',
+                'p.storage',
+                'p.condition'
+
+            )->where('sale_variations.sale_transaction_id', '=', $sale_transaction_id)
+            ->where('pv.serial', '<>', null)
+            ->where(DB::raw('sale_variations.quantity - sale_variations.return_quantity'), '>', 0)
+            ->orderBy('pm.name', 'asc')
+            ->get();
+
+
+        return response([
+            'sale_transaction' => $sale_transaction,
+            'payments' => $payments,
+            'product_summary' => $product_summary,
+            'serial_list' => $serial_list
+        ], 200);
     }
 
 
