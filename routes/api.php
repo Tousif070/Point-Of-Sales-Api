@@ -287,6 +287,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('ppr-index', 'ReportController@pprIndex');
 
+            Route::get('epr-index', 'ReportController@eprIndex');
+
             Route::get('profit-by-sale-invoice', 'ReportController@profitBySaleInvoice');
 
             Route::get('profit-by-customer-view', 'ReportController@profitByCustomerView');

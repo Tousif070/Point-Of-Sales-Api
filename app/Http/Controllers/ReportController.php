@@ -111,6 +111,35 @@ class ReportController extends Controller
         return response(['payments' => $payments], 200);
     }
 
+    public function eprIndex()
+    {
+        if(!auth()->user()->hasPermission("report.epr-index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $payments = Payment::join('users as u', 'u.id', '=', 'payments.finalized_by')
+            ->join('expense_transactions as et', 'et.id', '=', 'payments.transaction_id')
+            ->join('payment_methods as pm', 'pm.id', '=', 'payments.payment_method_id')
+            ->select(
+
+                'payments.id',
+                DB::raw('DATE_FORMAT(payments.payment_date, "%m/%d/%Y") as date'),
+                'payments.payment_no',
+                'et.expense_no',
+                'payments.amount',
+                'pm.name as payment_method',
+                'payments.payment_note',
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(payments.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+
+            )->where('payments.payment_for', '=', 'expense')
+            ->orderBy('payments.payment_date', 'desc')
+            ->orderBy('payments.payment_no', 'desc')
+            ->get();
+
+        return response(['payments' => $payments], 200);
+    }
+
     public function profitBySaleInvoice()
     {
         if(!auth()->user()->hasPermission("report.pbsi"))

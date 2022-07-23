@@ -736,6 +736,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'report.epr-index')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.epr-index";
+            $permission->alias = "Expense Payment Report (EPR)";
+            $permission->description = "To view all the expense payments";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
         $permission = Permission::where('name', '=', 'report.pbsi')->first();
 
         if($permission == null)
