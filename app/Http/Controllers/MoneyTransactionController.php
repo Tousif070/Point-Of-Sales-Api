@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
 use App\Models\PurchaseTransaction;
+use App\Models\ExpenseTransaction;
 use App\Models\PaymentMethod;
 use App\Models\User;
 use DB;
@@ -148,6 +149,45 @@ class MoneyTransactionController extends Controller
             ->get();
 
         return response(['purchase_transactions' => $purchase_transactions], 200);
+    }
+
+    public function expensePaymentView()
+    {
+        if(!auth()->user()->hasPermission("money-transaction.expense-payment"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $expense_transactions = ExpenseTransaction::join('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
+            ->join('expense_references as er', 'er.id', '=', 'expense_transactions.expense_reference_id')
+            ->leftJoin('payments as p', function($query) {
+
+                $query->on('p.transaction_id', '=', 'expense_transactions.id')
+                    ->where('p.payment_for', '=', 'expense');
+
+            })
+            ->select(
+
+                'expense_transactions.id',
+                DB::raw('DATE_FORMAT(expense_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'expense_transactions.expense_no',
+                'er.name as reference',
+                'ec.name as category',
+                'expense_transactions.payment_status',
+                DB::raw('expense_transactions.amount as total_payable'),
+                DB::raw('IFNULL(SUM(p.amount), 0) as paid'),
+                DB::raw('
+                
+                    expense_transactions.amount - IFNULL(SUM(p.amount), 0)
+                
+                as due')
+
+            )->where('expense_transactions.payment_status', '<>', 'Paid')
+            ->groupBy('expense_transactions.id')
+            ->orderBy('expense_transactions.transaction_date', 'desc')
+            ->get();
+
+        return response(['expense_transactions' => $expense_transactions], 200);
     }
 
     public function customerDropdown()

@@ -32,6 +32,7 @@ class ExpenseTransactionController extends Controller
 
                 'expense_transactions.id',
                 DB::raw('DATE_FORMAT(expense_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'expense_transactions.expense_no',
                 'er.name as reference',
                 'ec.name as category',
                 'expense_transactions.amount',
