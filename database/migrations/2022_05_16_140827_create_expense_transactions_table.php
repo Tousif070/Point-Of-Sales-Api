@@ -17,6 +17,8 @@ class CreateExpenseTransactionsTable extends Migration
             
             $table->increments('id');
 
+            $table->string('expense_no')->unique()->nullable();
+
             
             $table->integer('expense_reference_id')->unsigned();
 

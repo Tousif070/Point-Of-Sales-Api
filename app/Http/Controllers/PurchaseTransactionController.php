@@ -61,13 +61,14 @@ class PurchaseTransactionController extends Controller
         }
 
         $request->validate([
-            'reference_no' => 'required | string',
+            'reference_no' => 'required | string | unique:purchase_transactions,reference_no',
             'purchase_status' => 'required | string',
             'transaction_date' => 'required | date',
             'supplier_id' => 'required | numeric'
         ], [
             'reference_no.required' => 'Please enter a reference !',
             'reference_no.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+            'reference_no.unique' => 'Reference should be unique !',
 
             'purchase_status.required' => 'Please select the purchase status !',
             'purchase_status.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',

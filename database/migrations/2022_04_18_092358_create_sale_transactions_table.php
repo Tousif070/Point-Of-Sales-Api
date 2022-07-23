@@ -39,6 +39,8 @@ class CreateSaleTransactionsTable extends Migration
 
             $table->string('shipping_tracking_number')->nullable();
 
+            $table->string('shipping_address')->nullable();
+
 
             $table->integer('finalized_by')->unsigned();
 

@@ -111,6 +111,12 @@ class ExpenseTransactionController extends Controller
 
             $expense_transaction->save();
 
+
+            $expense_transaction->expense_no = "Exp#" . ($expense_transaction->id + 1000);
+
+            $expense_transaction->save();
+
+
             DB::commit();
 
             return response(['expense_transaction' => $expense_transaction], 201);
