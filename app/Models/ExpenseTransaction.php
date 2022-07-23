@@ -11,4 +11,9 @@ class ExpenseTransaction extends Model
     use HasFactory, SoftDeletes;
 
     protected $table = "expense_transactions";
+
+    public function payments()
+    {
+        return $this->hasMany('App\Models\Payment', 'transaction_id', 'id');
+    }
 }

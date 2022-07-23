@@ -5,6 +5,7 @@ namespace App\Services\MoneyTransaction;
 use App\Services\MoneyTransaction\SalePayment;
 use App\Services\MoneyTransaction\CollectiveSalePayment;
 use App\Services\MoneyTransaction\PurchasePayment;
+use App\Services\MoneyTransaction\ExpensePayment;
 
 class MoneyTransactionService
 {
@@ -23,6 +24,10 @@ class MoneyTransactionService
             else if(request()->money_transaction_type == "purchase")
             {
                 return new PurchasePayment();
+            }
+            else if(request()->money_transaction_type == "expense")
+            {
+                return new ExpensePayment();
             }
             else
             {

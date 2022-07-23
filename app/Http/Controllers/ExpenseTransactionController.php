@@ -97,7 +97,7 @@ class ExpenseTransactionController extends Controller
 
             $expense_transaction->amount = $request->amount;
 
-            $expense_transaction->payment_status = "Paid";
+            $expense_transaction->payment_status = "Due";
 
             $expense_transaction->transaction_date = Carbon::parse($request->transaction_date);
 
