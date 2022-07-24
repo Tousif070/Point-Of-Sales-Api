@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Payment;
 use App\Models\User;
 use CAS;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -172,6 +173,18 @@ class SaleTransactionController extends Controller
             ];
 
             CAS::store($cas_data_arr);
+
+
+            // RECORD ENTRY FOR SALE TRANSACTION
+            $rec_data_arr = [
+                'category' => 'Transaction',
+                'type' => 'Sale',
+                'reference_id' => $sale_transaction->id,
+                'cash_flow' => null,
+                'amount' => $sale_transaction->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();

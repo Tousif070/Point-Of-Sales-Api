@@ -11,6 +11,7 @@ use App\Models\PurchaseVariation;
 use App\Models\User;
 use App\Models\CustomerCredit;
 use CAS;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -171,6 +172,18 @@ class SaleReturnTransactionController extends Controller
             ];
 
             CAS::store($cas_data_arr);
+
+
+            // RECORD ENTRY FOR SALE RETURN TRANSACTION
+            $rec_data_arr = [
+                'category' => 'Transaction',
+                'type' => 'Sale Return',
+                'reference_id' => $sale_return_transaction->id,
+                'cash_flow' => null,
+                'amount' => $sale_return_transaction->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();

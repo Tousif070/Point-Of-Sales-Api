@@ -6,6 +6,7 @@ use App\Models\SaleTransaction;
 use App\Models\Payment;
 use App\Models\User;
 use CAS;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -136,6 +137,18 @@ class CollectiveSalePayment implements MoneyTransactionContract
                 ];
     
                 CAS::store($cas_data_arr);
+
+
+                // RECORD ENTRY FOR SALE PAYMENT
+                $rec_data_arr = [
+                    'category' => 'Money',
+                    'type' => 'Sale',
+                    'reference_id' => $payment->id,
+                    'cash_flow' => 'in',
+                    'amount' => $payment->amount
+                ];
+
+                REC::store($rec_data_arr);
 
             }
 

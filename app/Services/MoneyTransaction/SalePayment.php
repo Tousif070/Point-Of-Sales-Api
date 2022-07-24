@@ -5,6 +5,7 @@ namespace App\Services\MoneyTransaction;
 use App\Models\SaleTransaction;
 use App\Models\Payment;
 use CAS;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -147,6 +148,18 @@ class SalePayment implements MoneyTransactionContract
             ];
 
             CAS::store($cas_data_arr);
+
+
+            // RECORD ENTRY FOR SALE PAYMENT
+            $rec_data_arr = [
+                'category' => 'Money',
+                'type' => 'Sale',
+                'reference_id' => $payment->id,
+                'cash_flow' => 'in',
+                'amount' => $payment->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();

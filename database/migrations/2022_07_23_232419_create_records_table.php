@@ -21,9 +21,11 @@ class CreateRecordsTable extends Migration
 
             $table->string('type');
 
-            $table->string('cash_flow');
+            $table->integer('reference_id')->unsigned()->nullable();
 
-            $table->decimal('amount', 20, 2);
+            $table->string('cash_flow')->nullable();
+
+            $table->decimal('amount', 20, 2)->nullable();
 
             $table->integer('finalized_by')->unsigned();
 

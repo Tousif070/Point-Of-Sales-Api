@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\CustomerUserAssociation;
 use App\Models\CustomerCredit;
 use CAS;
+use REC;
 use Illuminate\Support\Facades\Hash;
 use Storage;
 use DB;
@@ -1400,6 +1401,18 @@ class UserController extends Controller
             $customer->userDetail->available_credit += $request->amount;
 
             $customer->userDetail->save();
+
+
+            // RECORD ENTRY FOR CUSTOMER CREDIT
+            $rec_data_arr = [
+                'category' => 'Money',
+                'type' => 'Add CC',
+                'reference_id' => $customer_credit->id,
+                'cash_flow' => 'in',
+                'amount' => $customer_credit->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();

@@ -7,6 +7,7 @@ use App\Models\PurchaseTransaction;
 use App\Models\PurchaseVariation;
 use App\Models\Payment;
 use App\Models\User;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -101,6 +102,19 @@ class PurchaseTransactionController extends Controller
             $purchase_transaction->finalized_at = Carbon::now();
 
             $purchase_transaction->save();
+
+
+            // RECORD ENTRY FOR PURCHASE TRANSACTION
+            $rec_data_arr = [
+                'category' => 'Transaction',
+                'type' => 'Purchase',
+                'reference_id' => $purchase_transaction->id,
+                'cash_flow' => null,
+                'amount' => null
+            ];
+
+            REC::store($rec_data_arr);
+
 
             DB::commit();
 

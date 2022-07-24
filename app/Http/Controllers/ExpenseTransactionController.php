@@ -7,6 +7,7 @@ use App\Models\ExpenseCategory;
 use App\Models\ExpenseReference;
 use App\Models\ExpenseTransaction;
 use App\Models\User;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -116,6 +117,18 @@ class ExpenseTransactionController extends Controller
             $expense_transaction->expense_no = "Exp#" . ($expense_transaction->id + 1000);
 
             $expense_transaction->save();
+
+
+            // RECORD ENTRY FOR EXPENSE TRANSACTION
+            $rec_data_arr = [
+                'category' => 'Transaction',
+                'type' => 'Expense',
+                'reference_id' => $expense_transaction->id,
+                'cash_flow' => null,
+                'amount' => $expense_transaction->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();

@@ -4,6 +4,7 @@ namespace App\Services\MoneyTransaction;
 
 use App\Models\ExpenseTransaction;
 use App\Models\Payment;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -107,6 +108,18 @@ class ExpensePayment implements MoneyTransactionContract
             }
 
             $expense_transaction->save();
+
+
+            // RECORD ENTRY FOR EXPENSE PAYMENT
+            $rec_data_arr = [
+                'category' => 'Money',
+                'type' => 'Expense',
+                'reference_id' => $payment->id,
+                'cash_flow' => 'out',
+                'amount' => $payment->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();

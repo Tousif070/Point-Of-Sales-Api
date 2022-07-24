@@ -4,6 +4,7 @@ namespace App\Services\MoneyTransaction;
 
 use App\Models\PurchaseTransaction;
 use App\Models\Payment;
+use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -109,6 +110,18 @@ class PurchasePayment implements MoneyTransactionContract
             }
 
             $purchase_transaction->save();
+
+
+            // RECORD ENTRY FOR PURCHASE PAYMENT
+            $rec_data_arr = [
+                'category' => 'Money',
+                'type' => 'Purchase',
+                'reference_id' => $payment->id,
+                'cash_flow' => 'out',
+                'amount' => $payment->amount
+            ];
+
+            REC::store($rec_data_arr);
 
 
             DB::commit();
