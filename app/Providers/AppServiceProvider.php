@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Services\MoneyTransaction\MoneyTransactionService;
 use App\Services\CustomerAccountStatement\CustomerAccountStatementService;
+use App\Services\Record\RecordService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
         MoneyTransactionService::Handle($this->app);
 
         CustomerAccountStatementService::Handle($this->app);
+
+        RecordService::Handle($this->app);
     }
 
     /**

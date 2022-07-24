@@ -230,6 +230,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'CAS' => App\Services\CustomerAccountStatement\CustomerAccountStatementFacade::class,
+        'REC' => App\Services\Record\RecordFacade::class,
 
     ],
 
