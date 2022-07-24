@@ -390,5 +390,77 @@ class SaleReturnTransactionController extends Controller
         ], 200);
     }
 
+    public function getSaleReturnInvoice($sale_return_transaction_id)
+    {
+        if(!auth()->user()->hasPermission("sale-return.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $sale_return_transaction = SaleReturnTransaction::find($sale_return_transaction_id);
+
+        if($sale_return_transaction == null)
+        {
+            return response(['message' => 'Sale Return Transaction not found !'], 404);
+        }
+
+
+        $sale_return_transaction = SaleReturnTransaction::join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
+            ->join('users as u', 'u.id', '=', 'st.customer_id')
+            ->select(
+
+                'sale_return_transactions.id',
+                DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
+                'sale_return_transactions.invoice_no',
+                DB::raw('DATE_FORMAT(sale_return_transactions.transaction_date, "%m/%d/%Y") as date'),
+                'st.invoice_no as parent_invoice',
+                'sale_return_transactions.amount as total',
+                'sale_return_transactions.amount_credited',
+                DB::raw('sale_return_transactions.amount - sale_return_transactions.amount_credited as amount_adjusted')
+
+            )->where('sale_return_transactions.id', '=', $sale_return_transaction_id)
+            ->first();
+
+
+        $product_summary = SaleReturnVariation::join('products as p', 'p.id', '=', 'sale_return_variations.product_id')
+            ->select(
+
+                'p.name',
+                DB::raw('SUM(sale_return_variations.quantity) as quantity'),
+                'sale_return_variations.selling_price as unit_price',
+
+            )->where('sale_return_variations.sale_return_transaction_id', '=', $sale_return_transaction_id)
+            ->groupBy('sale_return_variations.selling_price')
+            ->groupBy('sale_return_variations.product_id')
+            ->orderBy('p.name', 'asc')
+            ->get();
+
+
+        $serial_list = SaleReturnVariation::join('products as p', 'p.id', '=', 'sale_return_variations.product_id')
+            ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sale_return_variations.purchase_variation_id')
+            ->select(
+
+                'sale_return_variations.id',
+                'pm.name',
+                'pv.serial as imei',
+                'p.color',
+                'p.ram',
+                'p.storage',
+                'p.condition'
+
+            )->where('sale_return_variations.sale_return_transaction_id', '=', $sale_return_transaction_id)
+            ->where('pv.serial', '<>', null)
+            ->orderBy('pm.name', 'asc')
+            ->get();
+
+
+        return response([
+            'sale_return_transaction' => $sale_return_transaction,
+            'product_summary' => $product_summary,
+            'serial_list' => $serial_list
+        ], 200);
+    }
+
 
 }

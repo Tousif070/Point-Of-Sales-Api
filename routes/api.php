@@ -215,6 +215,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('get-sale-return-variations/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleReturnVariations');
 
+            Route::get('get-sale-return-invoice/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleReturnInvoice');
+
         });
 
 
