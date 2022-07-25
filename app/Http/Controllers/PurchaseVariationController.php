@@ -87,6 +87,14 @@ class PurchaseVariationController extends Controller
         ]);
 
 
+        $purchase_transaction = PurchaseTransaction::find($request->purchase_transaction_id);
+
+        if($purchase_transaction->locked == 1)
+        {
+            return response(['message' => 'Purchase is locked. No product can be added !'], 409);
+        }
+
+
         if($request->quantity_purchased < 1)
         {
             return response(['message' => 'Purchase quantity cannot be less than 1 !'], 409);
@@ -126,8 +134,6 @@ class PurchaseVariationController extends Controller
                 $purchase_variation->save();
             }
 
-
-            $purchase_transaction = PurchaseTransaction::find($purchase_variation->purchase_transaction_id);
 
             $purchase_transaction->amount += ($purchase_variation->purchase_price * $purchase_variation->quantity_purchased);
 

@@ -162,6 +162,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'PurchaseTransactionController@store');
 
+            Route::get('toggle-lock/{purchase_transaction_id}', 'PurchaseTransactionController@toggleLock');
+
             Route::get('get-purchase-variations/{purchase_transaction_id}', 'PurchaseTransactionController@getPurchaseVariations');
 
             Route::get('get-purchase-invoice/{purchase_transaction_id}', 'PurchaseTransactionController@getPurchaseInvoice');

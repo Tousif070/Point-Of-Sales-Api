@@ -33,6 +33,8 @@ class CreatePurchaseTransactionsTable extends Migration
             $table->foreign('supplier_id')->references('id')->on('users');
 
 
+            $table->tinyInteger('locked')->unsigned()->default(0);
+
             $table->decimal('shipping_charge', 10, 2)->nullable();
 
             $table->string('shipping_details')->nullable();

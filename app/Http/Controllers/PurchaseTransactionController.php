@@ -37,6 +37,7 @@ class PurchaseTransactionController extends Controller
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as supplier'),
                 'purchase_transactions.purchase_status',
                 DB::raw('IF(SUM(pv.quantity_purchased) is null, 0, SUM(pv.quantity_purchased)) as total_items'),
+                'purchase_transactions.locked',
                 'purchase_transactions.payment_status',
                 'purchase_transactions.amount',
                 DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(purchase_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
@@ -322,6 +323,34 @@ class PurchaseTransactionController extends Controller
             'serial_list' => $serial_list,
             'group_list' => $group_list
         ], 200);
+    }
+
+    public function toggleLock($purchase_transaction_id)
+    {
+        if(!auth()->user()->hasPermission("purchase.lock"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $purchase_transaction = PurchaseTransaction::find($purchase_transaction_id);
+
+        if($purchase_transaction == null)
+        {
+            return response(['message' => 'Purchase Transaction not found !'], 404);
+        }
+
+        if($purchase_transaction->locked == 1)
+        {
+            $purchase_transaction->locked = 0;
+        }
+        else
+        {
+            $purchase_transaction->locked = 1;
+        }
+
+        $purchase_transaction->save();
+
+        return response(['value' => $purchase_transaction->locked], 200);
     }
 
 

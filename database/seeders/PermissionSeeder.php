@@ -401,6 +401,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'purchase.lock')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase.lock";
+            $permission->alias = "Lock/Unlock Purchase";
+            $permission->description = "To lock/unlock a purchase for adding products";
+            $permission->permission_group = "Purchase";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - PURCHASE VARIATION
 
