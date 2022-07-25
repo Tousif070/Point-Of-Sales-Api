@@ -279,6 +279,17 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
 
 
+        Route::group(['prefix' => 'record'], function() {
+
+            Route::get('transactions', 'RecordController@transactions');
+
+            Route::get('cash-in', 'RecordController@cashIn');
+
+            Route::get('cash-out', 'RecordController@cashOut');
+
+        });
+
+
         Route::group(['prefix' => 'report'], function() {
 
             Route::get('cas-index-view', 'ReportController@casIndexView');

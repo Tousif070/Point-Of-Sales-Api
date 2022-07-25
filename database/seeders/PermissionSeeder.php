@@ -779,5 +779,36 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - RECORD
+
+        $permission = Permission::where('name', '=', 'record.transactions')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "record.transactions";
+            $permission->alias = "Transaction Records";
+            $permission->description = "To view records of transactions";
+            $permission->permission_group = "Record";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'record.money')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "record.money";
+            $permission->alias = "Money Records";
+            $permission->description = "To view records of cash in & cash out";
+            $permission->permission_group = "Record";
+
+            $permission->save();
+        }
+
+
     }
 }
