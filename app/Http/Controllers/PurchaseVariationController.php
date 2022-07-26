@@ -91,13 +91,21 @@ class PurchaseVariationController extends Controller
 
         if($purchase_transaction->locked == 1)
         {
-            return response(['message' => 'Purchase is locked. No product can be added !'], 409);
+            return response([
+                'errors' => [
+                    'purchase_locked' => ['Purchase is locked. No product can be added !']
+                ]
+            ], 409);
         }
 
 
         if($request->quantity_purchased < 1)
         {
-            return response(['message' => 'Purchase quantity cannot be less than 1 !'], 409);
+            return response([
+                'errors' => [
+                    'quantity_error' => ['Purchase quantity cannot be less than 1 !']
+                ]
+            ], 409);
         }
 
 
