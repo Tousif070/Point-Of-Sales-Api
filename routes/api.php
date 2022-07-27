@@ -23,7 +23,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
     Route::post('login', 'LoginController@login');
 
-    Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::group(['middleware' => ['auth:sanctum', 'TokenTimer']], function() {
 
         Route::post('logout', 'LoginController@logout');
 
