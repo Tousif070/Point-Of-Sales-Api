@@ -206,6 +206,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('downlaod-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@downloadSaleInvoice');
 
+            Route::get('email-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@emailSaleInvoice');
+
         });
 
 

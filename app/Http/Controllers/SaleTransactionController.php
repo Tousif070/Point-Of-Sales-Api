@@ -16,6 +16,7 @@ use DB;
 use Exception;
 use Carbon\Carbon;
 use PDF;
+use Mail;
 
 class SaleTransactionController extends Controller
 {
@@ -528,5 +529,32 @@ class SaleTransactionController extends Controller
         return $pdf->download('SaleInvoice.pdf');
     }
 
+    public function emailSaleInvoice($sale_transaction_id)
+    {
+
+        $sale_transaction = SaleTransaction::find($sale_transaction_id);
+
+        $data['subject'] = "Sale Invoice";
+        $data['email'] = $sale_transaction->customer->email;
+        $data['name'] = $sale_transaction->customer->first_name . " " . $sale_transaction->customer->last_name; 
+        $data['business_name'] = $sale_transaction->customer->userDetail->business_name;        
+        $data['invoice_no'] = $sale_transaction->invoice_no;    
+        $data['total'] =  $sale_transaction->amount - $sale_transaction->saleReturnTransactions->sum('amount');
+        $data['payment_status'] = $sale_transaction->payment_status;
+
+        $sale_invoice = $this->getSaleInvoice($sale_transaction_id, false);        
+        $data['pdf'] = PDF::loadView('sale.sale_invoice', $sale_invoice);
+
+        Mail::send('email.sale_invoice', $data, function($message) use ($data) {       
+            $message->to($data['email'])
+           ->subject($data["subject"])     
+           ->attachData($data['pdf']->output(), 
+                'SaleInvoice_' . $data['invoice_no'] . '.pdf', 
+                ['mime'=>'application/pdf']);
+  
+        });
+
+        return response(['message' => 'Sale Invoice Sent Successfully !'], 200);
+    }
 
 }
