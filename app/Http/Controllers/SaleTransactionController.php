@@ -15,6 +15,8 @@ use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
+use PDF;
+use Mail;
 
 class SaleTransactionController extends Controller
 {
@@ -403,7 +405,7 @@ class SaleTransactionController extends Controller
         ], 200);
     }
 
-    public function getSaleInvoice($sale_transaction_id)
+    public function getSaleInvoice($sale_transaction_id, $json = true)
     {
         if(!auth()->user()->hasPermission("sale.index"))
         {
@@ -495,14 +497,64 @@ class SaleTransactionController extends Controller
             ->orderBy('pm.name', 'asc')
             ->get();
 
+        
+        if($json)
+        {
+            return response([
+                'sale_transaction' => $sale_transaction,
+                'payments' => $payments,
+                'product_summary' => $product_summary,
+                'serial_list' => $serial_list
+            ], 200);
+        }
+        else
+        {
+            return [
+                'sale_transaction' => $sale_transaction,
+                'payments' => $payments,
+                'product_summary' => $product_summary,
+                'serial_list' => $serial_list
+            ];
+        }
 
-        return response([
-            'sale_transaction' => $sale_transaction,
-            'payments' => $payments,
-            'product_summary' => $product_summary,
-            'serial_list' => $serial_list
-        ], 200);
+        
     }
 
+    public function downloadSaleInvoice($sale_transaction_id)
+    {
+        $data = $this->getSaleInvoice($sale_transaction_id, false);
+        
+        $pdf = PDF::loadView('sale.sale_invoice', $data);
+    
+        return $pdf->download('SaleInvoice.pdf');
+    }
+
+    public function emailSaleInvoice($sale_transaction_id)
+    {
+
+        $sale_transaction = SaleTransaction::find($sale_transaction_id);
+
+        $data['subject'] = "Sale Invoice";
+        $data['email'] = $sale_transaction->customer->email;
+        $data['name'] = $sale_transaction->customer->first_name . " " . $sale_transaction->customer->last_name; 
+        $data['business_name'] = $sale_transaction->customer->userDetail->business_name;        
+        $data['invoice_no'] = $sale_transaction->invoice_no;    
+        $data['total'] =  $sale_transaction->amount - $sale_transaction->saleReturnTransactions->sum('amount');
+        $data['payment_status'] = $sale_transaction->payment_status;
+
+        $sale_invoice = $this->getSaleInvoice($sale_transaction_id, false);        
+        $data['pdf'] = PDF::loadView('sale.sale_invoice', $sale_invoice);
+
+        Mail::send('email.sale_invoice', $data, function($message) use ($data) {       
+            $message->to($data['email'])
+           ->subject($data["subject"])     
+           ->attachData($data['pdf']->output(), 
+                'SaleInvoice_' . $data['invoice_no'] . '.pdf', 
+                ['mime'=>'application/pdf']);
+  
+        });
+
+        return response(['message' => 'Sale Invoice Sent Successfully !'], 200);
+    }
 
 }

@@ -23,7 +23,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
     Route::post('login', 'LoginController@login');
 
-    Route::group(['middleware' => ['auth:sanctum']], function() {
+    Route::group(['middleware' => ['auth:sanctum', 'TokenTimer']], function() {
 
         Route::post('logout', 'LoginController@logout');
 
@@ -203,6 +203,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('get-sale-variations/{sale_transaction_id}', 'SaleTransactionController@getSaleVariations');
 
             Route::get('get-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@getSaleInvoice');
+
+            Route::get('downlaod-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@downloadSaleInvoice');
+
+            Route::get('email-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@emailSaleInvoice');
 
         });
 
