@@ -57,7 +57,7 @@
                                                 <p class="text-muted mb-2 text-uppercase fw-bold">Invoice No: <span class="mb-0 fw-normal">{{ $sale_transaction->invoice_no }}</span></p>
                                                 <p class="text-muted mb-2 text-uppercase fw-bold">Date: <span class="mb-0 fw-normal">{{ $sale_transaction->date }}</span></p>
                                                 <p class="text-muted mb-2 text-uppercase fw-bold">Payment Status: <span class=" fw-normal">{{ $sale_transaction->payment_status }}</span></p>
-                                                <p class="text-muted mb-2 text-uppercase fw-bold">Total: <span class="mb-0 fw-normal">${{ $sale_transaction->total }}</span></p>
+                                                <p class="text-muted mb-2 text-uppercase fw-bold">Total: <span class="mb-0 fw-normal">${{ $sale_transaction->total_payable_after_sale_return }}</span></p>
                                             </div>
                                         </div>
                                     </td>

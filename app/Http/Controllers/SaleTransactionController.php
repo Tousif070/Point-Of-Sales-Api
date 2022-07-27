@@ -516,45 +516,75 @@ class SaleTransactionController extends Controller
                 'serial_list' => $serial_list
             ];
         }
-
-        
     }
 
     public function downloadSaleInvoice($sale_transaction_id)
     {
+        if(!auth()->user()->hasPermission("sale.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
         $data = $this->getSaleInvoice($sale_transaction_id, false);
-        
-        $pdf = PDF::loadView('sale.sale_invoice', $data);
-    
-        return $pdf->download('SaleInvoice.pdf');
+
+        try {
+
+            $pdf = PDF::loadView('sale.sale_invoice', $data);
+
+            return $pdf->download('SaleInvoice.pdf');
+
+        } catch(Exception $ex) {
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
     public function emailSaleInvoice($sale_transaction_id)
     {
+        if(!auth()->user()->hasPermission("sale.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
 
         $sale_transaction = SaleTransaction::find($sale_transaction_id);
 
         $data['subject'] = "Sale Invoice";
         $data['email'] = $sale_transaction->customer->email;
         $data['name'] = $sale_transaction->customer->first_name . " " . $sale_transaction->customer->last_name; 
-        $data['business_name'] = $sale_transaction->customer->userDetail->business_name;        
-        $data['invoice_no'] = $sale_transaction->invoice_no;    
+        $data['business_name'] = $sale_transaction->customer->userDetail->business_name;
+        $data['invoice_no'] = $sale_transaction->invoice_no;
         $data['total'] =  $sale_transaction->amount - $sale_transaction->saleReturnTransactions->sum('amount');
         $data['payment_status'] = $sale_transaction->payment_status;
 
-        $sale_invoice = $this->getSaleInvoice($sale_transaction_id, false);        
-        $data['pdf'] = PDF::loadView('sale.sale_invoice', $sale_invoice);
+        $sale_invoice = $this->getSaleInvoice($sale_transaction_id, false);
 
-        Mail::send('email.sale_invoice', $data, function($message) use ($data) {       
-            $message->to($data['email'])
-           ->subject($data["subject"])     
-           ->attachData($data['pdf']->output(), 
-                'SaleInvoice_' . $data['invoice_no'] . '.pdf', 
-                ['mime'=>'application/pdf']);
-  
-        });
+        try {
 
-        return response(['message' => 'Sale Invoice Sent Successfully !'], 200);
+            $data['pdf'] = PDF::loadView('sale.sale_invoice', $sale_invoice);
+
+            Mail::send('email.sale_invoice', $data, function($message) use ($data) {
+
+                $message->to($data['email'])
+                    ->subject($data["subject"])
+                    ->attachData($data['pdf']->output(), 'SaleInvoice_' . $data['invoice_no'] . '.pdf', ['mime'=>'application/pdf']);
+
+            });
+
+            return response(['message' => 'Sale Invoice Sent Successfully !'], 200);
+
+        } catch(Exception $ex) {
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
+    
 }
