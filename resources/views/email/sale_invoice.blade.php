@@ -114,7 +114,7 @@
             </div>
             <div class="footer">
                 <div class="img">
-                    <img src="http://localhost:3000/static/media/smartphone-depot-logo.3752a8222ad4ab0c80ba.png" alt="">
+                    <img src="{{ asset('/public/assets/images/logo/logo.png') }}" alt="">
                 </div>
                 <div class="address">
                     <p class="fw-semibold">2735 Hartland Road. Suite 303 <br> Falls Church, VA 22043</p>
