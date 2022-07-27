@@ -15,6 +15,7 @@ use REC;
 use DB;
 use Exception;
 use Carbon\Carbon;
+use PDF;
 
 class SaleTransactionController extends Controller
 {
@@ -403,7 +404,7 @@ class SaleTransactionController extends Controller
         ], 200);
     }
 
-    public function getSaleInvoice($sale_transaction_id)
+    public function getSaleInvoice($sale_transaction_id, $json = true)
     {
         if(!auth()->user()->hasPermission("sale.index"))
         {
@@ -495,13 +496,36 @@ class SaleTransactionController extends Controller
             ->orderBy('pm.name', 'asc')
             ->get();
 
+        
+        if($json)
+        {
+            return response([
+                'sale_transaction' => $sale_transaction,
+                'payments' => $payments,
+                'product_summary' => $product_summary,
+                'serial_list' => $serial_list
+            ], 200);
+        }
+        else
+        {
+            return [
+                'sale_transaction' => $sale_transaction,
+                'payments' => $payments,
+                'product_summary' => $product_summary,
+                'serial_list' => $serial_list
+            ];
+        }
 
-        return response([
-            'sale_transaction' => $sale_transaction,
-            'payments' => $payments,
-            'product_summary' => $product_summary,
-            'serial_list' => $serial_list
-        ], 200);
+        
+    }
+
+    public function downloadSaleInvoice($sale_transaction_id)
+    {
+        $data = $this->getSaleInvoice($sale_transaction_id, false);
+        
+        $pdf = PDF::loadView('sale.sale_invoice', $data);
+    
+        return $pdf->download('SaleInvoice.pdf');
     }
 
 
