@@ -37,14 +37,16 @@
             margin-bottom: 0.5rem;
         }
         .wrapper{
-            background-color: #ededed;
-            height: 100vh;
+            height: fit-content;
+            padding-top: 50px;
+            padding-bottom: 10px;
         }
         .main-wrapper{
             height: fit-content;
             width: 30rem;
             background-color: #fff;
             margin: auto;
+            border: 1px solid #ededed;
         }
         .top h4{
             background-color: #044867;

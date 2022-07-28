@@ -43,8 +43,8 @@
                                 <tr>
                                     <td class="p-0">
                                         <div class="">
-                                            <img src="{{ asset('/public/assets/images/logo/logo.png') }}" alt="logo light" height="30">
-                                            <div class="mt-sm-5 mt-3">
+                                            <img src="{{ asset('/public/assets/images/logo/logo.png') }}" alt="logo light" height="40">
+                                            <div class="mt-sm-3 mt-3">
                                                 <h6 class="text-muted text-uppercase fw-semibold">Smartphone-Depot</h6>
                                                 <p class="text-muted mb-1">2735 Hartland Road. Suite 303</p>
                                                 <p class="text-muted mb-0">Falls Church, VA 22043</p>
@@ -66,7 +66,7 @@
                                             <h6 class="text-muted fw-bold">Contact Information :</h6>
                                             <h6> <span class="text-muted fw-normal">Contact No:</span>  571-529-4022 </h6>
                                             <h6><span class="text-muted fw-normal">Email:</span> sales@smartphone-depot.com</h6>
-                                            <h6 class="mb-0"><span class="text-muted fw-normal">Website:</span> <a class="link-primary" href="/https://www.smartphone-depot.com/"> www.smartphone-depot.com </a></h6>
+                                            <h6 class="mb-0"><span class="text-muted fw-normal">Website:</span> <a class="link-primary" href="https://www.smartphone-depot.com"> www.smartphone-depot.com </a></h6>
                                         </div>
                                     </td>
                                    </tr>
