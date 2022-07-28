@@ -115,7 +115,7 @@
                                                         </tr>
                                                     @else
                                                         <tr>
-                                                            <td>Total Amount</td>
+                                                            <th>Total Amount</th>
                                                             <td class="text-end">${{ $sale_transaction->total }}</td>
                                                         </tr>
                                                     @endif
@@ -154,7 +154,7 @@
                             </table>
                         </div>
 
-                        <div class="mt-5"><h5 class="fs-16 mb-2">Payment Information:</h5>
+                        <div class="mt-5"><h5 class="fw-bold mb-2">Payment Information:</h5>
                             <div class="p-0">
                                 <table class="table-borderless table-nowrap align-center mb-0 table">
                                     <thead>
@@ -184,7 +184,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-5"><h5 class="fs-16 mb-2">IMEI/Serial List:</h5>
+                        <div class="mt-5"><h5 class="fw-bold mb-2">IMEI/Serial List:</h5>
                             <table class="table-borderless table-nowrap align-center mb-0 table">
                                 <thead>
                                     <tr class="table-active">
