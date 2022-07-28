@@ -37,7 +37,7 @@
             margin-bottom: 0.5rem;
         }
         .wrapper{
-            background-color: hsl(0deg 0% 93%);
+            background-color: #ededed;
             height: 100vh;
         }
         .main-wrapper{
@@ -47,7 +47,7 @@
             margin: auto;
         }
         .top h4{
-            background-color: hsl(199deg 93% 21%);
+            background-color: #044867;
             padding: 20px 0;
             color: #fff;
             margin: 0;
