@@ -552,7 +552,7 @@ class SaleTransactionController extends Controller
 
         $sale_transaction = SaleTransaction::find($sale_transaction_id);
 
-        $data['subject'] = "Sale Invoice";
+        $data['subject'] = "Sale Invoice " . "(" . $sale_transaction->invoice_no . ")";
         $data['email'] = $sale_transaction->customer->email;
         $data['name'] = $sale_transaction->customer->first_name . " " . $sale_transaction->customer->last_name; 
         $data['business_name'] = $sale_transaction->customer->userDetail->business_name;
