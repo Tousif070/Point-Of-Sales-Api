@@ -23,6 +23,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
     Route::post('login', 'LoginController@login');
 
+    // THE FOLLOWING ROUTE IS TEMPORARY. WILL BE REMOVED LATER
+    Route::get('getpdf/{sale_transaction_id}', 'SaleTransactionController@downloadSaleInvoice');
+
     Route::group(['middleware' => ['auth:sanctum', 'TokenTimer']], function() {
 
         Route::post('logout', 'LoginController@logout');

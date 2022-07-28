@@ -407,10 +407,12 @@ class SaleTransactionController extends Controller
 
     public function getSaleInvoice($sale_transaction_id, $json = true)
     {
-        if(!auth()->user()->hasPermission("sale.index"))
-        {
-            return response(['message' => 'Permission Denied !'], 403);
-        }
+        // THE FOLLOWING IS DISABLED TEMPORARILY
+
+        // if(!auth()->user()->hasPermission("sale.index"))
+        // {
+        //     return response(['message' => 'Permission Denied !'], 403);
+        // }
 
         $sale_transaction = SaleTransaction::find($sale_transaction_id);
 
@@ -520,10 +522,12 @@ class SaleTransactionController extends Controller
 
     public function downloadSaleInvoice($sale_transaction_id)
     {
-        if(!auth()->user()->hasPermission("sale.index"))
-        {
-            return response(['message' => 'Permission Denied !'], 403);
-        }
+        // THE FOLLOWING IS DISABLED TEMPORARILY
+
+        // if(!auth()->user()->hasPermission("sale.index"))
+        // {
+        //     return response(['message' => 'Permission Denied !'], 403);
+        // }
 
         $data = $this->getSaleInvoice($sale_transaction_id, false);
 
@@ -531,7 +535,7 @@ class SaleTransactionController extends Controller
 
             $pdf = PDF::loadView('sale.sale_invoice', $data);
 
-            return $pdf->download('SaleInvoice.pdf');
+            return $pdf->download('SaleInvoice_' . $data['sale_transaction']->invoice_no . '.pdf');
 
         } catch(Exception $ex) {
 
@@ -552,7 +556,7 @@ class SaleTransactionController extends Controller
 
         $sale_transaction = SaleTransaction::find($sale_transaction_id);
 
-        $data['subject'] = "Sale Invoice " . "(" . $sale_transaction->invoice_no . ")";
+        $data['subject'] = "Sale Invoice (" . $sale_transaction->invoice_no . ")";
         $data['email'] = $sale_transaction->customer->email;
         $data['name'] = $sale_transaction->customer->first_name . " " . $sale_transaction->customer->last_name; 
         $data['business_name'] = $sale_transaction->customer->userDetail->business_name;
@@ -574,7 +578,11 @@ class SaleTransactionController extends Controller
 
             });
 
-            return response(['message' => 'Sale Invoice Sent Successfully !'], 200);
+            return response([
+                'messages' => [
+                    'sale_invoice_email' => ['Sale Invoice Sent Successfully !']
+                ]
+            ], 200);
 
         } catch(Exception $ex) {
 
