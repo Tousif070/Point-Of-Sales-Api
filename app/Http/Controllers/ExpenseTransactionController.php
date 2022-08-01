@@ -186,12 +186,17 @@ class ExpenseTransactionController extends Controller
 
     public function summary()
     {
-        $expense_transactions = ExpenseTransaction::rightJoin('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
+        if(!auth()->user()->hasPermission("expense.summary"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $expense_summary = ExpenseTransaction::rightJoin('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
             
         ->select(
 
             'ec.id',
-            'ec.name',
+            'ec.name as category',
             DB::raw('IFNULL(SUM(expense_transactions.amount), 0) as total_amount'),
 
         )
@@ -200,7 +205,7 @@ class ExpenseTransactionController extends Controller
         ->orderBy('ec.name', 'asc')
         ->get();
 
-        return response(['expense_transactions' => $expense_transactions], 200);
+        return response(['expense_summary' => $expense_summary], 200);
     }
 
 

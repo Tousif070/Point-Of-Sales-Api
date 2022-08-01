@@ -615,6 +615,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'expense.summary')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense.summary";
+            $permission->alias = "View Expense Summary";
+            $permission->description = "To view total expense by expense category";
+            $permission->permission_group = "Expense";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - PAYMENT METHOD
 
