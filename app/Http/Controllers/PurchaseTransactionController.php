@@ -44,6 +44,7 @@ class PurchaseTransactionController extends Controller
 
             )->groupBy('purchase_transactions.id')
             ->orderBy('purchase_transactions.transaction_date', 'desc')
+            ->orderBy('purchase_transactions.reference_no', 'desc')
             ->get();
 
         return response(['purchase_transactions' => $purchase_transactions], 200);
@@ -63,15 +64,10 @@ class PurchaseTransactionController extends Controller
         }
 
         $request->validate([
-            'reference_no' => 'required | string | unique:purchase_transactions,reference_no',
             'purchase_status' => 'required | string',
             'transaction_date' => 'required | date',
             'supplier_id' => 'required | numeric'
         ], [
-            'reference_no.required' => 'Please enter a reference !',
-            'reference_no.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
-            'reference_no.unique' => 'Reference should be unique !',
-
             'purchase_status.required' => 'Please select the purchase status !',
             'purchase_status.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
@@ -88,8 +84,6 @@ class PurchaseTransactionController extends Controller
 
             $purchase_transaction = new PurchaseTransaction();
 
-            $purchase_transaction->reference_no = $request->reference_no;
-
             $purchase_transaction->purchase_status = $request->purchase_status;
 
             $purchase_transaction->payment_status = "Due";
@@ -101,6 +95,11 @@ class PurchaseTransactionController extends Controller
             $purchase_transaction->finalized_by = auth()->user()->id;
 
             $purchase_transaction->finalized_at = Carbon::now();
+
+            $purchase_transaction->save();
+
+
+            $purchase_transaction->reference_no = "Purchase#" . ($purchase_transaction->id + 1000);
 
             $purchase_transaction->save();
 

@@ -17,7 +17,7 @@ class CreatePurchaseTransactionsTable extends Migration
 
             $table->increments('id');
 
-            $table->string('reference_no')->unique();
+            $table->string('reference_no')->unique()->nullable();
 
             $table->decimal('amount', 20, 2)->default(0.00);
 
