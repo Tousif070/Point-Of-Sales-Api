@@ -382,6 +382,7 @@ class ProductController extends Controller
                 'pv.quantity_available',
                 'pv.quantity_sold',
                 'pv.purchase_price',
+                'pv.overhead_charge',
                 'pv.risk_fund'
 
             )->where('products.id', '=', $product_id)

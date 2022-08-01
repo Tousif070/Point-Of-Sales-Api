@@ -40,6 +40,8 @@ class CreatePurchaseVariationsTable extends Migration
 
             $table->decimal('purchase_price', 10, 2);
 
+            $table->decimal('overhead_charge', 10, 2)->nullable();
+
             $table->decimal('risk_fund', 10, 2);
 
             $table->timestamps();

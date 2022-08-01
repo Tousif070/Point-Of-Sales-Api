@@ -150,7 +150,7 @@ class SaleTransactionController extends Controller
 
                 $sale_variation->selling_price = $entry['selling_price'];
 
-                $sale_variation->purchase_price = $purchase_variation->purchase_price;
+                $sale_variation->purchase_price = $purchase_variation->purchase_price + $purchase_variation->overhead_charge;
 
                 $sale_variation->save();
 
@@ -261,6 +261,7 @@ class SaleTransactionController extends Controller
                 'purchase_variations.serial as imei',
                 'purchase_variations.quantity_available',
                 'purchase_variations.purchase_price',
+                'purchase_variations.overhead_charge'
 
             )->where('purchase_variations.serial', '=', $request->imei)
             ->where('purchase_variations.quantity_available', '>', 0)
@@ -297,6 +298,7 @@ class SaleTransactionController extends Controller
                 DB::raw('IF(purchase_variations.group is null, "N/A", purchase_variations.group) as "group"'),
                 'purchase_variations.quantity_available',
                 'purchase_variations.purchase_price',
+                'purchase_variations.overhead_charge'
 
             )->where('purchase_variations.id', '=', $request->purchase_variation_id)
             ->where('purchase_variations.quantity_available', '>', 0)

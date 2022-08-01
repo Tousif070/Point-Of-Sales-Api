@@ -194,6 +194,7 @@ class PurchaseTransactionController extends Controller
                 'purchase_variations.quantity_available',
                 'purchase_variations.quantity_sold',
                 'purchase_variations.purchase_price',
+                'purchase_variations.overhead_charge',
                 'purchase_variations.risk_fund'
 
             )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
@@ -270,7 +271,8 @@ class PurchaseTransactionController extends Controller
 
                 'p.name',
                 DB::raw('SUM(purchase_variations.quantity_purchased) as quantity'),
-                'purchase_variations.purchase_price'
+                'purchase_variations.purchase_price',
+                'purchase_variations.overhead_charge'
 
             )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
             ->groupBy('purchase_variations.purchase_price')

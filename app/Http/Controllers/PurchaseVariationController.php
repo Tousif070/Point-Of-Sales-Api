@@ -37,6 +37,7 @@ class PurchaseVariationController extends Controller
                 'purchase_variations.quantity_available',
                 'purchase_variations.quantity_sold',
                 'purchase_variations.purchase_price',
+                'purchase_variations.overhead_charge',
                 'purchase_variations.risk_fund'
 
             )->orderBy('purchase_variations.created_at', 'desc')
@@ -64,6 +65,7 @@ class PurchaseVariationController extends Controller
             'serial' => 'required | string | unique:purchase_variations,serial',
             'quantity_purchased' => 'required | numeric',
             'purchase_price' => 'required | numeric',
+            'overhead_charge' => 'numeric | nullable',
             'risk_fund' => 'required | numeric'
         ], [
             'purchase_transaction_id.required' => 'Purchase Transaction ID is required !',
@@ -81,6 +83,8 @@ class PurchaseVariationController extends Controller
 
             'purchase_price.required' => 'Purchase price is required !',
             'purchase_price.numeric' => 'Purchase price should be numeric !',
+
+            'overhead_charge.numeric' => 'Overhead charge should be numeric !',
 
             'risk_fund.required' => 'Please set the risk fund !',
             'risk_fund.numeric' => 'Risk fund should be numeric !'
@@ -130,6 +134,8 @@ class PurchaseVariationController extends Controller
 
             $purchase_variation->purchase_price = $request->purchase_price;
 
+            $purchase_variation->overhead_charge = $request->overhead_charge;
+
             $purchase_variation->risk_fund = $request->risk_fund;
 
             $purchase_variation->save();
@@ -143,7 +149,7 @@ class PurchaseVariationController extends Controller
             }
 
 
-            $purchase_transaction->amount += ($purchase_variation->purchase_price * $purchase_variation->quantity_purchased);
+            $purchase_transaction->amount += (($purchase_variation->purchase_price + $purchase_variation->overhead_charge) * $purchase_variation->quantity_purchased);
 
             $purchase_transaction->save();
 
@@ -239,7 +245,7 @@ class PurchaseVariationController extends Controller
                 'products.name',
                 'products.sku',
                 DB::raw("SUM(pv.quantity_available) as quantity_available"),
-                DB::raw("ROUND(SUM(pv.quantity_available * pv.purchase_price) / SUM(pv.quantity_available), 2) as average_purchase_price")
+                DB::raw("ROUND(SUM(pv.quantity_available * (pv.purchase_price + pv.overhead_charge)) / SUM(pv.quantity_available), 2) as average_purchase_price")
 
             )->where('pv.quantity_available', '>', 0)
             ->groupBy('products.id')
