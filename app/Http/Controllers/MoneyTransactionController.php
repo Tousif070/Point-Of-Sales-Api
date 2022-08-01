@@ -159,7 +159,6 @@ class MoneyTransactionController extends Controller
         }
 
         $expense_transactions = ExpenseTransaction::join('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
-            ->join('expense_references as er', 'er.id', '=', 'expense_transactions.expense_reference_id')
             ->leftJoin('payments as p', function($query) {
 
                 $query->on('p.transaction_id', '=', 'expense_transactions.id')
@@ -171,8 +170,8 @@ class MoneyTransactionController extends Controller
                 'expense_transactions.id',
                 DB::raw('DATE_FORMAT(expense_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'expense_transactions.expense_no',
-                'er.name as reference',
                 'ec.name as category',
+                DB::raw('(select CONCAT_WS(" ", first_name, last_name) from users where id = expense_transactions.expense_for) as expense_for'),
                 'expense_transactions.payment_status',
                 DB::raw('expense_transactions.amount as total_payable'),
                 DB::raw('IFNULL(SUM(p.amount), 0) as paid'),

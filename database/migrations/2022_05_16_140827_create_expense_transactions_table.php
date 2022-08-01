@@ -19,11 +19,6 @@ class CreateExpenseTransactionsTable extends Migration
 
             $table->string('expense_no')->unique()->nullable();
 
-            
-            $table->integer('expense_reference_id')->unsigned();
-
-            $table->foreign('expense_reference_id')->references('id')->on('expense_references');
-
 
             $table->integer('expense_category_id')->unsigned();
 

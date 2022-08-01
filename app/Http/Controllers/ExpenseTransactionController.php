@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ExpenseCategory;
-use App\Models\ExpenseReference;
 use App\Models\ExpenseTransaction;
 use App\Models\User;
 use REC;
@@ -27,14 +26,12 @@ class ExpenseTransactionController extends Controller
         }
 
         $expense_transactions = ExpenseTransaction::join('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
-            ->join('expense_references as er', 'er.id', '=', 'expense_transactions.expense_reference_id')
             ->join('users as u', 'u.id', '=', 'expense_transactions.finalized_by')
             ->select(
 
                 'expense_transactions.id',
                 DB::raw('DATE_FORMAT(expense_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'expense_transactions.expense_no',
-                'er.name as reference',
                 'ec.name as category',
                 'expense_transactions.amount',
                 'expense_transactions.payment_status',
@@ -62,16 +59,12 @@ class ExpenseTransactionController extends Controller
         }
 
         $request->validate([
-            'expense_reference_id' => 'required | numeric',
             'expense_category_id' => 'required | numeric',
             'amount' => 'required | numeric',
             'transaction_date' => 'required | date',
             'expense_for' => 'nullable | numeric',
             'expense_note' => 'required | string'
         ], [
-            'expense_reference_id.required' => 'Please select the expense reference !',
-            'expense_reference_id.numeric' => 'Expense Reference ID should be numeric !',
-
             'expense_category_id.required' => 'Please select the expense category !',
             'expense_category_id.numeric' => 'Expense Category ID should be numeric !',
 
@@ -92,8 +85,6 @@ class ExpenseTransactionController extends Controller
         try {
 
             $expense_transaction = new ExpenseTransaction();
-
-            $expense_transaction->expense_reference_id = $request->expense_reference_id;
 
             $expense_transaction->expense_category_id = $request->expense_category_id;
 
@@ -185,13 +176,10 @@ class ExpenseTransactionController extends Controller
     {
         $expense_categories = ExpenseCategory::select(['id', 'name'])->orderBy('name', 'asc')->get();
 
-        $expense_references = ExpenseReference::select(['id', 'name'])->orderBy('name', 'asc')->get();
-
         $expense_for = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 1)->orderBy('first_name', 'asc')->get();
 
         return response([
             'expense_categories' => $expense_categories,
-            'expense_references' => $expense_references,
             'expense_for' => $expense_for
         ], 200);
     }
