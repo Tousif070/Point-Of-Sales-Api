@@ -255,6 +255,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'ExpenseTransactionController@store');
 
+            Route::get('summary', 'ExpenseTransactionController@summary');
+
         });
 
 

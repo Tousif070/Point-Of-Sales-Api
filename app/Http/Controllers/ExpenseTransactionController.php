@@ -184,5 +184,24 @@ class ExpenseTransactionController extends Controller
         ], 200);
     }
 
+    public function summary()
+    {
+        $expense_transactions = ExpenseTransaction::rightJoin('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
+            
+        ->select(
+
+            'ec.id',
+            'ec.name',
+            DB::raw('IFNULL(SUM(expense_transactions.amount), 0) as total_amount'),
+
+        )
+
+        ->groupBy('ec.id')
+        ->orderBy('ec.name', 'asc')
+        ->get();
+
+        return response(['expense_transactions' => $expense_transactions], 200);
+    }
+
 
 }
