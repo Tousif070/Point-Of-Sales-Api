@@ -8,6 +8,7 @@ use App\Models\UserDetail;
 use App\Models\Role;
 use App\Models\CustomerUserAssociation;
 use App\Models\CustomerCredit;
+use App\Models\File;
 use CAS;
 use REC;
 use Illuminate\Support\Facades\Hash;
@@ -439,6 +440,7 @@ class UserController extends Controller
         }
 
         $customer = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+            ->leftJoin('files as f', 'f.id', '=', 'ud.file_id')
             ->select(
 
                 'users.id',
@@ -449,7 +451,7 @@ class UserController extends Controller
                 'ud.business_name',
                 'ud.business_website',
                 'ud.tax_id',
-                'ud.license_certificate',
+                'f.absolute_path as license_certificate',
                 'ud.contact_no',
                 'ud.address',
                 'ud.city',
@@ -824,7 +826,26 @@ class UserController extends Controller
 
                 $file_path = $request->file('license_certificate')->storeAs('public/documents', $file_name);
 
-                $user_detail->license_certificate = asset('public' . Storage::url($file_path));
+                $absolute_path = asset('public' . Storage::url($file_path));
+
+                $file = new File();
+
+                $file->file_path = $file_path;
+
+                $file->absolute_path = $absolute_path;
+
+                $file->save();
+
+                $old_file = null;
+
+                if($user_detail->file_id != null)
+                {
+                    $old_file = File::find($user_detail->file_id);
+
+                    Storage::delete($old_file->file_path);
+                }
+                
+                $user_detail->file_id = $file->id;
             }
 
 
@@ -841,6 +862,12 @@ class UserController extends Controller
             $user_detail->zip_code = $request->zip_code;
 
             $user_detail->save();
+
+
+            if($old_file != null)
+            {
+                $old_file->delete();
+            }
 
 
             DB::commit();

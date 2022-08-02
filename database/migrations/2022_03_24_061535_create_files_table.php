@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBrandsTable extends Migration
+class CreateFilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,21 +13,15 @@ class CreateBrandsTable extends Migration
      */
     public function up()
     {
-        Schema::create('brands', function (Blueprint $table) {
-
+        Schema::create('files', function (Blueprint $table) {
+            
             $table->increments('id');
 
-            $table->string('name')->unique();
+            $table->string('file_path');
 
-            
-            $table->integer('file_id')->unsigned();
-
-            $table->foreign('file_id')->references('id')->on('files');
-
+            $table->string('absolute_path');
 
             $table->timestamps();
-
-            $table->softDeletes();
 
         });
     }
@@ -39,6 +33,6 @@ class CreateBrandsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('brands');
+        Schema::dropIfExists('files');
     }
 }

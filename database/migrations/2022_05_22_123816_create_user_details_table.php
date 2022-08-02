@@ -29,7 +29,11 @@ class CreateUserDetailsTable extends Migration
 
             $table->string('tax_id')->nullable();
 
-            $table->string('license_certificate')->nullable();
+            
+            $table->integer('file_id')->unsigned()->nullable();
+
+            $table->foreign('file_id')->references('id')->on('files');
+
 
             $table->string('contact_no');
 

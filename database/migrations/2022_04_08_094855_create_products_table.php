@@ -37,7 +37,11 @@ class CreateProductsTable extends Migration
 
             $table->integer('sku')->unsigned()->unique()->nullable();
 
-            $table->string('image');
+            
+            $table->integer('file_id')->unsigned();
+
+            $table->foreign('file_id')->references('id')->on('files');
+
 
             $table->string('color');
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Brand;
+use App\Models\File;
 use Storage;
 use DB;
 use Exception;
@@ -22,7 +23,15 @@ class BrandController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $brands = Brand::orderBy('name', 'asc')->get();
+        $brands = Brand::join('files as f', 'f.id', '=', 'brands.file_id')
+            ->select(
+
+                'brands.id',
+                'brands.name',
+                'f.absolute_path as image'
+
+            )->orderBy('brands.name', 'asc')
+            ->get();
 
         return response(['brands' => $brands], 200);
     }
@@ -67,8 +76,18 @@ class BrandController extends Controller
 
             $image_path = $request->file('image')->storeAs('public/brand_images', $image_name);
 
-            $brand->image = asset('public' . Storage::url($image_path));
+            $absolute_path = asset('public' . Storage::url($image_path));
 
+            $file = new File();
+
+            $file->file_path = $image_path;
+
+            $file->absolute_path = $absolute_path;
+
+            $file->save();
+
+
+            $brand->file_id = $file->id;
 
             $brand->save();
 

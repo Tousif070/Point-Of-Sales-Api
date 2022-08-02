@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\Brand;
 use App\Models\ProductCategory;
 use App\Models\ProductModel;
+use App\Models\File;
 use Storage;
 use DB;
 use Exception;
@@ -28,6 +29,7 @@ class ProductController extends Controller
         $products = Product::join('brands as b', 'b.id', '=', 'products.brand_id')
             ->join('product_categories as pc', 'pc.id', '=', 'products.product_category_id')
             ->join('product_models as pm', 'pm.id', '=', 'products.product_model_id')
+            ->join('files as f', 'f.id', '=', 'products.file_id')
             ->select(
 
                 'products.id',
@@ -36,7 +38,7 @@ class ProductController extends Controller
                 'pc.name as product_category',
                 'pm.name as product_model',
                 'products.sku',
-                'products.image',
+                'f.absolute_path as image',
                 'products.color',
                 'products.ram',
                 'products.storage',
@@ -46,7 +48,8 @@ class ProductController extends Controller
                 'products.type',
                 'products.length'
 
-            )->get();
+            )->orderBy('products.name', 'asc')
+            ->get();
 
         return response(['products' => $products], 200);
     }
@@ -154,8 +157,18 @@ class ProductController extends Controller
 
             $image_path = $request->file('image')->storeAs('public/product_images', $image_name);
 
-            $product->image = asset('public' . Storage::url($image_path));
+            $absolute_path = asset('public' . Storage::url($image_path));
 
+            $file = new File();
+
+            $file->file_path = $image_path;
+
+            $file->absolute_path = $absolute_path;
+
+            $file->save();
+
+
+            $product->file_id = $file->id;
 
             $product->color = $request->color;
 
@@ -269,8 +282,18 @@ class ProductController extends Controller
 
             $image_path = $request->file('image')->storeAs('public/product_images', $image_name);
 
-            $product->image = asset('public' . Storage::url($image_path));
+            $absolute_path = asset('public' . Storage::url($image_path));
 
+            $file = new File();
+
+            $file->file_path = $image_path;
+
+            $file->absolute_path = $absolute_path;
+
+            $file->save();
+
+
+            $product->file_id = $file->id;
 
             $product->color = $request->color;
 
