@@ -389,7 +389,9 @@ class SaleTransactionController extends Controller
     {
         if(!in_array("super_admin", auth()->user()->getRoles()) && auth()->user()->hasPermission("user.cua-enable"))
         {
-            $customers = auth()->user()->associatedCustomers()->select(['customer_user_associations.customer_id as id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+            $customer_ids = auth()->user()->associatedCustomers()->pluck('customer_user_associations.customer_id');
+
+            $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->whereIn('id', $customer_ids)->orderBy('first_name', 'asc')->get();
         }
         else
         {

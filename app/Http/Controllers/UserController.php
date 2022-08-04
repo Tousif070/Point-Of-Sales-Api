@@ -48,7 +48,26 @@ class UserController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $users = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+        if(!in_array("super_admin", auth()->user()->getRoles()) && auth()->user()->hasPermission("user.cua-enable"))
+        {
+            $customer_ids = auth()->user()->associatedCustomers()->pluck('customer_user_associations.customer_id');
+
+            $users = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
+            ->select(
+
+                'users.id',
+                'users.first_name',
+                'users.last_name',
+                'users.username',
+                'ud.available_credit'
+
+            )->where('users.type', '=', 2)
+            ->whereIn('users.id', $customer_ids)
+            ->get();
+        }
+        else
+        {
+            $users = User::join('user_details as ud', 'ud.user_id', '=', 'users.id')
             ->select(
 
                 'users.id',
@@ -59,6 +78,7 @@ class UserController extends Controller
 
             )->where('users.type', '=', 2)
             ->get();
+        }
 
         return response(['users' => $users], 200);
     }
