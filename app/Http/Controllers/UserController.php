@@ -839,6 +839,9 @@ class UserController extends Controller
             $user_detail->tax_id = $request->tax_id;
 
 
+            $old_file = null;
+
+
             // LICENSE CERTIFICATE
             if(!empty($request->file('license_certificate')))
             {
@@ -856,7 +859,6 @@ class UserController extends Controller
 
                 $file->save();
 
-                $old_file = null;
 
                 if($user_detail->file_id != null)
                 {
