@@ -354,5 +354,79 @@ class PurchaseTransactionController extends Controller
         return response(['value' => $purchase_transaction->locked], 200);
     }
 
+    public function verification(Request $request)
+    {
+        if(!auth()->user()->hasPermission("purchase.verification"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'purchase_transaction_id' => 'required | numeric',
+            'verification_status' => 'required | numeric',
+            'verification_note' => 'nullable | string',
+            'pin_number' => 'required | numeric'
+        ], [
+            'purchase_transaction_id.required' => 'Purchase Transaction ID Required',
+            'purchase_transaction_id.numeric' => 'Only numbers are allowed !',
+
+            'verification_status.required' => 'Please specify the status !',
+            'verification_status.numeric' => 'Only numbers are allowed !',
+
+            'verification_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'pin_number.required' => 'Please insert PIN Number !',
+            'pin_number.numeric' => 'PIN Number should be numeric !'
+        ]);
+
+
+        DB::beginTransaction();
+
+        try {
+
+            $purchase_transaction = PurchaseTransaction::find($request->purchase_transaction_id);
+
+            if(auth()->user()->pin_number == $request->pin_number)
+            {
+                $purchase_transaction->verification_status = $request->verification_status;
+
+                $purchase_transaction->verification_note = $request->verification_note;
+
+                $purchase_transaction->verified_by = auth()->user()->id;
+
+                $purchase_transaction->verified_at = Carbon::now();
+
+                $purchase_transaction->save();
+            }
+            else
+            {
+                return response([
+                    'errors' => [
+                        'pin_number' => ['PIN does not match !']
+                    ]
+                ], 409);
+            }
+
+            DB::commit();
+
+            return response([
+                'purchase_transaction_id' => $purchase_transaction->id,
+                'verification_status' => $request->verification_status,
+                'verification_note' => $request->verification_note,
+                'verified_by' => auth()->user()->first_name . " " . auth()->user()->last_name . " " . date_format(date_create($purchase_transaction->verified_at), "m/d/Y H:i:s") 
+            ], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
 
 }

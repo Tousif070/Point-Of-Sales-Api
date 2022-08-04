@@ -171,6 +171,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('get-purchase-invoice/{purchase_transaction_id}', 'PurchaseTransactionController@getPurchaseInvoice');
 
+            Route::post('verification', 'PurchaseTransactionController@verification');
+
         });
 
 
@@ -211,6 +213,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('email-sale-invoice/{sale_transaction_id}', 'SaleTransactionController@emailSaleInvoice');
 
+            Route::post('verification', 'SaleTransactionController@verification');
+
         });
 
 
@@ -225,6 +229,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('get-sale-return-variations/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleReturnVariations');
 
             Route::get('get-sale-return-invoice/{sale_return_transaction_id}', 'SaleReturnTransactionController@getSaleReturnInvoice');
+
+            Route::post('verification', 'SaleReturnTransactionController@verification');
 
         });
 
@@ -256,6 +262,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::post('store', 'ExpenseTransactionController@store');
 
             Route::get('summary', 'ExpenseTransactionController@summary');
+
+            Route::post('verification', 'ExpenseTransactionController@verification');
 
         });
 
@@ -318,6 +326,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('profit-by-customer-view', 'ReportController@profitByCustomerView');
 
             Route::get('profit-by-customer', 'ReportController@profitByCustomer');
+
+            Route::get('verification-report', 'ReportController@verificationReport');
 
         });
 

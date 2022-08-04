@@ -389,7 +389,9 @@ class SaleTransactionController extends Controller
     {
         if(!in_array("super_admin", auth()->user()->getRoles()) && auth()->user()->hasPermission("user.cua-enable"))
         {
-            $customers = auth()->user()->associatedCustomers()->select(['customer_user_associations.customer_id as id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+            $customer_ids = auth()->user()->associatedCustomers()->pluck('customer_user_associations.customer_id');
+
+            $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->whereIn('id', $customer_ids)->orderBy('first_name', 'asc')->get();
         }
         else
         {
@@ -587,6 +589,80 @@ class SaleTransactionController extends Controller
             ], 200);
 
         } catch(Exception $ex) {
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+    public function verification(Request $request)
+    {
+        if(!auth()->user()->hasPermission("sale.verification"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'sale_transaction_id' => 'required | numeric',
+            'verification_status' => 'required | numeric',
+            'verification_note' => 'nullable | string',
+            'pin_number' => 'required | numeric'
+        ], [
+            'sale_transaction_id.required' => 'Sale Transaction ID Required',
+            'sale_transaction_id.numeric' => 'Only numbers are allowed !',
+
+            'verification_status.required' => 'Please specify the status !',
+            'verification_status.numeric' => 'Only numbers are allowed !',
+
+            'verification_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'pin_number.required' => 'Please insert PIN Number !',
+            'pin_number.numeric' => 'PIN Number should be numeric !'
+        ]);
+
+
+        DB::beginTransaction();
+
+        try {
+
+            $sale_transaction = SaleTransaction::find($request->sale_transaction_id);
+
+            if(auth()->user()->pin_number == $request->pin_number)
+            {
+                $sale_transaction->verification_status = $request->verification_status;
+
+                $sale_transaction->verification_note = $request->verification_note;
+
+                $sale_transaction->verified_by = auth()->user()->id;
+
+                $sale_transaction->verified_at = Carbon::now();
+
+                $sale_transaction->save();
+            }
+            else
+            {
+                return response([
+                    'errors' => [
+                        'pin_number' => ['PIN does not match !']
+                    ]
+                ], 409);
+            }
+
+            DB::commit();
+
+            return response([
+                'sale_transaction_id' => $sale_transaction->id,
+                'verification_status' => $request->verification_status,
+                'verification_note' => $request->verification_note,
+                'verified_by' => auth()->user()->first_name . " " . auth()->user()->last_name . " " . date_format(date_create($sale_transaction->verified_at), "m/d/Y H:i:s") 
+            ], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
 
             return response([
                 'message' => 'Internal Server Error !',

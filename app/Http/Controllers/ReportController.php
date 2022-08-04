@@ -16,7 +16,9 @@ class ReportController extends Controller
     {
         if(!in_array("super_admin", auth()->user()->getRoles()) && auth()->user()->hasPermission("user.cua-enable"))
         {
-            $customers = auth()->user()->associatedCustomers()->select(['customer_user_associations.customer_id as id', 'first_name', 'last_name'])->where('type', '=', 2)->orderBy('first_name', 'asc')->get();
+            $customer_ids = auth()->user()->associatedCustomers()->pluck('customer_user_associations.customer_id');
+
+            $customers = User::select(['id', 'first_name', 'last_name'])->where('type', '=', 2)->whereIn('id', $customer_ids)->orderBy('first_name', 'asc')->get();
         }
         else
         {
@@ -266,6 +268,46 @@ class ReportController extends Controller
         }
 
         return response(['profit_by_customer' => $profit_by_customer], 200);
+    }
+
+    public function verificationReport()
+    {
+        if(!auth()->user()->hasPermission("report.verification"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $verification_report =  DB::select('
+
+        SELECT "Sale" as type, 
+        (SELECT count(id) FROM sale_transactions where verification_status = 2) as not_verified ,
+        (SELECT count(id) FROM sale_transactions where verification_status = 1) as verified_ok, 
+        (SELECT count(id) FROM sale_transactions where verification_status = 0) as verified_not_ok
+
+        UNION
+
+        SELECT "Sale Return" as type, 
+        (SELECT count(id) FROM sale_return_transactions where verification_status = 2) as not_verified ,
+        (SELECT count(id) FROM sale_return_transactions where verification_status = 1) as verified_ok, 
+        (SELECT count(id) FROM sale_return_transactions where verification_status = 0) as verified_not_ok
+
+        UNION
+
+        SELECT "Purchase" as type, 
+        (SELECT count(id) FROM purchase_transactions where verification_status = 2) as not_verified ,
+        (SELECT count(id) FROM purchase_transactions where verification_status = 1) as verified_ok, 
+        (SELECT count(id) FROM purchase_transactions where verification_status = 0) as verified_not_ok
+
+        UNION 
+
+        SELECT "Expense" as type, 
+        (SELECT count(id) FROM expense_transactions where verification_status = 2) as not_verified ,
+        (SELECT count(id) FROM expense_transactions where verification_status = 1) as verified_ok, 
+        (SELECT count(id) FROM expense_transactions where verification_status = 0) as verified_not_ok;
+        
+        ') ;
+
+        return $verification_report;
     }
 
 

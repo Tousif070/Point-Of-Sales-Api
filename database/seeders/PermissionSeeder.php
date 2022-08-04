@@ -415,6 +415,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'purchase.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "purchase.verification";
+            $permission->alias = "Purchase Verification";
+            $permission->description = "To verify purchase transactions";
+            $permission->permission_group = "Purchase";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - PURCHASE VARIATION
 
@@ -491,6 +505,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'sale.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "sale.verification";
+            $permission->alias = "Sale Verification";
+            $permission->description = "To verify sale transactions";
+            $permission->permission_group = "Sale";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - SALE RETURN
 
@@ -517,6 +545,20 @@ class PermissionSeeder extends Seeder
             $permission->name = "sale-return.store";
             $permission->alias = "Create Sale Return";
             $permission->description = "To store a new sale return transaction";
+            $permission->permission_group = "Sale Return";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'sale-return.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "sale-return.verification";
+            $permission->alias = "Sale Returns Verification";
+            $permission->description = "To verify sale return transactions";
             $permission->permission_group = "Sale Return";
 
             $permission->save();
@@ -624,6 +666,20 @@ class PermissionSeeder extends Seeder
             $permission->name = "expense.summary";
             $permission->alias = "View Expense Summary";
             $permission->description = "To view total expense by expense category";
+            $permission->permission_group = "Expense";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'expense.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "expense.verification";
+            $permission->alias = "Expenses Verification";
+            $permission->description = "To verify expense transactions";
             $permission->permission_group = "Expense";
 
             $permission->save();
@@ -801,6 +857,20 @@ class PermissionSeeder extends Seeder
             $permission->name = "report.pbc";
             $permission->alias = "Profit by Customer";
             $permission->description = "To view gross profit from customers";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'report.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.verification";
+            $permission->alias = "Verification Report";
+            $permission->description = "To view verification report";
             $permission->permission_group = "Report";
 
             $permission->save();
