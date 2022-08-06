@@ -28,10 +28,13 @@ class PurchaseTransactionController extends Controller
 
         $purchase_transactions = PurchaseTransaction::join('users as u', 'u.id', '=', 'purchase_transactions.finalized_by')
             ->join('users as u2', 'u2.id', '=', 'purchase_transactions.supplier_id')
+            ->leftJoin('users as u3', 'u3.id', '=', 'purchase_transactions.verified_by')
             ->leftJoin('purchase_variations as pv', 'pv.purchase_transaction_id', '=', 'purchase_transactions.id')
             ->select(
 
                 'purchase_transactions.id',
+                'purchase_transactions.verification_status',
+                'purchase_transactions.verification_note',
                 DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'purchase_transactions.reference_no',
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as supplier'),
@@ -40,7 +43,8 @@ class PurchaseTransactionController extends Controller
                 'purchase_transactions.locked',
                 'purchase_transactions.payment_status',
                 'purchase_transactions.amount',
-                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(purchase_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(purchase_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by'),
+                DB::raw('CONCAT_WS(" ", u3.first_name, DATE_FORMAT(purchase_transactions.verified_at, "%m/%d/%Y %H:%i:%s")) as verified_by')
 
             )->groupBy('purchase_transactions.id')
             ->orderBy('purchase_transactions.transaction_date', 'desc')
@@ -364,20 +368,30 @@ class PurchaseTransactionController extends Controller
         $request->validate([
             'purchase_transaction_id' => 'required | numeric',
             'verification_status' => 'required | numeric',
-            'verification_note' => 'nullable | string',
+            'verification_note' => 'string | nullable',
             'pin_number' => 'required | numeric'
         ], [
-            'purchase_transaction_id.required' => 'Purchase Transaction ID Required',
-            'purchase_transaction_id.numeric' => 'Only numbers are allowed !',
+            'purchase_transaction_id.required' => 'Purchase Transaction ID is required',
+            'purchase_transaction_id.numeric' => 'Purchase Transaction ID should be numeric',
 
-            'verification_status.required' => 'Please specify the status !',
-            'verification_status.numeric' => 'Only numbers are allowed !',
+            'verification_status.required' => 'Please specify the verification status !',
+            'verification_status.numeric' => 'Verification Status should be numeric !',
 
             'verification_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
-            'pin_number.required' => 'Please insert PIN Number !',
+            'pin_number.required' => 'Please enter your PIN Number !',
             'pin_number.numeric' => 'PIN Number should be numeric !'
         ]);
+
+
+        if(auth()->user()->pin_number != $request->pin_number)
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Invalid Pin Number !']
+                ]
+            ], 409);
+        }
 
 
         DB::beginTransaction();
@@ -386,26 +400,15 @@ class PurchaseTransactionController extends Controller
 
             $purchase_transaction = PurchaseTransaction::find($request->purchase_transaction_id);
 
-            if(auth()->user()->pin_number == $request->pin_number)
-            {
-                $purchase_transaction->verification_status = $request->verification_status;
+            $purchase_transaction->verification_status = $request->verification_status;
 
-                $purchase_transaction->verification_note = $request->verification_note;
+            $purchase_transaction->verification_note = $request->verification_note;
 
-                $purchase_transaction->verified_by = auth()->user()->id;
+            $purchase_transaction->verified_by = auth()->user()->id;
 
-                $purchase_transaction->verified_at = Carbon::now();
+            $purchase_transaction->verified_at = Carbon::now();
 
-                $purchase_transaction->save();
-            }
-            else
-            {
-                return response([
-                    'errors' => [
-                        'pin_number' => ['PIN does not match !']
-                    ]
-                ], 409);
-            }
+            $purchase_transaction->save();
 
             DB::commit();
 

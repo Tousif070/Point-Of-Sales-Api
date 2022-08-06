@@ -34,10 +34,13 @@ class SaleTransactionController extends Controller
 
         $sale_transactions = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.finalized_by')
             ->join('users as u2', 'u2.id', '=', 'sale_transactions.customer_id')
+            ->leftJoin('users as u3', 'u3.id', '=', 'sale_transactions.verified_by')
             ->join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
             ->select(
 
                 'sale_transactions.id',
+                'sale_transactions.verification_status',
+                'sale_transactions.verification_note',
                 DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as customer'),
@@ -45,6 +48,7 @@ class SaleTransactionController extends Controller
                 'sale_transactions.payment_status',
                 DB::raw('sale_transactions.amount - IFNULL((select SUM(amount) from sale_return_transactions where sale_transaction_id = sale_transactions.id), 0) as total_payable'),
                 DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(sale_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by'),
+                DB::raw('CONCAT_WS(" ", u3.first_name, DATE_FORMAT(sale_transactions.verified_at, "%m/%d/%Y %H:%i:%s")) as verified_by'),
                 DB::raw('(select COUNT(invoice_no) from sale_return_transactions where sale_transaction_id = sale_transactions.id) as sale_return')
 
             )->groupBy('sale_transactions.id')
@@ -608,20 +612,30 @@ class SaleTransactionController extends Controller
         $request->validate([
             'sale_transaction_id' => 'required | numeric',
             'verification_status' => 'required | numeric',
-            'verification_note' => 'nullable | string',
+            'verification_note' => 'string | nullable',
             'pin_number' => 'required | numeric'
         ], [
-            'sale_transaction_id.required' => 'Sale Transaction ID Required',
-            'sale_transaction_id.numeric' => 'Only numbers are allowed !',
+            'sale_transaction_id.required' => 'Sale Transaction ID is required',
+            'sale_transaction_id.numeric' => 'Sale Transaction ID should be numeric',
 
-            'verification_status.required' => 'Please specify the status !',
-            'verification_status.numeric' => 'Only numbers are allowed !',
+            'verification_status.required' => 'Please specify the verification status !',
+            'verification_status.numeric' => 'Verification Status should be numeric !',
 
             'verification_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
-            'pin_number.required' => 'Please insert PIN Number !',
+            'pin_number.required' => 'Please enter your PIN Number !',
             'pin_number.numeric' => 'PIN Number should be numeric !'
         ]);
+
+
+        if(auth()->user()->pin_number != $request->pin_number)
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Invalid Pin Number !']
+                ]
+            ], 409);
+        }
 
 
         DB::beginTransaction();
@@ -630,26 +644,15 @@ class SaleTransactionController extends Controller
 
             $sale_transaction = SaleTransaction::find($request->sale_transaction_id);
 
-            if(auth()->user()->pin_number == $request->pin_number)
-            {
-                $sale_transaction->verification_status = $request->verification_status;
+            $sale_transaction->verification_status = $request->verification_status;
 
-                $sale_transaction->verification_note = $request->verification_note;
+            $sale_transaction->verification_note = $request->verification_note;
 
-                $sale_transaction->verified_by = auth()->user()->id;
+            $sale_transaction->verified_by = auth()->user()->id;
 
-                $sale_transaction->verified_at = Carbon::now();
+            $sale_transaction->verified_at = Carbon::now();
 
-                $sale_transaction->save();
-            }
-            else
-            {
-                return response([
-                    'errors' => [
-                        'pin_number' => ['PIN does not match !']
-                    ]
-                ], 409);
-            }
+            $sale_transaction->save();
 
             DB::commit();
 

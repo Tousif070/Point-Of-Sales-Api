@@ -279,35 +279,35 @@ class ReportController extends Controller
 
         $verification_report =  DB::select('
 
-        SELECT "Sale" as type, 
-        (SELECT count(id) FROM sale_transactions where verification_status = 2) as not_verified ,
-        (SELECT count(id) FROM sale_transactions where verification_status = 1) as verified_ok, 
-        (SELECT count(id) FROM sale_transactions where verification_status = 0) as verified_not_ok
+            SELECT "Sale" as type,
+            (SELECT count(id) FROM sale_transactions where verification_status = 2) as not_verified,
+            (SELECT count(id) FROM sale_transactions where verification_status = 1) as verified_ok,
+            (SELECT count(id) FROM sale_transactions where verification_status = 0) as verified_not_ok
 
-        UNION
+            UNION
 
-        SELECT "Sale Return" as type, 
-        (SELECT count(id) FROM sale_return_transactions where verification_status = 2) as not_verified ,
-        (SELECT count(id) FROM sale_return_transactions where verification_status = 1) as verified_ok, 
-        (SELECT count(id) FROM sale_return_transactions where verification_status = 0) as verified_not_ok
+            SELECT "Sale Return" as type,
+            (SELECT count(id) FROM sale_return_transactions where verification_status = 2) as not_verified,
+            (SELECT count(id) FROM sale_return_transactions where verification_status = 1) as verified_ok,
+            (SELECT count(id) FROM sale_return_transactions where verification_status = 0) as verified_not_ok
 
-        UNION
+            UNION
 
-        SELECT "Purchase" as type, 
-        (SELECT count(id) FROM purchase_transactions where verification_status = 2) as not_verified ,
-        (SELECT count(id) FROM purchase_transactions where verification_status = 1) as verified_ok, 
-        (SELECT count(id) FROM purchase_transactions where verification_status = 0) as verified_not_ok
+            SELECT "Purchase" as type,
+            (SELECT count(id) FROM purchase_transactions where verification_status = 2) as not_verified,
+            (SELECT count(id) FROM purchase_transactions where verification_status = 1) as verified_ok,
+            (SELECT count(id) FROM purchase_transactions where verification_status = 0) as verified_not_ok
 
-        UNION 
+            UNION 
 
-        SELECT "Expense" as type, 
-        (SELECT count(id) FROM expense_transactions where verification_status = 2) as not_verified ,
-        (SELECT count(id) FROM expense_transactions where verification_status = 1) as verified_ok, 
-        (SELECT count(id) FROM expense_transactions where verification_status = 0) as verified_not_ok;
+            SELECT "Expense" as type,
+            (SELECT count(id) FROM expense_transactions where verification_status = 2) as not_verified,
+            (SELECT count(id) FROM expense_transactions where verification_status = 1) as verified_ok,
+            (SELECT count(id) FROM expense_transactions where verification_status = 0) as verified_not_ok;
         
-        ') ;
+        ');
 
-        return $verification_report;
+        return response(['verification_report' => $verification_report], 200);
     }
 
 

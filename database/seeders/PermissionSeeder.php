@@ -557,7 +557,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "sale-return.verification";
-            $permission->alias = "Sale Returns Verification";
+            $permission->alias = "Sale Return Verification";
             $permission->description = "To verify sale return transactions";
             $permission->permission_group = "Sale Return";
 
@@ -665,7 +665,7 @@ class PermissionSeeder extends Seeder
 
             $permission->name = "expense.summary";
             $permission->alias = "View Expense Summary";
-            $permission->description = "To view total expense by expense category";
+            $permission->description = "To view total expense by expense categories";
             $permission->permission_group = "Expense";
 
             $permission->save();
@@ -678,7 +678,7 @@ class PermissionSeeder extends Seeder
             $permission = new Permission();
 
             $permission->name = "expense.verification";
-            $permission->alias = "Expenses Verification";
+            $permission->alias = "Expense Verification";
             $permission->description = "To verify expense transactions";
             $permission->permission_group = "Expense";
 

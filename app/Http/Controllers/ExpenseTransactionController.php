@@ -27,17 +27,22 @@ class ExpenseTransactionController extends Controller
 
         $expense_transactions = ExpenseTransaction::join('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
             ->join('users as u', 'u.id', '=', 'expense_transactions.finalized_by')
+            ->leftJoin('users as u2', 'u2.id', '=', 'expense_transactions.expense_for')
+            ->leftJoin('users as u3', 'u3.id', '=', 'expense_transactions.verified_by')
             ->select(
 
                 'expense_transactions.id',
+                'expense_transactions.verification_status',
+                'expense_transactions.verification_note',
                 DB::raw('DATE_FORMAT(expense_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'expense_transactions.expense_no',
                 'ec.name as category',
                 'expense_transactions.amount',
                 'expense_transactions.payment_status',
-                DB::raw('(select CONCAT_WS(" ", first_name, last_name) from users where id = expense_transactions.expense_for) as expense_for'),
+                DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as expense_for'),
                 'expense_transactions.expense_note',
-                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(expense_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by')
+                DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(expense_transactions.finalized_at, "%m/%d/%Y %H:%i:%s")) as finalized_by'),
+                DB::raw('CONCAT_WS(" ", u3.first_name, DATE_FORMAT(expense_transactions.verified_at, "%m/%d/%Y %H:%i:%s")) as verified_by')
 
             )->orderBy('expense_transactions.transaction_date', 'desc')
             ->get();
@@ -192,18 +197,15 @@ class ExpenseTransactionController extends Controller
         }
 
         $expense_summary = ExpenseTransaction::rightJoin('expense_categories as ec', 'ec.id', '=', 'expense_transactions.expense_category_id')
-            
-        ->select(
+            ->select(
 
-            'ec.id',
-            'ec.name as category',
-            DB::raw('IFNULL(SUM(expense_transactions.amount), 0) as total_amount'),
+                'ec.id',
+                'ec.name as category',
+                DB::raw('IFNULL(SUM(expense_transactions.amount), 0) as total_amount'),
 
-        )
-
-        ->groupBy('ec.id')
-        ->orderBy('ec.name', 'asc')
-        ->get();
+            )->groupBy('ec.id')
+            ->orderBy('ec.name', 'asc')
+            ->get();
 
         return response(['expense_summary' => $expense_summary], 200);
     }
@@ -218,20 +220,30 @@ class ExpenseTransactionController extends Controller
         $request->validate([
             'expense_transaction_id' => 'required | numeric',
             'verification_status' => 'required | numeric',
-            'verification_note' => 'nullable | string',
+            'verification_note' => 'string | nullable',
             'pin_number' => 'required | numeric'
         ], [
-            'expense_transaction_id.required' => 'Expense Transaction ID Required',
-            'expense_transaction_id.numeric' => 'Only numbers are allowed !',
+            'expense_transaction_id.required' => 'Expense Transaction ID is required',
+            'expense_transaction_id.numeric' => 'Expense Transaction ID should be numeric',
 
-            'verification_status.required' => 'Please specify the status !',
-            'verification_status.numeric' => 'Only numbers are allowed !',
+            'verification_status.required' => 'Please specify the verification status !',
+            'verification_status.numeric' => 'Verification Status should be numeric !',
 
             'verification_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
 
-            'pin_number.required' => 'Please insert PIN Number !',
+            'pin_number.required' => 'Please enter your PIN Number !',
             'pin_number.numeric' => 'PIN Number should be numeric !'
         ]);
+
+        
+        if(auth()->user()->pin_number != $request->pin_number)
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Invalid Pin Number !']
+                ]
+            ], 409);
+        }
 
 
         DB::beginTransaction();
@@ -240,26 +252,15 @@ class ExpenseTransactionController extends Controller
 
             $expense_transaction = ExpenseTransaction::find($request->expense_transaction_id);
 
-            if(auth()->user()->pin_number == $request->pin_number)
-            {
-                $expense_transaction->verification_status = $request->verification_status;
+            $expense_transaction->verification_status = $request->verification_status;
 
-                $expense_transaction->verification_note = $request->verification_note;
+            $expense_transaction->verification_note = $request->verification_note;
 
-                $expense_transaction->verified_by = auth()->user()->id;
+            $expense_transaction->verified_by = auth()->user()->id;
 
-                $expense_transaction->verified_at = Carbon::now();
+            $expense_transaction->verified_at = Carbon::now();
 
-                $expense_transaction->save();
-            }
-            else
-            {
-                return response([
-                    'errors' => [
-                        'pin_number' => ['PIN does not match !']
-                    ]
-                ], 409);
-            }
+            $expense_transaction->save();
 
             DB::commit();
 
