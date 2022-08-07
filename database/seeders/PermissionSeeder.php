@@ -862,6 +862,62 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'report.pbd')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.pbd";
+            $permission->alias = "Profit by Date";
+            $permission->description = "To view gross profit by date";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'report.pbp')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.pbp";
+            $permission->alias = "Profit by Products";
+            $permission->description = "To view gross profit by products";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'report.pbpm')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.pbpm";
+            $permission->alias = "Profit by Product Models";
+            $permission->description = "To view gross profit by product models";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'report.pbpc')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "report.pbpc";
+            $permission->alias = "Profit by Product Categories";
+            $permission->description = "To view gross profit by product categories";
+            $permission->permission_group = "Report";
+
+            $permission->save();
+        }
+
         $permission = Permission::where('name', '=', 'report.verification')->first();
 
         if($permission == null)

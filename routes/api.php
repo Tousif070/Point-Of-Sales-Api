@@ -321,11 +321,21 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('epr-index', 'ReportController@eprIndex');
 
+
             Route::get('profit-by-sale-invoice', 'ReportController@profitBySaleInvoice');
 
             Route::get('profit-by-customer-view', 'ReportController@profitByCustomerView');
 
             Route::get('profit-by-customer', 'ReportController@profitByCustomer');
+
+            Route::get('profit-by-date', 'ReportController@profitByDate');
+
+            Route::get('profit-by-products', 'ReportController@profitByProducts');
+
+            Route::get('profit-by-product-models', 'ReportController@profitByProductModels');
+
+            Route::get('profit-by-product-categories', 'ReportController@profitByProductCategories');
+            
 
             Route::get('verification-report', 'ReportController@verificationReport');
 

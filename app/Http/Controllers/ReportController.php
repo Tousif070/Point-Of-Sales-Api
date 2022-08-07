@@ -270,6 +270,95 @@ class ReportController extends Controller
         return response(['profit_by_customer' => $profit_by_customer], 200);
     }
 
+    public function profitByDate()
+    {
+        if(!auth()->user()->hasPermission("report.pbd"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $profit_by_date = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->select(
+
+                DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) as gross_profit')
+
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('sale_transactions.transaction_date')
+            ->orderBy('sale_transactions.transaction_date', 'asc')
+            ->get();
+
+        return response(['profit_by_date' => $profit_by_date], 200);
+    }
+
+    public function profitByProducts()
+    {
+        if(!auth()->user()->hasPermission("report.pbp"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $profit_by_products = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->join('products as p', 'p.id', '=', 'sv.product_id')
+            ->select(
+
+                'p.name',
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) as gross_profit')
+
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('p.id')
+            ->orderBy('p.name', 'asc')
+            ->get();
+
+        return response(['profit_by_products' => $profit_by_products], 200);
+    }
+
+    public function profitByProductModels()
+    {
+        if(!auth()->user()->hasPermission("report.pbpm"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $profit_by_product_models = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->join('products as p', 'p.id', '=', 'sv.product_id')
+            ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
+            ->select(
+
+                'pm.name',
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) as gross_profit')
+
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('pm.id')
+            ->orderBy('pm.name', 'asc')
+            ->get();
+
+        return response(['profit_by_product_models' => $profit_by_product_models], 200);
+    }
+
+    public function profitByProductCategories()
+    {
+        if(!auth()->user()->hasPermission("report.pbpc"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $profit_by_product_categories = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->join('products as p', 'p.id', '=', 'sv.product_id')
+            ->join('product_categories as pc', 'pc.id', '=', 'p.product_category_id')
+            ->select(
+
+                'pc.name',
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) as gross_profit')
+
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('pc.id')
+            ->orderBy('pc.name', 'asc')
+            ->get();
+
+        return response(['profit_by_product_categories' => $profit_by_product_categories], 200);
+    }
+
     public function verificationReport()
     {
         if(!auth()->user()->hasPermission("report.verification"))
