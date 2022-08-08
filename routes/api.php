@@ -274,6 +274,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'PaymentMethodController@store');
 
+            Route::get('report', 'PaymentMethodController@report');
+
+            Route::get('payments/{payment_method_id}', 'PaymentMethodController@payments');
+
         });
 
 
