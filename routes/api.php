@@ -299,6 +299,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('store', 'MoneyTransactionController@store');
 
+            Route::post('payment-verification', 'MoneyTransactionController@paymentVerification');
+
         });
 
 
