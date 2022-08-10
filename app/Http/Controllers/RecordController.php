@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Record;
+use App\Models\VerificationRecord;
 use DB;
 
 class RecordController extends Controller
@@ -87,6 +88,37 @@ class RecordController extends Controller
             'total_amount' => $cash_out->sum('amount'),
             'cash_out' => $cash_out
         ], 200);
+    }
+
+    public function verificationRecord()
+    {
+        if(!auth()->user()->hasPermission("record.verification"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $verification_records = VerificationRecord::join('users as u', 'u.id', '=', 'verification_records.verified_by')
+        
+        ->select(
+
+            'verification_records.id',
+            'verification_records.type',
+            DB::raw('
+                CASE 
+                    WHEN verification_records.type = "Sale" THEN (SELECT invoice_no from sale_transactions where id = verification_records.reference_id) 
+                    WHEN verification_records.type = "Sale Return" THEN (SELECT invoice_no from sale_return_transactions where id = verification_records.reference_id) 
+                    WHEN verification_records.type = "Purchase" THEN (SELECT reference_no from purchase_transactions where id = verification_records.reference_id) 
+                    WHEN verification_records.type = "Expense" THEN (SELECT expense_no from expense_transactions where id = verification_records.reference_id) 
+                    WHEN verification_records.type = "Payment" THEN (SELECT payment_no from payments where id = verification_records.reference_id) 
+                END as reference
+            '),
+            DB::raw('CONCAT_WS(" ", u.first_name, DATE_FORMAT(verification_records.verified_at, "%m/%d/%Y %H:%i:%s")) as verified_by'),
+
+        )
+        ->orderBy('verification_records.verified_at', 'desc')
+        ->get();
+
+        return response(['verification_records' => $verification_records], 200);
     }
 
 

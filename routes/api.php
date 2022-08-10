@@ -312,6 +312,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('cash-out', 'RecordController@cashOut');
 
+            Route::get('verification-record', 'RecordController@verificationRecord');
+
         });
 
 

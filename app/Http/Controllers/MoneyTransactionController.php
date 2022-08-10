@@ -9,6 +9,7 @@ use App\Models\ExpenseTransaction;
 use App\Models\PaymentMethod;
 use App\Models\Payment;
 use App\Models\User;
+use REC;
 use DB;
 use Carbon\Carbon;
 
@@ -313,6 +314,18 @@ class MoneyTransactionController extends Controller
             $payment->verified_at = Carbon::now();
 
             $payment->save();
+
+
+            // RECORD ENTRY FOR PAYMENT VERIFICATION
+            $rec_data_arr = [
+                'type' => 'Payment',
+                'reference_id' => $payment->id,
+                'verified_by' => $payment->verified_by,
+                'verified_at' => $payment->verified_at
+            ];
+
+            REC::storeVerificationRecord($rec_data_arr);
+
 
             DB::commit();
 

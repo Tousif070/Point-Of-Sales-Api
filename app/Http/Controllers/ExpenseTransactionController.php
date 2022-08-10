@@ -262,6 +262,18 @@ class ExpenseTransactionController extends Controller
 
             $expense_transaction->save();
 
+
+            // RECORD ENTRY FOR EXPENSE VERIFICATION
+            $rec_data_arr = [
+                'type' => 'Expense',
+                'reference_id' => $expense_transaction->id,
+                'verified_by' => $expense_transaction->verified_by,
+                'verified_at' => $expense_transaction->verified_at
+            ];
+
+            REC::storeVerificationRecord($rec_data_arr);
+
+
             DB::commit();
 
             return response([

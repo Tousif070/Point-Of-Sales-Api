@@ -1005,6 +1005,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'record.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "record.verification";
+            $permission->alias = "Verification Records";
+            $permission->description = "To view records of verifications";
+            $permission->permission_group = "Record";
+
+            $permission->save();
+        }
+
 
     }
 }
