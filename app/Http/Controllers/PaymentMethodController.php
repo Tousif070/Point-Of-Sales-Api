@@ -110,6 +110,10 @@ class PaymentMethodController extends Controller
 
     public function report()
     {
+        if(!auth()->user()->hasPermission("payment-method.report"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
 
         $payment_report = Payment::rightJoin('payment_methods as pm', 'pm.id', '=', 'payments.payment_method_id')
         ->select(
@@ -131,6 +135,10 @@ class PaymentMethodController extends Controller
 
     public function payments($payment_method_id)
     {
+        if(!auth()->user()->hasPermission("payment-method.payments"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
 
         $payments = Payment::Join('users as u', 'u.id', '=', 'payments.finalized_by')
         ->leftJoin('users as u2', 'u2.id', '=', 'payments.verified_by')

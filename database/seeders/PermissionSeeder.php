@@ -716,6 +716,48 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'payment-method.report')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment-method.report";
+            $permission->alias = "Payment Method Report";
+            $permission->description = "To view payment method report";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'payment-method.payments')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment-method.payments";
+            $permission->alias = "View Payments";
+            $permission->description = "To view payments by payment method";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'payment.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment.verification";
+            $permission->alias = "Payment Verification";
+            $permission->description = "To verify payments";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - MONEY TRANSACTION
 

@@ -264,10 +264,10 @@ class MoneyTransactionController extends Controller
 
     public function paymentVerification(Request $request)
     {
-        // if(!auth()->user()->hasPermission("payment.verification"))
-        // {
-        //     return response(['message' => 'Permission Denied !'], 403);
-        // }
+        if(!auth()->user()->hasPermission("payment.verification"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
 
         $request->validate([
             'payment_id' => 'required | numeric',
