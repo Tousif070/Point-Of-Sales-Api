@@ -314,6 +314,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('verification-record', 'RecordController@verificationRecord');
 
+            Route::get('user-log', 'RecordController@userLog');
+
         });
 
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Record;
 use App\Models\VerificationRecord;
+use App\Models\LoginLogoutRecord;
 use DB;
 
 class RecordController extends Controller
@@ -119,6 +120,30 @@ class RecordController extends Controller
         ->get();
 
         return response(['verification_records' => $verification_records], 200);
+    }
+
+    public function userLog()
+    {
+        if(!auth()->user()->hasPermission("record.user-log"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $user_log = LoginLogoutRecord::join('users as u', 'u.id', '=', 'login_logout_records.user_id')
+        
+        ->select(
+
+            DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as name'),
+            'login_logout_records.type',
+            DB::raw('DATE_FORMAT(login_logout_records.created_at, "%m/%d/%Y %H:%i:%s") as date_time')
+
+        )
+        
+        ->where('login_logout_records.user_type', '=', 1)
+        ->orderBy('login_logout_records.created_at', 'desc')
+        ->get();
+
+        return response(['user_log' => $user_log], 200);
     }
 
 

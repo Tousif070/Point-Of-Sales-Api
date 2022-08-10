@@ -4,6 +4,7 @@ namespace App\Services\Record;
 
 use App\Models\Record as REC;
 use App\Models\VerificationRecord;
+use App\Models\LoginLogoutRecord;
 use Carbon\Carbon;
 
 class Record
@@ -42,6 +43,19 @@ class Record
         $verification_record->verified_at = $rec_data_arr['verified_at'];
 
         $verification_record->save();
+    }
+
+    public function storeLoginLogoutRecord($rec_data_arr)
+    {
+        $login_logout_record = new LoginLogoutRecord();
+
+        $login_logout_record->user_id = $rec_data_arr['user_id'];
+
+        $login_logout_record->type = $rec_data_arr['type'];
+
+        $login_logout_record->user_type = $rec_data_arr['user_type'];
+
+        $login_logout_record->save();
     }
 
 

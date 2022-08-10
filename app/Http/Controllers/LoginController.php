@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use REC;
 
 class LoginController extends Controller
 {
@@ -29,6 +30,17 @@ class LoginController extends Controller
 
         $user_token = $user->createToken(mt_rand(1, 1000000) . "_" . $user->email);
 
+
+        // RECORD ENTRY FOR USER LOGIN
+        $rec_data_arr = [
+            'user_id' => $user->id,
+            'type' => "Login",
+            'user_type' => $user->type
+        ];
+
+        REC::storeLoginLogoutRecord($rec_data_arr);
+
+
         return response([
             'user' => $user,
             'user_token' => $user_token->plainTextToken
@@ -37,7 +49,20 @@ class LoginController extends Controller
 
     public function logout()
     {
-        auth()->user()->tokens()->delete();
+        $user = auth()->user();
+
+
+        // RECORD ENTRY FOR USER LOGOUT
+        $rec_data_arr = [
+            'user_id' => $user->id,
+            'type' => "Logout",
+            'user_type' => $user->type
+        ];
+
+        REC::storeLoginLogoutRecord($rec_data_arr);
+
+
+        $user->tokens()->delete();
 
         return response(['message' => 'Logged Out !'], 200);
     }

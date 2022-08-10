@@ -1019,6 +1019,20 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'record.user-log')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "record.user-log";
+            $permission->alias = "User Log";
+            $permission->description = "To view login/logout records of users";
+            $permission->permission_group = "Record";
+
+            $permission->save();
+        }
+
 
     }
 }
