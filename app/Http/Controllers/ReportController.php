@@ -373,9 +373,9 @@ class ReportController extends Controller
         $sale_verification = SaleTransaction::select(
 
             DB::raw('"Sale" as type'),
-            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
-            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
-            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+            DB::raw('IFNULL( SUM( IF( verification_status = 2, 1, 0 ) ), 0 ) as not_verified'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 1, 1, 0 ) ), 0 ) as verified_okay'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 0, 1, 0 ) ), 0 ) as verified_not_okay')
 
         )->first();
         
@@ -383,9 +383,9 @@ class ReportController extends Controller
         $sale_return_verification = SaleReturnTransaction::select(
 
             DB::raw('"Sale Return" as type'),
-            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
-            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
-            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+            DB::raw('IFNULL( SUM( IF( verification_status = 2, 1, 0 ) ), 0 ) as not_verified'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 1, 1, 0 ) ), 0 ) as verified_okay'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 0, 1, 0 ) ), 0 ) as verified_not_okay')
 
         )->first();
         
@@ -393,9 +393,9 @@ class ReportController extends Controller
         $purchase_verification = PurchaseTransaction::select(
 
             DB::raw('"Purchase" as type'),
-            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
-            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
-            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+            DB::raw('IFNULL( SUM( IF( verification_status = 2, 1, 0 ) ), 0 ) as not_verified'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 1, 1, 0 ) ), 0 ) as verified_okay'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 0, 1, 0 ) ), 0 ) as verified_not_okay')
 
         )->first();
         
@@ -403,9 +403,9 @@ class ReportController extends Controller
         $expense_verification = ExpenseTransaction::select(
 
             DB::raw('"Expense" as type'),
-            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
-            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
-            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+            DB::raw('IFNULL( SUM( IF( verification_status = 2, 1, 0 ) ), 0 ) as not_verified'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 1, 1, 0 ) ), 0 ) as verified_okay'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 0, 1, 0 ) ), 0 ) as verified_not_okay')
 
         )->first();
         
@@ -413,9 +413,9 @@ class ReportController extends Controller
         $payment_verification = Payment::select(
 
             DB::raw('"Payment" as type'),
-            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
-            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
-            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+            DB::raw('IFNULL( SUM( IF( verification_status = 2, 1, 0 ) ), 0 ) as not_verified'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 1, 1, 0 ) ), 0 ) as verified_okay'),
+            DB::raw('IFNULL( SUM( IF( verification_status = 0, 1, 0 ) ), 0 ) as verified_not_okay')
 
         )->first();
 

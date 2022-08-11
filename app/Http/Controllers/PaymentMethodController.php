@@ -168,7 +168,7 @@ class PaymentMethodController extends Controller
         ->get();
 
         return response(['payments' => $payments], 200);
-
     }
+    
 
 }
