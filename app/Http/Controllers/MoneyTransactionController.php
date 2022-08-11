@@ -7,8 +7,11 @@ use App\Models\SaleTransaction;
 use App\Models\PurchaseTransaction;
 use App\Models\ExpenseTransaction;
 use App\Models\PaymentMethod;
+use App\Models\Payment;
 use App\Models\User;
+use REC;
 use DB;
+use Carbon\Carbon;
 
 class MoneyTransactionController extends Controller
 {
@@ -258,6 +261,91 @@ class MoneyTransactionController extends Controller
         return response([
             'customers' => $customers
         ], 200);
+    }
+
+    public function paymentVerification(Request $request)
+    {
+        if(!auth()->user()->hasPermission("payment.verification"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'payment_id' => 'required | numeric',
+            'verification_status' => 'required | numeric',
+            'verification_note' => 'string | nullable',
+            'pin_number' => 'required | numeric'
+        ], [
+            'payment_id.required' => 'Payment ID is required',
+            'payment_id.numeric' => 'Payment ID should be numeric',
+
+            'verification_status.required' => 'Please specify the verification status !',
+            'verification_status.numeric' => 'Verification Status should be numeric !',
+
+            'verification_note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
+
+            'pin_number.required' => 'Please enter your PIN Number !',
+            'pin_number.numeric' => 'PIN Number should be numeric !'
+        ]);
+
+
+        if(auth()->user()->pin_number != $request->pin_number)
+        {
+            return response([
+                'errors' => [
+                    'pin_number' => ['Invalid Pin Number !']
+                ]
+            ], 409);
+        }
+
+
+        DB::beginTransaction();
+
+        try {
+
+            $payment = Payment::find($request->payment_id);
+
+            $payment->verification_status = $request->verification_status;
+
+            $payment->verification_note = $request->verification_note;
+
+            $payment->verified_by = auth()->user()->id;
+
+            $payment->verified_at = Carbon::now();
+
+            $payment->save();
+
+
+            // RECORD ENTRY FOR PAYMENT VERIFICATION
+            $rec_data_arr = [
+                'type' => 'Payment',
+                'reference_id' => $payment->id,
+                'verified_by' => $payment->verified_by,
+                'verified_at' => $payment->verified_at
+            ];
+
+            REC::storeVerificationRecord($rec_data_arr);
+
+
+            DB::commit();
+
+            return response([
+                'payment_id' => $payment->id,
+                'verification_status' => $request->verification_status,
+                'verification_note' => $request->verification_note,
+                'verified_by' => auth()->user()->first_name . " " . auth()->user()->last_name . " " . date_format(date_create($payment->verified_at), "m/d/Y H:i:s") 
+            ], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
 

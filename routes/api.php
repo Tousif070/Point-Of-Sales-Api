@@ -274,6 +274,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             
             Route::post('store', 'PaymentMethodController@store');
 
+            Route::get('report', 'PaymentMethodController@report');
+
+            Route::get('payments/{payment_method_id}', 'PaymentMethodController@payments');
+
         });
 
 
@@ -295,6 +299,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('store', 'MoneyTransactionController@store');
 
+            Route::post('payment-verification', 'MoneyTransactionController@paymentVerification');
+
         });
 
 
@@ -305,6 +311,10 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('cash-in', 'RecordController@cashIn');
 
             Route::get('cash-out', 'RecordController@cashOut');
+
+            Route::get('verification-record', 'RecordController@verificationRecord');
+
+            Route::get('user-log', 'RecordController@userLog');
 
         });
 

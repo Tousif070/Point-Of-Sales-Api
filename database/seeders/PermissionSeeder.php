@@ -716,6 +716,48 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'payment-method.report')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment-method.report";
+            $permission->alias = "Payment Method Report";
+            $permission->description = "To view payment method report";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'payment-method.payments')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment-method.payments";
+            $permission->alias = "View Payments";
+            $permission->description = "To view payments by payment method";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'payment.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "payment.verification";
+            $permission->alias = "Payment Verification";
+            $permission->description = "To verify payments";
+            $permission->permission_group = "Payment Method";
+
+            $permission->save();
+        }
+
 
         // PERMISSION GROUP - MONEY TRANSACTION
 
@@ -958,6 +1000,34 @@ class PermissionSeeder extends Seeder
             $permission->name = "record.money";
             $permission->alias = "Money Records";
             $permission->description = "To view records of cash in & cash out";
+            $permission->permission_group = "Record";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'record.verification')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "record.verification";
+            $permission->alias = "Verification Records";
+            $permission->description = "To view records of verifications";
+            $permission->permission_group = "Record";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'record.user-log')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "record.user-log";
+            $permission->alias = "User Log";
+            $permission->description = "To view login/logout records of users";
             $permission->permission_group = "Record";
 
             $permission->save();

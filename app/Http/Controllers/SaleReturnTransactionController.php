@@ -531,6 +531,18 @@ class SaleReturnTransactionController extends Controller
 
             $sale_return_transaction->save();
 
+
+            // RECORD ENTRY FOR SALE RETURN VERIFICATION
+            $rec_data_arr = [
+                'type' => 'Sale Return',
+                'reference_id' => $sale_return_transaction->id,
+                'verified_by' => $sale_return_transaction->verified_by,
+                'verified_at' => $sale_return_transaction->verified_at
+            ];
+            
+            REC::storeVerificationRecord($rec_data_arr);
+
+
             DB::commit();
 
             return response([

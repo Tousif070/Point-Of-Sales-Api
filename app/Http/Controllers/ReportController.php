@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
 use App\Models\SaleReturnTransaction;
+use App\Models\PurchaseTransaction;
+use App\Models\ExpenseTransaction;
 use App\Models\Payment;
 use App\Models\User;
 use CAS;
@@ -366,35 +368,68 @@ class ReportController extends Controller
             return response(['message' => 'Permission Denied !'], 403);
         }
 
-        $verification_report =  DB::select('
+        $verification_report =  [];
 
-            SELECT "Sale" as type,
-            (SELECT count(id) FROM sale_transactions where verification_status = 2) as not_verified,
-            (SELECT count(id) FROM sale_transactions where verification_status = 1) as verified_ok,
-            (SELECT count(id) FROM sale_transactions where verification_status = 0) as verified_not_ok
+        $sale_verification = SaleTransaction::select(
 
-            UNION
+            DB::raw('"Sale" as type'),
+            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
+            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
+            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
 
-            SELECT "Sale Return" as type,
-            (SELECT count(id) FROM sale_return_transactions where verification_status = 2) as not_verified,
-            (SELECT count(id) FROM sale_return_transactions where verification_status = 1) as verified_ok,
-            (SELECT count(id) FROM sale_return_transactions where verification_status = 0) as verified_not_ok
-
-            UNION
-
-            SELECT "Purchase" as type,
-            (SELECT count(id) FROM purchase_transactions where verification_status = 2) as not_verified,
-            (SELECT count(id) FROM purchase_transactions where verification_status = 1) as verified_ok,
-            (SELECT count(id) FROM purchase_transactions where verification_status = 0) as verified_not_ok
-
-            UNION 
-
-            SELECT "Expense" as type,
-            (SELECT count(id) FROM expense_transactions where verification_status = 2) as not_verified,
-            (SELECT count(id) FROM expense_transactions where verification_status = 1) as verified_ok,
-            (SELECT count(id) FROM expense_transactions where verification_status = 0) as verified_not_ok;
+        )->first();
         
-        ');
+
+        $sale_return_verification = SaleReturnTransaction::select(
+
+            DB::raw('"Sale Return" as type'),
+            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
+            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
+            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+
+        )->first();
+        
+
+        $purchase_verification = PurchaseTransaction::select(
+
+            DB::raw('"Purchase" as type'),
+            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
+            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
+            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+
+        )->first();
+        
+
+        $expense_verification = ExpenseTransaction::select(
+
+            DB::raw('"Expense" as type'),
+            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
+            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
+            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+
+        )->first();
+        
+
+        $payment_verification = Payment::select(
+
+            DB::raw('"Payment" as type'),
+            DB::raw('SUM(IF(verification_status = 2, 1, 0)) as not_verified'),
+            DB::raw('SUM(IF(verification_status = 1, 1, 0)) as verified_okay'),
+            DB::raw('SUM(IF(verification_status = 0, 1, 0)) as verified_not_okay')
+
+        )->first();
+
+        
+        $verification_report[] = $sale_verification;
+
+        $verification_report[] = $sale_return_verification;
+
+        $verification_report[] = $purchase_verification;
+
+        $verification_report[] = $expense_verification;
+
+        $verification_report[] = $payment_verification;
+
 
         return response(['verification_report' => $verification_report], 200);
     }

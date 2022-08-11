@@ -410,6 +410,18 @@ class PurchaseTransactionController extends Controller
 
             $purchase_transaction->save();
 
+
+            // RECORD ENTRY FOR PURCHASE VERIFICATION
+            $rec_data_arr = [
+                'type' => 'Purchase',
+                'reference_id' => $purchase_transaction->id,
+                'verified_by' => $purchase_transaction->verified_by,
+                'verified_at' => $purchase_transaction->verified_at
+            ];
+
+            REC::storeVerificationRecord($rec_data_arr);
+
+
             DB::commit();
 
             return response([
