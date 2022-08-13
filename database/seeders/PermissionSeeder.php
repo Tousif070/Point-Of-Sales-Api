@@ -475,6 +475,51 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - PRODUCT LOCATION
+
+        $permission = Permission::where('name', '=', 'product-location.on-hand')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "product-location.on-hand";
+            $permission->alias = "Products On Hand";
+            $permission->description = "To view the products on hand for different users";
+            $permission->permission_group = "Product Location";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'product-location.transfer')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "product-location.transfer";
+            $permission->alias = "Product Transfer";
+            $permission->description = "To transfer product variations from one user to another user";
+            $permission->permission_group = "Product Location";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'product-location.history')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "product-location.history";
+            $permission->alias = "Product Transfer History";
+            $permission->description = "To view product transfer history";
+            $permission->permission_group = "Product Location";
+
+            $permission->save();
+        }
+
+
         // PERMISSION GROUP - SALE
 
         $permission = Permission::where('name', '=', 'sale.index')->first();

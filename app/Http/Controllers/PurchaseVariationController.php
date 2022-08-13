@@ -138,6 +138,8 @@ class PurchaseVariationController extends Controller
 
             $purchase_variation->risk_fund = $request->risk_fund;
 
+            $purchase_variation->belongs_to = auth()->user()->id;
+
             $purchase_variation->save();
 
 

@@ -191,6 +191,23 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
 
 
+        Route::group(['prefix' => 'product-location'], function() {
+
+            Route::get('on-hand', 'ProductLocationController@onHand');
+
+            Route::get('on-hand-variations/{user_id}', 'ProductLocationController@onHandVariations');
+
+            Route::get('transfer-view', 'ProductLocationController@transferView');
+
+            Route::post('transfer', 'ProductLocationController@transfer');
+
+            Route::get('transfer-history', 'ProductLocationController@transferHistory');
+
+            Route::get('transfer-history-details/{batch_no}', 'ProductLocationController@transferHistoryDetails');
+
+        });
+
+
         Route::group(['prefix' => 'sale'], function() {
 
             Route::get('index', 'SaleTransactionController@index');

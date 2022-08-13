@@ -44,6 +44,12 @@ class CreatePurchaseVariationsTable extends Migration
 
             $table->decimal('risk_fund', 10, 2);
 
+
+            $table->integer('belongs_to')->unsigned();
+
+            $table->foreign('belongs_to')->references('id')->on('users');
+
+
             $table->timestamps();
 
             $table->softDeletes();
