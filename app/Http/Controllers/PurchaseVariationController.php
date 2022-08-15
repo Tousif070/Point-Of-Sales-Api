@@ -71,7 +71,7 @@ class PurchaseVariationController extends Controller
             'purchase_transaction_id.required' => 'Purchase Transaction ID is required !',
             'purchase_transaction_id.numeric' => 'Purchase Transaction ID should be numeric !',
 
-            'product_id.required' => 'Product ID is required !',
+            'product_id.required' => 'Please select the SKU !',
             'product_id.numeric' => 'Product ID should be numeric !',
 
             'serial.required' => 'serial is required !',

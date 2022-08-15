@@ -208,6 +208,21 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
 
 
+        Route::group(['prefix' => 'sku-transfer'], function() {
+
+            Route::get('view', 'SkuTransferController@view');
+
+            Route::get('store-view', 'SkuTransferController@storeView');
+
+            Route::post('store', 'SkuTransferController@store');
+
+            Route::get('history', 'SkuTransferController@history');
+
+            Route::get('history-details/{batch_no}', 'SkuTransferController@historyDetails');
+
+        });
+
+
         Route::group(['prefix' => 'sale'], function() {
 
             Route::get('index', 'SaleTransactionController@index');

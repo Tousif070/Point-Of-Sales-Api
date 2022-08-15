@@ -520,6 +520,37 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - SKU TRANSFER
+
+        $permission = Permission::where('name', '=', 'sku-transfer.store')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "sku-transfer.store";
+            $permission->alias = "SKU Transfer";
+            $permission->description = "To transfer sku of a variation from one to another";
+            $permission->permission_group = "SKU Transfer";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'sku-transfer.history')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "sku-transfer.history";
+            $permission->alias = "SKU Transfer History";
+            $permission->description = "To view SKU transfer history";
+            $permission->permission_group = "SKU Transfer";
+
+            $permission->save();
+        }
+
+
         // PERMISSION GROUP - SALE
 
         $permission = Permission::where('name', '=', 'sale.index')->first();

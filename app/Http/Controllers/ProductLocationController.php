@@ -204,14 +204,14 @@ class ProductLocationController extends Controller
             ->join('users as u2', 'u2.id', '=', 'product_transfers.receiver_id')
             ->select(
 
+                DB::raw('DATE_FORMAT(product_transfers.created_at, "%m/%d/%Y") as date'),
                 'product_transfers.batch_no',
-                DB::raw('DATE_FORMAT(product_transfers.created_at, "%m/%d/%Y %H:%i:%s") as date'),
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as sender'),
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as receiver'),
                 DB::raw('COUNT(product_transfers.id) as total')
 
             )->groupBy('product_transfers.batch_no')
-            ->orderBy('product_transfers.created_at', 'desc')
+            ->orderBy('product_transfers.batch_no', 'desc')
             ->get();
 
         return response(['transfer_history' => $transfer_history], 200);
