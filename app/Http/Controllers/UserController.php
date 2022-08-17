@@ -1336,14 +1336,22 @@ class UserController extends Controller
 
             if($customer == null)
             {
-                return response(['message' => 'Customer not found !'], 404);
+                return response([
+                    'errors' => [
+                        'customer' => ['Customer not found !']
+                    ]
+                ], 404);
             }
 
             $user_official = User::where('id', '=', $request->user_official_id)->where('type', '=', 1)->first();
 
             if($user_official == null)
             {
-                return response(['message' => 'User Official not found !'], 404);
+                return response([
+                    'errors' => [
+                        'user' => ['User Official not found !']
+                    ]
+                ], 404);
             }
 
             $customer->associatedUserOfficial()->sync([$user_official->id]);
