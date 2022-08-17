@@ -1110,5 +1110,49 @@ class PermissionSeeder extends Seeder
         }
 
 
+        // PERMISSION GROUP - POOL
+
+        $permission = Permission::where('name', '=', 'pool.add')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "pool.add";
+            $permission->alias = "Add Money";
+            $permission->description = "To add money in pool";
+            $permission->permission_group = "Pool";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'pool.withdraw')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "pool.withdraw";
+            $permission->alias = "Withdraw Money";
+            $permission->description = "To withdraw money from pool";
+            $permission->permission_group = "Pool";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'pool.history')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "pool.history";
+            $permission->alias = "Pool History";
+            $permission->description = "To view pool history";
+            $permission->permission_group = "Pool";
+
+            $permission->save();
+        }
+
     }
 }

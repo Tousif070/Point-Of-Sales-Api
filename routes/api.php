@@ -383,6 +383,19 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
         });
 
+
+        Route::group(['prefix' => 'pool'], function() {
+
+            Route::get('history', 'PoolController@history');
+
+            Route::post('add', 'PoolController@add');
+
+            Route::post('withdraw', 'PoolController@withdraw');
+
+            // Route::post('update/{id}', 'PoolController@update');
+
+        });
+
     });
 
 });
