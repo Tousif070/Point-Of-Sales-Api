@@ -26,6 +26,7 @@ class PoolSeeder extends Seeder
             $opening_balance->note = "N/A";
             
             $opening_balance->save();
+            
 
             $date = Carbon::today();
             

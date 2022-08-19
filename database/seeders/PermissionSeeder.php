@@ -1153,6 +1153,7 @@ class PermissionSeeder extends Seeder
 
             $permission->save();
         }
+        
 
     }
 }
