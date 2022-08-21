@@ -28,10 +28,8 @@ class PoolController extends Controller
         }
     }
 
-    public function setOpeningAndClosingBalance($date_string)
+    public function setOpeningAndClosingBalance($date)
     {
-        $date = Carbon::parse($date_string);
-
         $start = $date->year . "-" . $date->month . "-01";
         
         $end = $date->year . "-" . $date->month . "-" . $date->daysInMonth . " 23:59:58";
@@ -40,7 +38,7 @@ class PoolController extends Controller
 
         if(!$this->checkOpeningBalance($date))
         {
-            $overall_balance = $this->setOpeningAndClosingBalance($date->subMonth()->toDateString());
+            $overall_balance = $this->setOpeningAndClosingBalance($date->copy()->subMonth());
         }
         else
         {
@@ -72,7 +70,7 @@ class PoolController extends Controller
         
         $opening_balance->save();
         
-        $date = Carbon::parse($date_string)->addMonth();
+        $date = $date->addMonth();
             
         $opening_balance->created_at = $date->year . "-" . $date->month . "-01";
         
@@ -92,7 +90,7 @@ class PoolController extends Controller
 
         if(!$this->checkOpeningBalance($date))
         {
-            $this->setOpeningAndClosingBalance($date->subMonth()->toDateString());
+            $this->setOpeningAndClosingBalance($date->copy()->subMonth());
         }
 
 
@@ -148,7 +146,7 @@ class PoolController extends Controller
 
         if(!$this->checkOpeningBalance($date))
         {
-            $this->setOpeningAndClosingBalance($date->subMonth()->toDateString());
+            $this->setOpeningAndClosingBalance($date->copy()->subMonth());
         }
 
 
@@ -205,7 +203,7 @@ class PoolController extends Controller
 
         if(!$this->checkOpeningBalance($date))
         {
-            $this->setOpeningAndClosingBalance($date->subMonth()->toDateString());
+            $this->setOpeningAndClosingBalance($date->copy()->subMonth());
         }
 
 
