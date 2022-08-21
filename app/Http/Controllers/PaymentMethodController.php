@@ -120,6 +120,7 @@ class PaymentMethodController extends Controller
 
             'pm.id',
             'pm.name',
+            DB::raw('IFNULL(SUM(payments.amount), 0) as total_amount'),
             DB::raw('SUM(IF(payments.verification_status = 2, 1, 0)) as not_verified'),
             DB::raw('SUM(IF(payments.verification_status = 1, 1, 0)) as verified_okay'),
             DB::raw('SUM(IF(payments.verification_status = 0, 1, 0)) as verified_not_okay')
