@@ -131,7 +131,13 @@ class SaleTransactionController extends Controller
                 {
                     DB::rollBack();
 
-                    return response(['message' => 'Sale quantity cannot be less than 1 or greater than available quantity !'], 409);
+                    $value = $purchase_variation->serial != null ? $purchase_variation->serial : $purchase_variation->group;
+
+                    return response([
+                        'errors' => [
+                            'message' => ['Sale quantity cannot be less than 1 or greater than available quantity !. ' . $value . ' is not available !']
+                        ]
+                    ], 404);
                 }
 
                 // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION

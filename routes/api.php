@@ -395,6 +395,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             // Route::post('update/{id}', 'PoolController@update');
 
         });
+        
 
 
         Route::group(['prefix' => 'search'], function() {

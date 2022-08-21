@@ -23,9 +23,11 @@ class CreatePoolsTable extends Migration
 
             $table->string('note')->nullable();
 
+
             $table->integer('finalized_by')->unsigned()->nullable();
 
             $table->foreign('finalized_by')->references('id')->on('users');
+            
 
             $table->dateTime('finalized_at')->nullable();
 
