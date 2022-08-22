@@ -44,6 +44,7 @@ class SearchController extends Controller
         ->join('product_categories as pc', 'pc.id', '=', 'p.product_category_id')
         ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
         ->join('brands as b', 'b.id', '=', 'p.brand_id')
+        ->join('files as f', 'f.id', '=', 'p.file_id')
         ->select(
         
             'purchase_variations.id',
@@ -51,7 +52,8 @@ class SearchController extends Controller
             'p.sku',
             'b.name as brand',
             'pc.name as category',
-            'pm.name as model'
+            'pm.name as model',
+            'f.absolute_path as image'
         
         )
         ->where('purchase_variations.serial', '=', $request->imei)
