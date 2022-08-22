@@ -283,11 +283,22 @@ class PoolController extends Controller
         try {
 
             $pool = Pool::find($pool_id);
+
+            if($pool->type == "Opening Balance" || $pool->type == "Closing Balance")
+            {
+                DB::rollBack();
+
+                return response([
+                    'errors' => [
+                        'message' => ['Cannot modify Opening/Closing balance !']
+                    ]
+                ], 409);
+            }
     
             $diff = 0;
     
             if($pool->type == "Add Money")
-            {   
+            {
                 $diff = $pool->amount - $request->amount;
     
                 $pool->amount = $request->amount;
@@ -296,12 +307,13 @@ class PoolController extends Controller
             {
                 $diff = $request->amount + $pool->amount;
     
-                $pool->amount = $request->amount * (-1);            
+                $pool->amount = $request->amount * (-1);
             }
     
             $pool->note = $request->note;
     
             $pool->save();
+
     
             $pools = Pool::whereDate('created_at', '>=', $pool->created_at)
             ->whereIn('type', ['Closing Balance', 'Opening Balance'])
@@ -311,7 +323,7 @@ class PoolController extends Controller
             {
                 $p->amount -= $diff;
                 $p->save();
-            }            
+            }
 
             DB::commit();
     
@@ -331,7 +343,6 @@ class PoolController extends Controller
 
     public function delete($pool_id)
     {
-
         if(!auth()->user()->hasPermission("pool.delete"))
         {
             return response(['message' => 'Permission Denied !'], 403);
@@ -342,6 +353,17 @@ class PoolController extends Controller
         try {
             
             $pool = Pool::find($pool_id);
+
+            if($pool->type == "Opening Balance" || $pool->type == "Closing Balance")
+            {
+                DB::rollBack();
+
+                return response([
+                    'errors' => [
+                        'message' => ['Cannot modify Opening/Closing balance !']
+                    ]
+                ], 409);
+            }
     
             $pools = Pool::whereDate('created_at', '>=', $pool->created_at)
             ->whereIn('type', ['Closing Balance', 'Opening Balance'])
@@ -353,7 +375,7 @@ class PoolController extends Controller
                 $p->save();
             }
     
-            $pool->delete();            
+            $pool->delete();
 
             DB::commit();
     

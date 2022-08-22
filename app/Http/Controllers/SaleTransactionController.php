@@ -137,7 +137,7 @@ class SaleTransactionController extends Controller
                         'errors' => [
                             'message' => ['Sale quantity cannot be less than 1 or greater than available quantity !. ' . $value . ' is not available !']
                         ]
-                    ], 404);
+                    ], 409);
                 }
 
                 // ADJUSTING THE QUANTITY OF THE PURCHASE VARIATION RELATED TO THIS SALE VARIATION
