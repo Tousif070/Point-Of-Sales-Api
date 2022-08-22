@@ -1181,6 +1181,23 @@ class PermissionSeeder extends Seeder
 
             $permission->save();
         }
+
+
+        // PERMISSION GROUP - SEARCH
+
+        $permission = Permission::where('name', '=', 'search.imei')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "search.imei";
+            $permission->alias = "Search IMEI";
+            $permission->description = "To search an IMEI & view its details";
+            $permission->permission_group = "Search";
+
+            $permission->save();
+        }
         
 
     }

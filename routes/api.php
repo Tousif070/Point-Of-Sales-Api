@@ -399,12 +399,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
         
 
-
         Route::group(['prefix' => 'search'], function() {
 
             Route::get('imei', 'SearchController@imei');
 
         });
+        
 
     });
 
