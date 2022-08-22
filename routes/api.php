@@ -392,7 +392,9 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::post('withdraw', 'PoolController@withdraw');
 
-            // Route::post('update/{id}', 'PoolController@update');
+            Route::post('update/{pool_id}', 'PoolController@update');
+
+            Route::delete('delete/{pool_id}', 'PoolController@delete');
 
         });
         

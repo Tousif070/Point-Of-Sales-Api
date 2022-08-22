@@ -258,81 +258,117 @@ class PoolController extends Controller
         }
 
     }
-
-    public function update(Request $request, $id)
+    
+    public function update(Request $request, $pool_id)
     {
-        $pool = Pool::find($id);
-
-        if($pool->type == "Add Money")
+        if(!auth()->user()->hasPermission("pool.update"))
         {
-            $pool->amount = $request->amount;
+            return response(['message' => 'Permission Denied !'], 403);
         }
-        else if($pool->type == "Withdraw")
-        {
-            $pool->amount = -$request->amount;
-        }
-
-        $pool->note = $request->note;
-        $pool->finalized_by = auth()->user()->id;
-        $pool->finalized_at = Carbon::now();
-
-        $pool->save();
-
-
-        $pools = Pool::all();
-
-
-        // $pools = Pool::where('id', '>', $id)
-        // ->select('type', 'amount', 'note', 'finalized_by', 'created_at')        
-        // ->orderBy('created_at', 'asc')
-        // ->get();
         
+        $request->validate([
+            'amount' => 'required | numeric | min:1',
+            'note' => 'string | nullable'
+        ], [
+            'amount.required' => 'Amount is required',
+            'amount.numeric' => 'Amount should be numeric',
+            'amount.min' => 'Amount cannot be less than 1 !',
 
-        $latest_balance = 0;
+            'note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
+        ]);
 
-        foreach($pools as $pool)
-        {
-            if($pool->type == "Add Money" || $pool->type == "Withdraw")
-            {
-                $latest_balance += $pool->amount;  
+        
+        DB::beginTransaction();
+
+        try {
+
+            $pool = Pool::find($pool_id);
+    
+            $diff = 0;
+    
+            if($pool->type == "Add Money")
+            {   
+                $diff = $pool->amount - $request->amount;
+    
+                $pool->amount = $request->amount;
             }
-            else 
+            else if($pool->type == "Withdraw")
             {
-                $pool->amount = $latest_balance;
-                $pool->save();
-            }          
-            $pool->balance = $latest_balance;
+                $diff = $request->amount + $pool->amount;
+    
+                $pool->amount = $request->amount * (-1);            
+            }
+    
+            $pool->note = $request->note;
+    
+            $pool->save();
+    
+            $pools = Pool::whereDate('created_at', '>=', $pool->created_at)
+            ->whereIn('type', ['Closing Balance', 'Opening Balance'])
+            ->get();
+    
+            foreach($pools as $p)
+            {
+                $p->amount -= $diff;
+                $p->save();
+            }            
+
+            DB::commit();
+    
+            return response(['message' => 'Pool Updated Successfully !'], 200);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
         }
+    }
 
+    public function delete($pool_id)
+    {
 
-        // foreach($pools as $pool)
-        // {
-        //     if($pool->type == "Add Money")
-        //     {
-        //         $latest_balance += $pool->amount;
-                
-        //         $pool->balance = $latest_balance;
-        //     }
+        if(!auth()->user()->hasPermission("pool.delete"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+        
+        DB::beginTransaction();
 
-        //     else if($pool->type == "Withdraw")
-        //     {
-        //         $latest_balance += $pool->amount;
-                
-        //         $pool->balance = $latest_balance;
-        //     }
+        try {
+            
+            $pool = Pool::find($pool_id);
+    
+            $pools = Pool::whereDate('created_at', '>=', $pool->created_at)
+            ->whereIn('type', ['Closing Balance', 'Opening Balance'])
+            ->get();
+    
+            foreach($pools as $p)
+            {
+                $p->amount -= $pool->amount;
+                $p->save();
+            }
+    
+            $pool->delete();            
 
-        //     else if($pool->type == "Opening Balance")
-        //     {                
-        //         $pool->balance = $latest_balance;
-        //     }
+            DB::commit();
+    
+            return response(['message' => 'Pool Deleted Successfully !'], 200);
 
-        //     else if($pool->type == "Closing Balance")
-        //     {
-        //         $pool->balance = $latest_balance;
-        //     }
-        // }
+        } catch(Exception $ex) {
 
-        return response(['pool' => $pool], 200);
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
     }
 
 

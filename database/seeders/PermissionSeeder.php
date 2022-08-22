@@ -1140,6 +1140,34 @@ class PermissionSeeder extends Seeder
             $permission->save();
         }
 
+        $permission = Permission::where('name', '=', 'pool.update')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "pool.update";
+            $permission->alias = "Update Pool";
+            $permission->description = "To update pool";
+            $permission->permission_group = "Pool";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'pool.delete')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "pool.delete";
+            $permission->alias = "Delete Pool";
+            $permission->description = "To delete pool";
+            $permission->permission_group = "Pool";
+
+            $permission->save();
+        }
+
         $permission = Permission::where('name', '=', 'pool.history')->first();
 
         if($permission == null)
