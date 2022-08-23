@@ -7,7 +7,9 @@ use App\Models\PurchaseTransaction;
 use App\Models\PurchaseVariation;
 use App\Models\Payment;
 use App\Models\User;
+use App\Models\File;
 use REC;
+use Storage;
 use DB;
 use Exception;
 use Carbon\Carbon;
@@ -30,6 +32,7 @@ class PurchaseTransactionController extends Controller
             ->join('users as u2', 'u2.id', '=', 'purchase_transactions.supplier_id')
             ->leftJoin('users as u3', 'u3.id', '=', 'purchase_transactions.verified_by')
             ->leftJoin('purchase_variations as pv', 'pv.purchase_transaction_id', '=', 'purchase_transactions.id')
+            ->leftJoin('files as f', 'f.id', '=', 'purchase_transactions.file_id')
             ->select(
 
                 'purchase_transactions.id',
@@ -38,6 +41,7 @@ class PurchaseTransactionController extends Controller
                 DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'purchase_transactions.reference_no',
                 DB::raw('CONCAT_WS(" ", u2.first_name, u2.last_name) as supplier'),
+                'f.absolute_path as invoice_from_supplier',
                 'purchase_transactions.purchase_status',
                 DB::raw('IF(SUM(pv.quantity_purchased) is null, 0, SUM(pv.quantity_purchased)) as total_items'),
                 'purchase_transactions.locked',
@@ -70,7 +74,8 @@ class PurchaseTransactionController extends Controller
         $request->validate([
             'purchase_status' => 'required | string',
             'transaction_date' => 'required | date',
-            'supplier_id' => 'required | numeric'
+            'supplier_id' => 'required | numeric',
+            'invoice_from_supplier' => 'file | max:8192 | nullable',
         ], [
             'purchase_status.required' => 'Please select the purchase status !',
             'purchase_status.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !',
@@ -81,6 +86,23 @@ class PurchaseTransactionController extends Controller
             'supplier_id.required' => 'Please select the supplier !',
             'supplier_id.numeric' => 'Supplier ID should be numeric !'
         ]);
+
+
+        // CUSTOM VALIDATION FOR INVOICE FROM SUPPLIER
+        if(!empty($request->file('invoice_from_supplier')))
+        {
+            $extension = $request->file('invoice_from_supplier')->getClientOriginalExtension();
+
+            if(!($extension == "pdf" || $extension == "jpg" || $extension == "png"))
+            {
+                return response([
+                    'errors' => [
+                        'invoice_from_supplier' => ['Only pdf, jpg & png formats are allowed !']
+                    ]
+                ], 409);
+            }
+        }
+
 
         DB::beginTransaction();
 
@@ -95,6 +117,28 @@ class PurchaseTransactionController extends Controller
             $purchase_transaction->transaction_date = Carbon::parse($request->transaction_date);
 
             $purchase_transaction->supplier_id = $request->supplier_id;
+
+
+            // INVOICE FROM SUPPLIER
+            if(!empty($request->file('invoice_from_supplier')))
+            {
+                $file_name = date('YmdHis') . "_" . mt_rand(1, 999999) . "." . $request->file('invoice_from_supplier')->getClientOriginalExtension();
+
+                $file_path = $request->file('invoice_from_supplier')->storeAs('public/supplier_documents', $file_name);
+
+                $absolute_path = asset('public' . Storage::url($file_path));
+
+                $file = new File();
+
+                $file->file_path = $file_path;
+
+                $file->absolute_path = $absolute_path;
+
+                $file->save();
+
+                $purchase_transaction->file_id = $file->id;
+            }
+
 
             $purchase_transaction->finalized_by = auth()->user()->id;
 
