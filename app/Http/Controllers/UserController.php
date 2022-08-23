@@ -1417,11 +1417,13 @@ class UserController extends Controller
         }
 
         $request->validate([
-            'amount' => 'required | numeric',
+            'amount' => 'required | numeric | min:1',
             'note' => 'string | nullable'
         ], [
             'amount.required' => 'Please enter the amount !',
             'amount.numeric' => 'Amount should be numeric !',
+            'amount.min' => 'Amount cannot be less than 1 !',
+
             'note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
         ]);
 
@@ -1475,6 +1477,97 @@ class UserController extends Controller
             DB::commit();
 
             return response(['message' => 'Amount Added Successfully !'], 201);
+
+        } catch(Exception $ex) {
+
+            DB::rollBack();
+
+            return response([
+                'message' => 'Internal Server Error !',
+                'error' => $ex->getMessage()
+            ], 500);
+
+        }
+    }
+
+    public function withdrawCustomerCredit(Request $request, $customer_id)
+    {
+        if(!auth()->user()->hasPermission("money-transaction.customer-credit"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
+
+        $request->validate([
+            'amount' => 'required | numeric | min:1',
+            'note' => 'string | nullable'
+        ], [
+            'amount.required' => 'Please enter the amount !',
+            'amount.numeric' => 'Amount should be numeric !',
+            'amount.min' => 'Amount cannot be less than 1 !',
+            
+            'note.string' => 'Only alphabets, numbers & special characters are allowed. Must be a string !'
+        ]);
+
+
+        $customer = User::where('id', '=', $customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+
+        if($request->amount > $customer->userDetail->available_credit)
+        {
+            return response([
+                'errors' => [
+                    'amount' => ['Withdraw limit exceeded !']
+                ]
+            ], 409);
+        }
+
+
+        DB::beginTransaction();
+
+        try {
+
+            $customer_credit = new CustomerCredit();
+
+            $customer_credit->amount = $request->amount;
+
+            $customer_credit->type = "Withdraw Money";
+
+            $customer_credit->customer_id = $customer_id;
+
+            $customer_credit->note = $request->note;
+
+            $customer_credit->finalized_by = auth()->user()->id;
+
+            $customer_credit->finalized_at = Carbon::now();
+
+            $customer_credit->save();
+
+
+            $customer->userDetail->available_credit -= $request->amount;
+
+            $customer->userDetail->save();
+
+
+            // RECORD ENTRY FOR CUSTOMER CREDIT
+            $rec_data_arr = [
+                'category' => 'Money',
+                'type' => 'Withdraw CC',
+                'reference_id' => $customer_credit->id,
+                'cash_flow' => 'out',
+                'amount' => $customer_credit->amount
+            ];
+
+            REC::store($rec_data_arr);
+
+
+            DB::commit();
+
+            return response(['message' => 'Amount Withdrawn Successfully !'], 201);
 
         } catch(Exception $ex) {
 

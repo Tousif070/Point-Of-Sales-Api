@@ -80,6 +80,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
             Route::get('customer/get-customer-credit-history/{customer_id}', 'UserController@getCustomerCreditHistory');
 
             Route::post('customer/store-customer-credit/{customer_id}', 'UserController@storeCustomerCredit');
+
+            Route::post('customer/withdraw-customer-credit/{customer_id}', 'UserController@withdrawCustomerCredit');
             
 
             Route::get('assign-role-view/{user_id}', 'UserController@assignRoleView');
