@@ -337,7 +337,7 @@ class PurchaseTransactionController extends Controller
                 'pm.name',
                 'purchase_variations.serial as imei',
                 'p.color',
-                'p.ram',
+                // 'p.ram', NOT NEEDED FOR NOW
                 'p.storage',
                 'p.condition'
 

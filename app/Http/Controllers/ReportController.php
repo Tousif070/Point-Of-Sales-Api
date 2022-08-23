@@ -156,12 +156,15 @@ class ReportController extends Controller
         $serial = 0;
 
         $sale_transactions = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sv.purchase_variation_id')
             ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
             ->select(
 
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) as gross_profit')
+                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) as gross_profit'),
+                DB::raw('( SUM((sv.selling_price - sv.purchase_price) * sv.quantity) / SUM(sv.quantity) ) as avg_profit'),
+                DB::raw('SUM( ((sv.selling_price - sv.purchase_price) * sv.quantity) * pv.risk_fund ) as risk_fund')
 
             )->where('sale_transactions.status', '=', 'Final')
             ->groupBy('sale_transactions.id')
@@ -169,12 +172,15 @@ class ReportController extends Controller
         
         $sale_return_transactions = SaleReturnTransaction::join('sale_return_variations as srv', 'srv.sale_return_transaction_id', '=', 'sale_return_transactions.id')
             ->join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'srv.purchase_variation_id')
             ->join('users as u', 'u.id', '=', 'st.customer_id')
             ->select(
 
                 'sale_return_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit')
+                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit'),
+                DB::raw('( SUM((srv.selling_price - srv.purchase_price) * srv.quantity) / SUM(srv.quantity) ) * (-1) as avg_profit'),
+                DB::raw('SUM( ((srv.selling_price - srv.purchase_price) * srv.quantity) * pv.risk_fund ) * (-1) as risk_fund')
 
             )->groupBy('sale_return_transactions.id')
             ->orderBy('sale_return_transactions.id', 'asc');
