@@ -109,7 +109,8 @@ class MoneyTransactionController extends Controller
                 
                 as due')
 
-            )->where('sale_transactions.payment_status', '<>', 'Paid')
+            )->where('sale_transactions.status', '=', 'Final')
+            ->where('sale_transactions.payment_status', '<>', 'Paid')
             ->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')
             ->get();
@@ -236,7 +237,8 @@ class MoneyTransactionController extends Controller
                 
                 as due')
 
-            )->where('sale_transactions.payment_status', '<>', 'Paid')
+            )->where('sale_transactions.status', '=', 'Final')
+            ->where('sale_transactions.payment_status', '<>', 'Paid')
             ->where('sale_transactions.customer_id', '=', $request->customer_id)
             ->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')

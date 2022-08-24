@@ -52,7 +52,8 @@ class SaleTransactionController extends Controller
                 DB::raw('CONCAT_WS(" ", u3.first_name, DATE_FORMAT(sale_transactions.verified_at, "%m/%d/%Y %H:%i:%s")) as verified_by'),
                 DB::raw('(select COUNT(invoice_no) from sale_return_transactions where sale_transaction_id = sale_transactions.id) as sale_return')
 
-            )->groupBy('sale_transactions.id')
+            )->where('sale_transactions.status', '=', 'Final')
+            ->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')
             ->orderBy('sale_transactions.invoice_no', 'desc')
             ->get();
