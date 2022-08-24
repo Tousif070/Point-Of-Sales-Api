@@ -109,7 +109,8 @@ class MoneyTransactionController extends Controller
                 
                 as due')
 
-            )->where('sale_transactions.payment_status', '<>', 'Paid')
+            )->where('sale_transactions.status', '=', 'Final')
+            ->where('sale_transactions.payment_status', '<>', 'Paid')
             ->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')
             ->get();
@@ -236,7 +237,8 @@ class MoneyTransactionController extends Controller
                 
                 as due')
 
-            )->where('sale_transactions.payment_status', '<>', 'Paid')
+            )->where('sale_transactions.status', '=', 'Final')
+            ->where('sale_transactions.payment_status', '<>', 'Paid')
             ->where('sale_transactions.customer_id', '=', $request->customer_id)
             ->groupBy('sale_transactions.id')
             ->orderBy('sale_transactions.transaction_date', 'desc')
@@ -260,6 +262,25 @@ class MoneyTransactionController extends Controller
 
         return response([
             'customers' => $customers
+        ], 200);
+    }
+
+    public function customerCreditAvailableCredit(Request $request)
+    {
+        if(empty($request->customer_id))
+        {
+            return response([], 200);
+        }
+
+        $customer = User::where('id', '=', $request->customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+        return response([
+            'available_credit' => $customer->userDetail->available_credit
         ], 200);
     }
 
