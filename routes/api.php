@@ -331,6 +331,8 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('add-customer-credit-view', 'MoneyTransactionController@addCustomerCreditView');
 
+            Route::get('customer-credit-available-credit', 'MoneyTransactionController@customerCreditAvailableCredit');
+
             Route::post('store', 'MoneyTransactionController@store');
 
             Route::post('payment-verification', 'MoneyTransactionController@paymentVerification');

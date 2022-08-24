@@ -263,6 +263,25 @@ class MoneyTransactionController extends Controller
         ], 200);
     }
 
+    public function customerCreditAvailableCredit(Request $request)
+    {
+        if(empty($request->customer_id))
+        {
+            return response([], 200);
+        }
+
+        $customer = User::where('id', '=', $request->customer_id)->where('type', '=', 2)->first();
+
+        if($customer == null)
+        {
+            return response(['message' => 'Customer not found !'], 404);
+        }
+
+        return response([
+            'available_credit' => $customer->userDetail->available_credit
+        ], 200);
+    }
+
     public function paymentVerification(Request $request)
     {
         if(!auth()->user()->hasPermission("payment.verification"))
