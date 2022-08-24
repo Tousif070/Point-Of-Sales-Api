@@ -1198,6 +1198,37 @@ class PermissionSeeder extends Seeder
 
             $permission->save();
         }
+
+
+        // PERMISSION GROUP - SALESMAN REPORT
+
+        $permission = Permission::where('name', '=', 'srfp')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "srfp";
+            $permission->alias = "First Person View";
+            $permission->description = "To view one's own salesman reports";
+            $permission->permission_group = "Salesman Report";
+
+            $permission->save();
+        }
+
+        $permission = Permission::where('name', '=', 'srtp')->first();
+
+        if($permission == null)
+        {
+            $permission = new Permission();
+
+            $permission->name = "srtp";
+            $permission->alias = "Third Person View";
+            $permission->description = "To view salesman reports of other salesmen";
+            $permission->permission_group = "Salesman Report";
+
+            $permission->save();
+        }
         
 
     }

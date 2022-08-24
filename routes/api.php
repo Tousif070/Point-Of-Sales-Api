@@ -408,6 +408,31 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
         });
         
 
+        Route::group(['prefix' => 'salesman-report'], function() {
+
+            Route::get('commission-by-sale-invoice-fp', 'SalesmanReportController@commissionBySaleInvoiceFp');
+
+            Route::get('commission-by-customer-fp', 'SalesmanReportController@commissionByCustomerFp');
+
+            Route::get('sales-due-fp', 'SalesmanReportController@salesDueFp');
+
+            Route::get('commission-by-paid-invoice-fp', 'SalesmanReportController@commissionByPaidInvoiceFp');
+
+
+            Route::get('salesman-dropdown', 'SalesmanReportController@salesmanDropdown');
+            
+
+            Route::get('commission-by-sale-invoice-tp', 'SalesmanReportController@commissionBySaleInvoiceTp');
+
+            Route::get('commission-by-customer-tp', 'SalesmanReportController@commissionByCustomerTp');
+
+            Route::get('sales-due-tp', 'SalesmanReportController@salesDueTp');
+
+            Route::get('commission-by-paid-invoice-tp', 'SalesmanReportController@commissionByPaidInvoiceTp');
+
+        });
+        
+
     });
 
 });
