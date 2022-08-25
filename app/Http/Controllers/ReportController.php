@@ -163,6 +163,7 @@ class ReportController extends Controller
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
                 DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) as gross_profit'),
+                DB::raw('SUM(sv.quantity) as quantity'),
                 DB::raw('( SUM((sv.selling_price - sv.purchase_price) * sv.quantity) / SUM(sv.quantity) ) as avg_profit'),
                 DB::raw('SUM( ((sv.selling_price - sv.purchase_price) * sv.quantity) * pv.risk_fund ) as risk_fund')
 
@@ -179,6 +180,7 @@ class ReportController extends Controller
                 'sale_return_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
                 DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit'),
+                DB::raw('SUM(srv.quantity) as quantity'),
                 DB::raw('( SUM((srv.selling_price - srv.purchase_price) * srv.quantity) / SUM(srv.quantity) ) * (-1) as avg_profit'),
                 DB::raw('SUM( ((srv.selling_price - srv.purchase_price) * srv.quantity) * pv.risk_fund ) * (-1) as risk_fund')
 
