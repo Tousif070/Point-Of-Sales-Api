@@ -418,7 +418,7 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('sales-due-fp', 'SalesmanReportController@salesDueFp');
 
-            Route::get('commission-by-paid-invoice-fp', 'SalesmanReportController@commissionByPaidInvoiceFp');
+            Route::get('commission-by-return-invoice-fp', 'SalesmanReportController@commissionByReturnInvoiceFp');
 
 
             Route::get('salesman-dropdown', 'SalesmanReportController@salesmanDropdown');
@@ -430,7 +430,12 @@ Route::group(['namespace' => 'App\Http\Controllers'], function() {
 
             Route::get('sales-due-tp', 'SalesmanReportController@salesDueTp');
 
-            Route::get('commission-by-paid-invoice-tp', 'SalesmanReportController@commissionByPaidInvoiceTp');
+            Route::get('commission-by-return-invoice-tp', 'SalesmanReportController@commissionByReturnInvoiceTp');
+            
+
+            Route::get('commission-summary-tp', 'SalesmanReportController@commissionSummaryTp');
+
+            Route::get('sales-due-summary-tp', 'SalesmanReportController@salesDueSummaryTp');
 
         });
         
