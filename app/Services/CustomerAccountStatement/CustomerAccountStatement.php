@@ -92,14 +92,13 @@ class CustomerAccountStatement
         $cas->save();
     }
 
-    public function openingBalanceForThisMonth()
+    public function checkOpeningBalance($date, $customer_id)
     {
-        $date = Carbon::today();
-
-        $start_date_of_this_month = $date->year . "-" . $date->month . "-01";
+        $start = $date->year . "-" . $date->month . "-01";
 
         $opening_balance = CAS::where('type', '=', 'Opening Balance')
-            ->whereDate('created_at', '=', $start_date_of_this_month)
+            ->whereDate('created_at', '=', $start)
+            ->where('customer_id', '=', $customer_id)
             ->get();
         
         if(count($opening_balance) > 0)
@@ -112,36 +111,43 @@ class CustomerAccountStatement
         }
     }
 
-    public function setClosingBalanceForPreviousMonth($customer_id)
+    public function setOpeningAndClosingBalance($date, $customer_id)
     {
-        $date = Carbon::today()->subMonth();
-
         $start = $date->year . "-" . $date->month . "-01";
         
         $end = $date->year . "-" . $date->month . "-" . $date->daysInMonth . " 23:59:58";
 
         $overall_balance = 0;
 
-        $statements = CAS::whereDate('created_at', '>=', $start)
-            ->whereDate('created_at', '<=', $end)
-            ->get();
-
-        foreach($statements as $row)
+        if(!$this->checkOpeningBalance($date, $customer_id))
         {
-            if($row->type != "Return")
-            {
-                $overall_balance += $row->amount;
-            }
-            else
-            {
-                $srt = SaleReturnTransaction::find($row->reference_id);
+            $overall_balance = $this->setOpeningAndClosingBalance($date->copy()->subMonth(), $customer_id);
+        }
+        else
+        {
+            $statements = CAS::whereDate('created_at', '>=', $start)
+                ->whereDate('created_at', '<=', $end)
+                ->where('customer_id', '=', $customer_id)
+                ->get();
 
-                $amount_adjusted = $srt->amount - $srt->amount_credited;
+            foreach($statements as $row)
+            {
+                if($row->type != "Return")
+                {
+                    $overall_balance += $row->amount;
+                }
+                else
+                {
+                    $srt = SaleReturnTransaction::find($row->reference_id);
 
-                $overall_balance -= $amount_adjusted;
+                    $amount_adjusted = $srt->amount - $srt->amount_credited;
+
+                    $overall_balance -= $amount_adjusted;
+                }
             }
         }
-        
+
+        // CLOSING BALANCE FOR CURRENT MONTH
         $closing_balance = new CAS();
         
         $closing_balance->type = "Closing Balance";
@@ -158,35 +164,35 @@ class CustomerAccountStatement
         $closing_balance->save();
 
 
-        // ASSIGNING THE CLOSING BALANCE OF THE PREVIOUS MONTH TO THIS MONTH'S OPENING BALANCE
-        $this->setOpeningBalanceForThisMonth($overall_balance, $customer_id);
-    }
-
-    public function setOpeningBalanceForThisMonth($amount, $customer_id)
-    {
+        // OPENING BALANCE FOR NEXT MONTH
         $opening_balance = new CAS();
         
         $opening_balance->type = "Opening Balance";
 
-        $opening_balance->amount = $amount;
+        $opening_balance->amount = $overall_balance;
 
         $opening_balance->customer_id = $customer_id;
         
         $opening_balance->save();
 
         
-        $date = Carbon::today();
+        $date = $date->addMonth();
         
         $opening_balance->created_at = $date->year . "-" . $date->month . "-01";
         
         $opening_balance->save();
+
+        
+        return $overall_balance;
     }
 
     public function store($cas_data_arr)
     {
-        if(!$this->openingBalanceForThisMonth())
+        $date = Carbon::today();
+
+        if(!$this->checkOpeningBalance($date, $cas_data_arr['customer_id']))
         {
-            $this->setClosingBalanceForPreviousMonth($cas_data_arr['customer_id']);
+            $this->setOpeningAndClosingBalance($date->copy()->subMonth(), $cas_data_arr['customer_id']);
         }
 
         $cas = new CAS();
