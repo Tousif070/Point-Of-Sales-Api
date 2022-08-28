@@ -291,6 +291,7 @@ class PurchaseTransactionController extends Controller
                 DB::raw('DATE_FORMAT(purchase_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'purchase_transactions.payment_status',
                 'purchase_transactions.amount as total',
+                DB::raw('IFNULL((select SUM(overhead_charge * quantity_purchased) from purchase_variations where purchase_transaction_id = purchase_transactions.id), 0) as overhead_charge'),
                 DB::raw('IFNULL(SUM(p.amount), 0) as paid')
 
             )->where('purchase_transactions.id', '=', $purchase_transaction_id)
@@ -319,8 +320,7 @@ class PurchaseTransactionController extends Controller
 
                 'p.name',
                 DB::raw('SUM(purchase_variations.quantity_purchased) as quantity'),
-                'purchase_variations.purchase_price',
-                'purchase_variations.overhead_charge'
+                'purchase_variations.purchase_price'
 
             )->where('purchase_variations.purchase_transaction_id', '=', $purchase_transaction_id)
             ->groupBy('purchase_variations.purchase_price')
