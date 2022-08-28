@@ -21,7 +21,7 @@ class ExpensePayment implements MoneyTransactionContract
         $request->validate([
             // 'payment_for' => 'required | string', NOT NEEDED FOR NOW
             'transaction_id' => 'required | numeric',
-            'amount' => 'required | numeric',
+            'amount' => 'required | numeric | min:1',
             'payment_date' => 'required | date',
             'payment_method_id' => 'required | numeric',
             'payment_note' => 'string | nullable'
@@ -35,6 +35,7 @@ class ExpensePayment implements MoneyTransactionContract
 
             'amount.required' => 'Amount is required !',
             'amount.numeric' => 'Amount should be numeric !',
+            'amount.min' => 'Amount cannot be less than 1 !',
 
             'payment_date.required' => 'Please specify the payment date !',
             'payment_date.date' => 'Please specify a valid date !',

@@ -23,7 +23,7 @@ class CollectiveSalePayment implements MoneyTransactionContract
 
         $request->validate([
             'customer_id' => 'required | numeric',
-            'amount' => 'required | numeric',
+            'amount' => 'required | numeric | min:1',
             'payment_date' => 'required | date',
             'payment_method_id' => 'required | numeric',
             'payment_note' => 'string | nullable'
@@ -33,6 +33,7 @@ class CollectiveSalePayment implements MoneyTransactionContract
 
             'amount.required' => 'Amount is required !',
             'amount.numeric' => 'Amount should be numeric !',
+            'amount.min' => 'Amount cannot be less than 1 !',
 
             'payment_date.required' => 'Please specify the payment date !',
             'payment_date.date' => 'Please specify a valid date !',
