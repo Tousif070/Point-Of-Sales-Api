@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SaleTransaction;
 use App\Models\SaleVariation;
+use App\Models\SaleReturnVariation;
 use App\Models\PurchaseVariation;
 use App\Models\ProductModel;
 use App\Models\Product;
@@ -423,12 +424,10 @@ class SaleTransactionController extends Controller
 
     public function getSaleInvoice($sale_transaction_id, $json = true)
     {
-        // THE FOLLOWING IS DISABLED TEMPORARILY
-
-        // if(!auth()->user()->hasPermission("sale.index"))
-        // {
-        //     return response(['message' => 'Permission Denied !'], 403);
-        // }
+        if(!auth()->user()->hasPermission("sale.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
 
         $sale_transaction = SaleTransaction::find($sale_transaction_id);
 
@@ -515,6 +514,25 @@ class SaleTransactionController extends Controller
             ->orderBy('pm.name', 'asc')
             ->get();
 
+
+        $return_list = SaleReturnVariation::join('sale_return_transactions as srt', 'srt.id', '=', 'sale_return_variations.sale_return_transaction_id')
+            ->join('products as p', 'p.id', '=', 'sale_return_variations.product_id')
+            ->join('product_models as pm', 'pm.id', '=', 'p.product_model_id')
+            ->join('purchase_variations as pv', 'pv.id', '=', 'sale_return_variations.purchase_variation_id')
+            ->select(
+
+                'sale_return_variations.id',
+                'pm.name',
+                'pv.serial as imei',
+                'p.color',
+                'p.storage',
+                'p.condition'
+
+            )->where('srt.sale_transaction_id', '=', $sale_transaction_id)
+            ->where('pv.serial', '<>', null)
+            ->orderBy('pm.name', 'asc')
+            ->get();
+
         
         if($json)
         {
@@ -522,7 +540,8 @@ class SaleTransactionController extends Controller
                 'sale_transaction' => $sale_transaction,
                 'payments' => $payments,
                 'product_summary' => $product_summary,
-                'serial_list' => $serial_list
+                'serial_list' => $serial_list,
+                'return_list' => $return_list
             ], 200);
         }
         else
@@ -531,19 +550,18 @@ class SaleTransactionController extends Controller
                 'sale_transaction' => $sale_transaction,
                 'payments' => $payments,
                 'product_summary' => $product_summary,
-                'serial_list' => $serial_list
+                'serial_list' => $serial_list,
+                'return_list' => $return_list
             ];
         }
     }
 
     public function downloadSaleInvoice($sale_transaction_id)
     {
-        // THE FOLLOWING IS DISABLED TEMPORARILY
-
-        // if(!auth()->user()->hasPermission("sale.index"))
-        // {
-        //     return response(['message' => 'Permission Denied !'], 403);
-        // }
+        if(!auth()->user()->hasPermission("sale.index"))
+        {
+            return response(['message' => 'Permission Denied !'], 403);
+        }
 
         $data = $this->getSaleInvoice($sale_transaction_id, false);
 
