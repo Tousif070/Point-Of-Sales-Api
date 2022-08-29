@@ -22,6 +22,7 @@ class SalesmanReportController extends Controller
             ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
             ->select(
 
+                'sale_transactions.id',
                 DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
@@ -61,6 +62,7 @@ class SalesmanReportController extends Controller
             ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
             ->select(
                 
+                'sale_transactions.customer_id',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
                 DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) * 0.2 as commission')
 
@@ -138,6 +140,7 @@ class SalesmanReportController extends Controller
         ->join('users as u', 'u.id', '=', 'st.customer_id')
         ->select(
 
+            'sale_return_transactions.id',
             DB::raw('DATE_FORMAT(sale_return_transactions.transaction_date, "%m/%d/%Y") as date'),
             'sale_return_transactions.invoice_no as return_invoice',
             'st.invoice_no as sale_invoice',
@@ -196,6 +199,7 @@ class SalesmanReportController extends Controller
             ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
             ->select(
 
+                'sale_transactions.id',
                 DB::raw('DATE_FORMAT(sale_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
@@ -250,6 +254,7 @@ class SalesmanReportController extends Controller
             ->join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
             ->select(
                 
+                'sale_transactions.customer_id',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
                 DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) * 0.2 as commission')
 
@@ -354,6 +359,7 @@ class SalesmanReportController extends Controller
         ->join('users as u', 'u.id', '=', 'st.customer_id')
         ->select(
 
+            'sale_return_transactions.id',
             DB::raw('DATE_FORMAT(sale_return_transactions.transaction_date, "%m/%d/%Y") as date'),
             'sale_return_transactions.invoice_no as return_invoice',
             'st.invoice_no as sale_invoice',
@@ -458,6 +464,8 @@ class SalesmanReportController extends Controller
         $sales_due_summary = SaleTransaction::join('customer_user_associations as cua', 'cua.customer_id', '=', 'sale_transactions.customer_id' )
         ->join('users as u', 'u.id', '=', 'cua.user_official_id' )
         ->select(
+
+            'u.id',
             DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as salesman'),
             DB::raw('
             
