@@ -247,7 +247,7 @@ class SalesmanReportController extends Controller
 
         if(empty($request->salesman_id))
         {
-            return response(['commission_by_sale_invoice' => []], 200);
+            return response(['commission_by_customer' => []], 200);
         }
 
         $commission_by_customer = SaleTransaction::join('sale_variations as sv', 'sv.sale_transaction_id', '=', 'sale_transactions.id')
@@ -291,7 +291,7 @@ class SalesmanReportController extends Controller
 
         if(empty($request->salesman_id))
         {
-            return response(['commission_by_sale_invoice' => []], 200);
+            return response(['sales_due' => []], 200);
         }
 
         $sales_due = SaleTransaction::join('users as u', 'u.id', '=', 'sale_transactions.customer_id')
