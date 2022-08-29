@@ -39,6 +39,8 @@ class CreateSaleReturnVariationsTable extends Migration
 
             $table->decimal('purchase_price', 10, 2);
 
+            $table->decimal('return_deduction', 10, 2);
+
             $table->timestamps();
 
             $table->softDeletes();

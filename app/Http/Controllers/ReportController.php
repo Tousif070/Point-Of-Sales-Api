@@ -179,10 +179,10 @@ class ReportController extends Controller
 
                 'sale_return_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit'),
+                DB::raw('SUM((srv.selling_price - srv.return_deduction - srv.purchase_price) * srv.quantity) * (-1) as gross_profit'),
                 DB::raw('SUM(srv.quantity) as quantity'),
-                DB::raw('( SUM((srv.selling_price - srv.purchase_price) * srv.quantity) / SUM(srv.quantity) ) * (-1) as avg_profit'),
-                DB::raw('SUM( ((srv.selling_price - srv.purchase_price) * srv.quantity) * pv.risk_fund ) * (-1) as risk_fund')
+                DB::raw('( SUM((srv.selling_price - srv.return_deduction - srv.purchase_price) * srv.quantity) / SUM(srv.quantity) ) * (-1) as avg_profit'),
+                DB::raw('SUM( ((srv.selling_price - srv.return_deduction - srv.purchase_price) * srv.quantity) * pv.risk_fund ) * (-1) as risk_fund')
 
             )->groupBy('sale_return_transactions.id')
             ->orderBy('sale_return_transactions.id', 'asc');
@@ -245,7 +245,7 @@ class ReportController extends Controller
             ->select(
 
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * (-1) as gross_profit')
+                DB::raw('SUM((srv.selling_price - srv.return_deduction - srv.purchase_price) * srv.quantity) * (-1) as gross_profit')
 
             )->groupBy('st.customer_id')
             ->orderBy('u.first_name', 'asc');
