@@ -27,7 +27,7 @@ class SalesmanReportController extends Controller
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
                 'sale_transactions.payment_status',
-                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) * 0.2 as commission')
+                DB::raw('ROUND((SUM((sv.selling_price - sv.purchase_price) * sv.quantity) * 0.2), 2) as commission')
 
             )->where('sale_transactions.status', '=', 'Final')            
             ->groupBy('sale_transactions.id')
@@ -64,7 +64,7 @@ class SalesmanReportController extends Controller
                 
                 'sale_transactions.customer_id',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-                DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) * 0.2 as commission')
+                DB::raw('ROUND((SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) * 0.2), 2) as commission')
 
             )->where('sale_transactions.status', '=', 'Final')
             ->groupBy('sale_transactions.customer_id')
@@ -145,7 +145,7 @@ class SalesmanReportController extends Controller
             'sale_return_transactions.invoice_no as return_invoice',
             'st.invoice_no as sale_invoice',
             DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-            DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * 0.2 as commission')
+            DB::raw('ROUND((SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * 0.2), 2) as commission')
 
         )->where('st.status', '=', 'Final')
         ->groupBy('sale_return_transactions.id')
@@ -204,7 +204,7 @@ class SalesmanReportController extends Controller
                 'sale_transactions.invoice_no',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
                 'sale_transactions.payment_status',
-                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) * 0.2 as commission')
+                DB::raw('ROUND((SUM((sv.selling_price - sv.purchase_price) * sv.quantity) * 0.2), 2) as commission')
 
             )->where('sale_transactions.status', '=', 'Final')            
             ->groupBy('sale_transactions.id')
@@ -256,7 +256,7 @@ class SalesmanReportController extends Controller
                 
                 'sale_transactions.customer_id',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-                DB::raw('SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) * 0.2 as commission')
+                DB::raw('ROUND((SUM((sv.selling_price - sv.purchase_price) * (sv.quantity - sv.return_quantity)) * 0.2), 2) as commission')
 
             )->where('sale_transactions.status', '=', 'Final')
             ->groupBy('sale_transactions.customer_id')
@@ -364,7 +364,7 @@ class SalesmanReportController extends Controller
             'sale_return_transactions.invoice_no as return_invoice',
             'st.invoice_no as sale_invoice',
             DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as customer'),
-            DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * 0.2 as commission')
+            DB::raw('ROUND((SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * 0.2), 2) as commission')
 
         )->where('st.status', '=', 'Final')
         ->groupBy('sale_return_transactions.id')
@@ -406,7 +406,7 @@ class SalesmanReportController extends Controller
 
                 'u.id',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as salesman'),
-                DB::raw('SUM((sv.selling_price - sv.purchase_price) * sv.quantity) * 0.2 as commission')
+                DB::raw('ROUND((SUM((sv.selling_price - sv.purchase_price) * sv.quantity) * 0.2), 2) as commission')
 
             )->where('sale_transactions.status', '=', 'Final')            
             ->groupBy('cua.user_official_id')
@@ -422,7 +422,7 @@ class SalesmanReportController extends Controller
 
                 'u.id',
                 DB::raw('CONCAT_WS(" ", u.first_name, u.last_name) as salesman'),
-                DB::raw('SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * 0.2 as commission_return')
+                DB::raw('ROUND((SUM((srv.selling_price - srv.purchase_price) * srv.quantity) * 0.2), 2) as commission_return')
 
             )->where('st.status', '=', 'Final')            
             ->groupBy('cua.user_official_id')
