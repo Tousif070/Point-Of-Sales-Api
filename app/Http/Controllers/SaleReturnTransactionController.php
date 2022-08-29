@@ -77,7 +77,9 @@ class SaleReturnTransactionController extends Controller
             'sale_return_transaction.transaction_date' => 'required | date',
 
             'sale_variations.*.sale_variation_id' => 'required | numeric',
-            'sale_variations.*.return_quantity' => 'required | numeric'
+            'sale_variations.*.return_quantity' => 'required | numeric',
+            
+            'sale_variations.*.return_deduction' => 'nullable | numeric | min:0'
         ], [
             'sale_return_transaction.sale_transaction_id.required' => 'Sale Transaction ID is required !',
             'sale_return_transaction.sale_transaction_id.numeric' => 'Sale Transaction ID should be numeric !',
@@ -89,7 +91,10 @@ class SaleReturnTransactionController extends Controller
             'sale_variations.*.sale_variation_id.numeric' => 'Sale Variation ID should be numeric !',
 
             'sale_variations.*.return_quantity.required' => 'Return Quantity is required !',
-            'sale_variations.*.return_quantity.numeric' => 'Return Quantity should be numeric !'
+            'sale_variations.*.return_quantity.numeric' => 'Return Quantity should be numeric !',
+
+            'sale_variations.*.return_deduction.numeric' => 'Return Deduction should be numeric !',
+            'sale_variations.*.return_deduction.min' => 'Minimum value should be 0 !'
         ]);
 
         DB::beginTransaction();
@@ -150,10 +155,12 @@ class SaleReturnTransactionController extends Controller
 
                 $sale_return_variation->purchase_price = $sale_variation->purchase_price;
 
+                $sale_return_variation->return_deduction = empty($return['return_deduction']) ? 0.00 : $return['return_deduction'];
+
                 $sale_return_variation->save();
 
 
-                $amount += ($sale_variation->selling_price * $return['return_quantity']);
+                $amount += (($sale_variation->selling_price - $sale_return_variation->return_deduction) * $return['return_quantity']);
             }
 
 
@@ -268,7 +275,8 @@ class SaleReturnTransactionController extends Controller
                 DB::raw('IF(pv.group is null, "N/A", pv.group) as "group"'),
                 'sale_return_variations.quantity',
                 'sale_return_variations.selling_price',
-                'sale_return_variations.purchase_price'
+                'sale_return_variations.purchase_price',
+                'sale_return_variations.return_deduction'
 
             )->where('sale_return_variations.sale_return_transaction_id', '=', $sale_return_transaction_id)
             ->get();
@@ -422,7 +430,8 @@ class SaleReturnTransactionController extends Controller
         }
 
 
-        $sale_return_transaction = SaleReturnTransaction::join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
+        $sale_return_transaction = SaleReturnTransaction::join('sale_return_variations as srv', 'srv.sale_return_transaction_id', '=', 'sale_return_transactions.id')
+            ->join('sale_transactions as st', 'st.id', '=', 'sale_return_transactions.sale_transaction_id')
             ->join('users as u', 'u.id', '=', 'st.customer_id')
             ->select(
 
@@ -432,6 +441,7 @@ class SaleReturnTransactionController extends Controller
                 DB::raw('DATE_FORMAT(sale_return_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'st.invoice_no as parent_invoice',
                 'sale_return_transactions.amount as total',
+                DB::raw('SUM(srv.return_deduction) as return_deduction'),
                 'sale_return_transactions.amount_credited',
                 DB::raw('sale_return_transactions.amount - sale_return_transactions.amount_credited as amount_adjusted')
 
