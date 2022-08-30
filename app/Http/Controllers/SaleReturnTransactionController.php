@@ -441,7 +441,7 @@ class SaleReturnTransactionController extends Controller
                 DB::raw('DATE_FORMAT(sale_return_transactions.transaction_date, "%m/%d/%Y") as date'),
                 'st.invoice_no as parent_invoice',
                 'sale_return_transactions.amount as total',
-                DB::raw('SUM(srv.return_deduction) as return_deduction'),
+                DB::raw('SUM(srv.return_deduction * srv.quantity) as return_deduction'),
                 'sale_return_transactions.amount_credited',
                 DB::raw('sale_return_transactions.amount - sale_return_transactions.amount_credited as amount_adjusted')
 
