@@ -10,7 +10,7 @@ class SearchController extends Controller
 {
     public function imei(Request $request)
     {
-        if(!auth()->user()->hasPermission("search.imei'"))
+        if(!auth()->user()->hasPermission("search.imei"))
         {
             return response(['message' => 'Permission Denied !'], 403);
         }
