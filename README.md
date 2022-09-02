@@ -1,4 +1,22 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# It is a customly designed Point Of Sales (POS) Application
+## Technical Specifications:
+- This project is a backend api for a POS application
+- It is built using Laravel
+- MySQL database has been used
+- For api authentication, Laravel Sanctum has been used
+## Business Features:
+- Set up roles with permissions and assign them to administrative users & employees as per organizational requirements
+- Manage customers & suppliers
+- Purchase products from suppliers & sell them to customers
+- Maintain records for sale, purchase, expense & money transactions
+- View profit/loss reports based on sale invoices, individual customers, sale dates, product categories
+- Customer balance sheet, emailing & downloading of customer sale invoices etc.
+
+### Credits:
+Thanks to [Tahmeed Mahbub](https://github.com/TahmeedMahbub) for collaborating with me in this project
+
+
+<!-- <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
 <p align="center">
 <a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
@@ -61,4 +79,4 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT). -->
